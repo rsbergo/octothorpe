@@ -1,0 +1,25 @@
+package game;
+
+public class Player
+{
+    private String name; // player's login name
+    
+    /**
+     * Constructor.
+     * 
+     * @param name This player's login name
+     */
+    public Player(String name)
+    {
+        this.name = name;
+    }
+
+    // Setters and Getters
+    public String getName() { return name; }
+
+    @Override
+    public String toString()
+    {
+        return name;
+    }
+}
