@@ -50,6 +50,8 @@ public class PlayerSocket implements Closeable
      */
     public String receive() throws IOException
     {
+        // TODO: This method is blocking when telnet is closed.
+        Logger.log(LogLevel.Info, "Waiting for message from socket...");
         return reader.readLine();
     }
 
@@ -61,7 +63,8 @@ public class PlayerSocket implements Closeable
      */
     public void send(String message)
     {
-        writer.print(message);
+        Logger.log(LogLevel.Debug, "Sending message...");
+        writer.print(message + "\r\n");
         writer.flush();
     }
 
