@@ -1,4 +1,3 @@
-import game_old.Game;
 import gameserver.GameServer;
 
 public class Octothorpe 

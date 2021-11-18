@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import logger.Logger;
+
 /**
  * Represents a socket for a player connected to the GameServer.
  * The PlayerSocket provides access to the socket connected to the client by sending and receiving messages through this
@@ -67,7 +69,8 @@ public class PlayerSocket implements Closeable
     {
         try
         {
-            System.out.println("Client " + id + " - Closing connection");
+            
+            Logger.log("Client " + id + " - Closing connection");
             if (reader != null)
                 reader.close();
             if (writer != null)
@@ -76,7 +79,7 @@ public class PlayerSocket implements Closeable
         }
         catch (IOException e)
         {
-            System.out.println("Error closing socket: " + socket);
+            Logger.log("Error closing socket: " + socket);
             e.printStackTrace();
         }
     }

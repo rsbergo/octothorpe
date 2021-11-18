@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import logger.Logger;
+
 /**
  * A game server. It creates a socket and listens for new player connections. When a new player connects, it starts a
  * new thread for the player so the player can interact with the game.
@@ -51,13 +53,13 @@ public class GameServer
         running = false;
         try
         {
-            System.out.println("Stopping the server...");
+            Logger.log("Stopping the server...");
             socket.close();
-            System.out.println("Goodbye");
+            Logger.log("Goodbye");
         }
         catch (IOException e)
         {
-            System.out.println("Something went wrong while stopping the server");
+            Logger.log("Something went wrong while stopping the server");
             e.printStackTrace();
         }
     }
@@ -69,12 +71,12 @@ public class GameServer
         try
         {
             server = new ServerSocket(port);
-            System.out.println("Listening on port " + port);
+            Logger.log("Listening on port " + port);
         }
         catch (IOException e)
         {
             running = false;
-            System.out.println("Something went wrong while setting up the server socket on port " + port);
+            Logger.log("Something went wrong while setting up the server socket on port " + port);
             e.printStackTrace();
         }
         return server;
@@ -87,14 +89,14 @@ public class GameServer
         PlayerSocket clientHandler = null;
         try
         {
-            System.out.println("Waiting for a new connection...");
+            Logger.log("Waiting for a new connection...");
             Socket client = server.accept();
             clientHandler = new PlayerSocket(client);
-            System.out.println("New connection established. Client: " + clientHandler.getId() + ", " + client);
+            Logger.log("New connection established. Client: " + clientHandler.getId() + ", " + client);
         }
         catch (IOException e)
         {
-            System.out.println("Something went wrong while accepting connection from client...");
+            Logger.log("Something went wrong while accepting connection from client...");
             e.printStackTrace();
         }
         return clientHandler;
