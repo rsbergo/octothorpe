@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import logger.Logger;
+import logger.LogLevel;
 
 /**
  * A game server. It creates a socket and listens for new player connections. When a new player connects, it starts a
@@ -36,7 +37,7 @@ public class GameServer
         socket = createServerSocket(port);
         while (running)
         {
-            PlayerSocket playerSocket = acceptConnection(socket);
+            PlayerHandler player = acceptConnection(socket);
             // ClientThread thread = new ClientThread(client, protocol);
             // thread.start();
         }
@@ -53,13 +54,13 @@ public class GameServer
         running = false;
         try
         {
-            Logger.log("Stopping the server...");
+            Logger.log(LogLevel.Info, "Stopping the server...");
             socket.close();
-            Logger.log("Goodbye");
+            Logger.log(LogLevel.Info, "Goodbye");
         }
         catch (IOException e)
         {
-            Logger.log("Something went wrong while stopping the server");
+            Logger.log(LogLevel.Error, "Something went wrong while stopping the server");
             e.printStackTrace();
         }
     }
@@ -71,12 +72,12 @@ public class GameServer
         try
         {
             server = new ServerSocket(port);
-            Logger.log("Listening on port " + port);
+            Logger.log(LogLevel.Info, "Listening on port " + port);
         }
         catch (IOException e)
         {
             running = false;
-            Logger.log("Something went wrong while setting up the server socket on port " + port);
+            Logger.log(LogLevel.Error, "Something went wrong while setting up the server socket on port " + port);
             e.printStackTrace();
         }
         return server;
@@ -84,21 +85,21 @@ public class GameServer
     
     // Accepts a new connection from a client.
     // Creates a ClientHandler associated with the new connection.
-    private PlayerSocket acceptConnection(ServerSocket server)
+    private PlayerHandler acceptConnection(ServerSocket server)
     {
-        PlayerSocket clientHandler = null;
+        PlayerHandler playerHandler = null;
         try
         {
-            Logger.log("Waiting for a new connection...");
-            Socket client = server.accept();
-            clientHandler = new PlayerSocket(client);
-            Logger.log("New connection established. Client: " + clientHandler.getId() + ", " + client);
+            Logger.log(LogLevel.Debug, "Waiting for a new connection...");
+            Socket playerSocket = server.accept();
+            playerHandler = new PlayerHandler(playerSocket);
+            Logger.log(LogLevel.Info, "New connection established. Player: " + playerHandler.getId() + ", " + playerSocket);
         }
         catch (IOException e)
         {
-            Logger.log("Something went wrong while accepting connection from client...");
+            Logger.log(LogLevel.Error, "Something went wrong while accepting connection from client...");
             e.printStackTrace();
         }
-        return clientHandler;
+        return playerHandler;
     }
 }

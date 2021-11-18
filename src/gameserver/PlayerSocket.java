@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import logger.Logger;
+import logger.LogLevel;
 
 /**
  * Represents a socket for a player connected to the GameServer.
@@ -65,12 +66,11 @@ public class PlayerSocket implements Closeable
     }
 
     @Override
-    public void close() throws IOException
+    public void close()
     {
         try
         {
-            
-            Logger.log("Client " + id + " - Closing connection");
+            Logger.log(LogLevel.Debug, "Client " + id + " - Closing connection");
             if (reader != null)
                 reader.close();
             if (writer != null)
@@ -79,7 +79,7 @@ public class PlayerSocket implements Closeable
         }
         catch (IOException e)
         {
-            Logger.log("Error closing socket: " + socket);
+            Logger.log(LogLevel.Error, "Error closing socket: " + socket);
             e.printStackTrace();
         }
     }
