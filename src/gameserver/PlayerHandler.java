@@ -10,13 +10,11 @@ import logger.LogLevel;
  * Represents the thread in which a player's interatcions is running.
  * It runs an additional thread for the player to receive notifications.
  */
-public class PlayerHandler
+public class PlayerHandler extends Thread
 {
-    // TODO: Check whether it is necessary to synchronize playerSocket
-    private PlayerSocket playerSocket = null; // the PlayerSocket associated with this PlayerHandler
-    private Thread interactions = null;       // thread that will handle interactions between the Player and the Game
-    private Thread notifications = null;      // thread that will send notifications to the Player
-    private boolean running = false;          // indicates the current state of the GameServer
+    private PlayerSocket playerSocket = null;  // the PlayerSocket associated with this PlayerHandler
+    private Thread notificationsThread = null; // thread that will send notifications to the Player
+    private boolean running = false;           // indicates the current state of the GameServer
     
     /**
      * Constructor.
@@ -28,9 +26,7 @@ public class PlayerHandler
     {
         super();
         playerSocket = new PlayerSocket(socket);
-        startInteractionsThread();
-        startNotificationsThread();
-        // TODO: close PlayerSocket
+        setUpNotificationsThread();
     }
     
     /**
@@ -38,73 +34,48 @@ public class PlayerHandler
      * 
      * @return this PlayerHandler's ID
      */
-    public int getId()
+    public int getSocketId()
     {
         return playerSocket.getId();
     }
     
-    /**
-     * Starts running this PlayerHandler's threads
-     */
+    @Override
     public void run()
     {
         running = true;
-        interactions.start();
-        notifications.start();
-        while (running);
+        Thread.currentThread().setName("PlayerSocket" + playerSocket.getId());
+        notificationsThread.start();
         try
         {
-            interactions.join();
-            Logger.log(LogLevel.Debug, "Interactions thread finished");
-            notifications.join();
-            Logger.log(LogLevel.Debug, "Notifications thread finished");
-            playerSocket.close();
+            String message = null;
+            while (running && (message = playerSocket.receive()) != null)
+            {
+                // TODO: Add private member Game. Receive the instance of Game in constructor.
+                // TODO: Create request based on input (line)
+                // TODO: Call Game.ProcessRequest on input
+                // TODO: Send response
+                // TODO: stop if "quit"
+                Logger.log(LogLevel.Debug, message);
+                if (message.equals("quit"))
+                    terminate();
+                else
+                    playerSocket.send("Echo: " + message);
+            }
         }
-        catch (InterruptedException e)
+        catch (IOException e)
         {
-            Logger.log(LogLevel.Error, "Error joining threads");
+            Logger.log(LogLevel.Error, "Error receiving message from socket");
+            running = false;
             e.printStackTrace();
         }
     }
-
-    // Starts the thread that handles player interactions.
-    private void startInteractionsThread()
-    {
-        interactions = new Thread(() ->
-        {
-            Logger.log(LogLevel.Debug, "Starting interactions thread");
-            
-            // TODO: Add private member Game. Receive the instance of Game in constructor.
-            // TODO: Create request based on input (line)
-            // TODO: Call Game.ProcessRequest on input
-            // TODO: Send response
-            // TODO: stop if "quit"
-            String line = null;
-            try
-            {
-                while ((line = playerSocket.receive()) != null)
-                {
-                    Logger.log(LogLevel.Debug, line);
-                    playerSocket.send("Echo: " + line);
-                }
-            }
-            catch (IOException e)
-            {
-                Logger.log(LogLevel.Error, "Error reading from socket");
-                running = false;
-                e.printStackTrace();
-            }
-        });
-        interactions.setName("PlayerSocket" + playerSocket.getId());
-    }
     
-    // Starts the notifications thread
-    private void startNotificationsThread()
+    // Sets up the notifications thread
+    private void setUpNotificationsThread()
     {
-        notifications = new Thread(() ->
+        notificationsThread = new Thread(() ->
         {
             Logger.log(LogLevel.Debug, "Starting notifications thread");
-
             try
             {
                 while (running)
@@ -121,6 +92,24 @@ public class PlayerHandler
                 e.printStackTrace();
             }
         });
-        notifications.setName("PlayerSocket" + playerSocket.getId() + "-Notifications");
+        notificationsThread.setName("PlayerSocket" + playerSocket.getId() + "-Notifications");
+    }
+
+    // Terminates this PlayerHandler
+    private void terminate()
+    {
+        try
+        {
+            running = false;
+            notificationsThread.join();
+            Logger.log(LogLevel.Debug, "Notifications thread terminated");
+            Logger.log(LogLevel.Debug, "PlayerHandler thread terminated");
+            playerSocket.close();
+        }
+        catch (InterruptedException e)
+        {
+            Logger.log(LogLevel.Error, "Error terminating notifications thread");
+            e.printStackTrace();
+        }
     }
 }

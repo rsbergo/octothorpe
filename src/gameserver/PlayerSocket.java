@@ -61,7 +61,7 @@ public class PlayerSocket implements Closeable
      * 
      * @param message the message to be sent through the underlying socket
      */
-    public void send(String message)
+    public synchronized void send(String message)
     {
         Logger.log(LogLevel.Debug, "Sending message...");
         writer.print(message + "\r\n");

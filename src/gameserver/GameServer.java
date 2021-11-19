@@ -38,9 +38,7 @@ public class GameServer
         while (running)
         {
             PlayerHandler player = acceptConnection(socket);
-            player.run();
-            // ClientThread thread = new ClientThread(client, protocol);
-            // thread.start();
+            player.start();
         }
         stopGameServer();
     }
