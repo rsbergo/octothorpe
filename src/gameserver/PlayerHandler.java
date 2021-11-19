@@ -3,19 +3,25 @@ package gameserver;
 import java.io.IOException;
 import java.net.Socket;
 
+import game.Command;
+import game.Request;
 import logger.Logger;
+import observer.Observable;
+import observer.Observer;
 import logger.LogLevel;
 
 /**
  * Represents the thread in which a player's interatcions is running.
  * It runs an additional thread for the player to receive notifications.
  */
-public class PlayerHandler extends Thread
+public class PlayerHandler implements Runnable
 {
     private PlayerSocket playerSocket = null;  // the PlayerSocket associated with this PlayerHandler
     private Thread notificationsThread = null; // thread that will send notifications to the Player
     private boolean running = false;           // indicates the current state of the GameServer
     
+    private Observable<Request> observable = null; //just testing
+
     /**
      * Constructor.
      * 
@@ -24,8 +30,8 @@ public class PlayerHandler extends Thread
      */
     public PlayerHandler(Socket socket) throws IOException
     {
-        super();
         playerSocket = new PlayerSocket(socket);
+        observable = new Observable<Request>();
         setUpNotificationsThread();
     }
     
@@ -42,24 +48,27 @@ public class PlayerHandler extends Thread
     @Override
     public void run()
     {
-        running = true;
+        setRunning();
         Thread.currentThread().setName("PlayerSocket" + playerSocket.getId());
         notificationsThread.start();
         try
         {
             String message = null;
-            while (running && (message = playerSocket.receive()) != null)
+            while (isRunning() && (message = playerSocket.receive()) != null)
             {
                 // TODO: Add private member Game. Receive the instance of Game in constructor.
                 // TODO: Create request based on input (line)
                 // TODO: Call Game.ProcessRequest on input
                 // TODO: Send response
-                // TODO: stop if "quit"
                 Logger.log(LogLevel.Debug, message);
                 if (message.equals("quit"))
                     terminate();
                 else
+                {
+                    Request req = new Request(Command.Login, "bergo");
+                    observable.notify(req);
                     playerSocket.send("Echo: " + message);
+                }
             }
         }
         catch (IOException e)
@@ -76,6 +85,18 @@ public class PlayerHandler extends Thread
         notificationsThread = new Thread(() ->
         {
             Logger.log(LogLevel.Debug, "Starting notifications thread");
+            observable.subscribe(new Observer<Request>() {
+
+                @Override
+                public void processEvent(Request req)
+                {
+                    Logger.log(LogLevel.Debug, "Request received! - " + req.getCommand() + ": " + req.getData());
+                    playerSocket.send("Request received! - " + req.getCommand() + ": " + req.getData());
+                }
+            });
+            while (isRunning());
+            
+            /*
             try
             {
                 while (running)
@@ -91,6 +112,7 @@ public class PlayerHandler extends Thread
                 running = false;
                 e.printStackTrace();
             }
+            */
         });
         notificationsThread.setName("PlayerSocket" + playerSocket.getId() + "-Notifications");
     }
@@ -100,7 +122,7 @@ public class PlayerHandler extends Thread
     {
         try
         {
-            running = false;
+            setStopped();
             notificationsThread.join();
             Logger.log(LogLevel.Debug, "Notifications thread terminated");
             Logger.log(LogLevel.Debug, "PlayerHandler thread terminated");
@@ -112,4 +134,8 @@ public class PlayerHandler extends Thread
             e.printStackTrace();
         }
     }
+
+    private synchronized void setRunning() { running = true; }
+    private synchronized void setStopped() { running = false; }
+    private synchronized boolean isRunning() { return running; }
 }

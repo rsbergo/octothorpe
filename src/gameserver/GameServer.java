@@ -38,7 +38,8 @@ public class GameServer
         while (running)
         {
             PlayerHandler player = acceptConnection(socket);
-            player.start();
+            Thread thread = new Thread(player);
+            thread.start();
         }
         stopGameServer();
     }
@@ -92,7 +93,7 @@ public class GameServer
             Logger.log(LogLevel.Debug, "Waiting for a new connection...");
             Socket playerSocket = server.accept();
             playerHandler = new PlayerHandler(playerSocket);
-            Logger.log(LogLevel.Info, "New connection established. Player: " + playerHandler.getId() + ", " + playerSocket);
+            Logger.log(LogLevel.Info, "New connection established. Player: " + playerHandler.getSocketId() + ", " + playerSocket);
         }
         catch (IOException e)
         {
