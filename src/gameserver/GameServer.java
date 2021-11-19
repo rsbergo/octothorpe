@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import game.Game;
 import logger.Logger;
 import logger.LogLevel;
 
@@ -16,6 +17,7 @@ public class GameServer
     private int port;            // port to which the GameServer is bound
     private ServerSocket socket; // socket that will be listening for new player connections
     private boolean running;     // indicates the current state of the GameServer
+    private Game game;
     
     /**
      * Constructor.
@@ -26,6 +28,7 @@ public class GameServer
     public GameServer(int port)
     {
         this.port = port;
+        game = new Game();
     }
     
     /**
@@ -92,7 +95,7 @@ public class GameServer
         {
             Logger.log(LogLevel.Debug, "Waiting for a new connection...");
             Socket playerSocket = server.accept();
-            playerHandler = new PlayerHandler(playerSocket);
+            playerHandler = new PlayerHandler(playerSocket, game);
             Logger.log(LogLevel.Info, "New connection established. Player: " + playerHandler.getSocketId() + ", " + playerSocket);
         }
         catch (IOException e)

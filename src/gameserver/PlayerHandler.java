@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import game.Command;
+import game.Game;
+import game.Player;
 import game.Request;
 import logger.Logger;
 import observer.Observable;
@@ -20,18 +22,18 @@ public class PlayerHandler implements Runnable
     private Thread notificationsThread = null; // thread that will send notifications to the Player
     private boolean running = false;           // indicates the current state of the GameServer
     
-    private Observable<Request> observable = null; //just testing
-
+    Game game = null;
+    
     /**
      * Constructor.
      * 
      * @param socket the socket connected to the player's client
      * @throws IOException if an I/O error occurs while setting up this PlayerHandler
      */
-    public PlayerHandler(Socket socket) throws IOException
+    public PlayerHandler(Socket socket, Game game) throws IOException
     {
         playerSocket = new PlayerSocket(socket);
-        observable = new Observable<Request>();
+        this.game = game;
         setUpNotificationsThread();
     }
     
@@ -63,12 +65,10 @@ public class PlayerHandler implements Runnable
                 Logger.log(LogLevel.Debug, message);
                 if (message.equals("quit"))
                     terminate();
+                else if (message.startsWith("login"))
+                    game.processLogin(new game.Request(message));
                 else
-                {
-                    Request req = new Request(Command.Login, "bergo");
-                    observable.notify(req);
                     playerSocket.send("Echo: " + message);
-                }
             }
         }
         catch (IOException e)
@@ -85,8 +85,9 @@ public class PlayerHandler implements Runnable
         notificationsThread = new Thread(() ->
         {
             Logger.log(LogLevel.Debug, "Starting notifications thread");
-            observable.subscribe(new Observer<Request>() {
-
+            game.subscribe(new Observer<Request>()
+            {
+                
                 @Override
                 public void processEvent(Request req)
                 {
@@ -94,29 +95,30 @@ public class PlayerHandler implements Runnable
                     playerSocket.send("Request received! - " + req.getCommand() + ": " + req.getData());
                 }
             });
-            while (isRunning());
+            while (isRunning())
+                ;
             
             /*
-            try
-            {
-                while (running)
-                {
-                    Thread.sleep(5000);
-                    Logger.log(LogLevel.Debug, "Notifications thread is running");
-                    playerSocket.send("New notification: ping!");
-                }
-            }
-            catch (InterruptedException e)
-            {
-                Logger.log(LogLevel.Error, "Error writing into socket");
-                running = false;
-                e.printStackTrace();
-            }
-            */
+             * try
+             * {
+             * while (running)
+             * {
+             * Thread.sleep(5000);
+             * Logger.log(LogLevel.Debug, "Notifications thread is running");
+             * playerSocket.send("New notification: ping!");
+             * }
+             * }
+             * catch (InterruptedException e)
+             * {
+             * Logger.log(LogLevel.Error, "Error writing into socket");
+             * running = false;
+             * e.printStackTrace();
+             * }
+             */
         });
         notificationsThread.setName("PlayerSocket" + playerSocket.getId() + "-Notifications");
     }
-
+    
     // Terminates this PlayerHandler
     private void terminate()
     {
@@ -134,8 +136,19 @@ public class PlayerHandler implements Runnable
             e.printStackTrace();
         }
     }
-
-    private synchronized void setRunning() { running = true; }
-    private synchronized void setStopped() { running = false; }
-    private synchronized boolean isRunning() { return running; }
+    
+    private synchronized void setRunning()
+    {
+        running = true;
+    }
+    
+    private synchronized void setStopped()
+    {
+        running = false;
+    }
+    
+    private synchronized boolean isRunning()
+    {
+        return running;
+    }
 }

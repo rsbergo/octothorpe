@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import observer.Observable;
+
 // TODO: The server may need to be changed. Should the server run a game for each client? Or should the game open a thread for each client?
 // login
 // map
@@ -11,7 +13,7 @@ import java.util.Scanner;
 // notifications
 // treasures
 
-public class Game
+public class Game extends Observable<Request>
 {
     private List<Player> players = new ArrayList<Player>(); // list of players in the game
 
@@ -37,7 +39,7 @@ public class Game
             return new Response(ResponseStatus.BadRequest, "Unknown command");
     }
 
-    private Response processLogin(Request request)
+    public Response processLogin(Request request)
     {
         if (request.getData().size() != 1)
             return new Response(ResponseStatus.BadRequest, "Request badly formatted");
@@ -45,6 +47,9 @@ public class Game
         if (players.contains(p))
             return new Response(ResponseStatus.BadRequest, "Player [" + p.getName() + "] already logged in");
         players.add(p);
+        
+        notify(new Request(Command.Unknown, "New player: " + p.getName()));
+
         return new Response(ResponseStatus.Success, "Welcome to Octothorpe # The Game, " + p.getName());
     }
 }
