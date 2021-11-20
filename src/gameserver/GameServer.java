@@ -3,21 +3,25 @@ package gameserver;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import game.Game;
 import logger.Logger;
 import logger.LogLevel;
 
 /**
- * A game server. It creates a socket and listens for new player connections. When a new player connects, it starts a
- * new thread for the player so the player can interact with the game.
+ * A GameServer hosts a game and coordinates the coonections of players to the game being hosted.
+ * It creates a socket and listens for new player connections.
+ * When a new player connects, it starts a new thread for the player so the player can interact with the game running.
  */
 public class GameServer
 {
-    private int port;            // port to which the GameServer is bound
-    private ServerSocket socket; // socket that will be listening for new player connections
-    private boolean running;     // indicates the current state of the GameServer
-    private Game game;
+    private int port;                     // port to which the GameServer is bound
+    private ServerSocket socket;          // socket that will be listening for new player connections
+    private boolean running;              // indicates the current state of the GameServer
+    private Game game;                    // the game hosted
+    private List<PlayerHandler> handlers; // list of player handlers connected to this game server
     
     /**
      * Constructor.
@@ -28,21 +32,25 @@ public class GameServer
     public GameServer(int port)
     {
         this.port = port;
-        game = new Game();
+        handlers = new ArrayList<PlayerHandler>();
     }
     
     /**
      * Starts the GameServer.
+     * Instantiates the game being hosted and sets the GameServer status to true.
+     * Initializers the server socket and starts listening for player connections.
+     * When a new player connection is established, creates a thread for this player and starts it.
      */
     public void runGameServer()
     {
+        game = new Game();
         running = true;
         socket = createServerSocket(port);
         while (running)
         {
-            PlayerHandler player = acceptConnection(socket);
-            Thread thread = new Thread(player);
-            thread.start();
+            PlayerHandler handler = acceptConnection(socket);
+            handlers.add(handler);
+            startPlayerThread(handler);
         }
         stopGameServer();
     }
@@ -57,6 +65,8 @@ public class GameServer
         running = false;
         try
         {
+            for (PlayerHandler handler : handlers)
+                handler.terminate();
             Logger.log(LogLevel.Info, "Stopping the server...");
             socket.close();
             Logger.log(LogLevel.Info, "Goodbye");
@@ -86,23 +96,31 @@ public class GameServer
         return server;
     }
     
-    // Accepts a new connection from a client.
-    // Creates a ClientHandler associated with the new connection.
+    // Accepts a new connection from a player.
+    // Creates a PlayerHandler associated with the new connection.
     private PlayerHandler acceptConnection(ServerSocket server)
     {
-        PlayerHandler playerHandler = null;
+        PlayerHandler handler = null;
         try
         {
             Logger.log(LogLevel.Debug, "Waiting for a new connection...");
             Socket playerSocket = server.accept();
-            playerHandler = new PlayerHandler(playerSocket, game);
-            Logger.log(LogLevel.Info, "New connection established. Player: " + playerHandler.getSocketId() + ", " + playerSocket);
+            handler = new PlayerHandler(playerSocket, game);
+            Logger.log(LogLevel.Info, "New connection: Player" + handler.getId() + ", " + playerSocket);
         }
         catch (IOException e)
         {
-            Logger.log(LogLevel.Error, "Something went wrong while accepting connection from client...");
+            Logger.log(LogLevel.Error, "Something went wrong while accepting connection from player...");
             e.printStackTrace();
         }
-        return playerHandler;
+        return handler;
     }
+
+    // Starts a new thread for the PlayerHandler specified.
+    private void startPlayerThread(PlayerHandler handler)
+    {
+        Thread thread = new Thread(handler);
+        thread.setName("Player" + handler.getId());
+        thread.start();
+    }    
 }
