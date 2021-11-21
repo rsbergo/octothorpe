@@ -2,7 +2,10 @@ package game;
 
 public class Player
 {
-    private String name; // player's login name
+    private String name;    // player's login name
+    private int x = 1;      // player's x position  // TODO: replace with a position object
+    private int y = 1;      // player's y position
+    private int points = 0; // player points
     
     /**
      * Constructor.
@@ -16,6 +19,10 @@ public class Player
 
     // Setters and Getters
     public String getName() { return name; }
+    public int getPositionX() { return x; }
+    public void setPositionX(int x) { this.x = x; }
+    public int getPositionY() { return y; }
+    public int getPoints() { return points; }
 
     @Override
     public boolean equals(Object player)

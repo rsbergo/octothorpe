@@ -5,7 +5,8 @@ import java.util.List;
 
 public class Request
 {
-    private Command command = Command.Unknown;   // the command to be executed
+    private String player = null;                        // the player who originated the request
+    private Command command = Command.Unknown;           // the command to be executed
     private List<String> data = new ArrayList<String>(); // the arguments for the command to be executed
     
     /**
@@ -34,14 +35,17 @@ public class Request
      * @param command The command of this Request
      * @param data    The arguments for this Request's command
      */
-    public Request(Command command, String... data)
+    public Request(String player, Command command, String... data)
     {
+        this.player = player;
         this.command = command;
         for (String s : data)
             this.data.add(s);
     }
     
     // Setters and Getters
+    public void setPlayer(String player) { this.player = player; }
+    public String getPlayer() { return player; }
     public Command getCommand() { return command; }
     public List<String> getData() { return data; }
 

@@ -30,6 +30,15 @@ public abstract class Observer
     }
 
     /**
+     * Removes all events from the event queue.
+     * These events will be lost.
+     */
+    public void clearEventQueue()
+    {
+        eventQueue.clear();
+    }
+
+    /**
      * Process an event when notified.
      * 
      * @param event the event to be processed

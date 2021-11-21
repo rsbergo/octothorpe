@@ -16,7 +16,13 @@ public class PlayerConnectedEventHandler implements EventHandler
         {
             PlayerConnectedEvent playerConnected = (PlayerConnectedEvent) event;
             response.setResponseStatus(ResponseStatus.PlayerUpdate);
-            response.setData(playerConnected.getPlayer().getName() + ", connected");
+            StringBuilder data = new StringBuilder();
+            data.append(playerConnected.getPlayer().getName());
+            data.append(", " + playerConnected.getPlayer().getPositionX());
+            data.append(", " + playerConnected.getPlayer().getPositionY());
+            data.append(", " + playerConnected.getPlayer().getPoints());
+            data.append(", connected");
+            response.setData(data.toString());
         }
         return response;
     }

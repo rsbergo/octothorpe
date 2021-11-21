@@ -7,6 +7,7 @@ import java.util.List;
 
 import game.consts.Consts;
 import gameserver.eventhandlers.PlayerConnectedEventHandler;
+import gameserver.eventhandlers.PlayerUpdatedEventHandler;
 import game.Command;
 import game.Game;
 import game.Request;
@@ -31,6 +32,7 @@ public class PlayerHandler implements Runnable
     private Thread gameThread = null;          // thread handling regular interactions between player and game
     private Thread notificationsThread = null; // thread that handling notifications received from the game
     private Game game = null;                  // the instance of the game the player is playing
+    private String player = null;              // player identifier
     
     /**
      * Constructor.
@@ -66,6 +68,18 @@ public class PlayerHandler implements Runnable
     private synchronized boolean isConnected()
     {
         return connected;
+    }
+
+    // Sets the player's connection state with the game
+    private synchronized void setPlayerName(String player)
+    {
+        this.player = player;
+    }
+    
+    // Checks whether the player is connected with the game
+    private synchronized String getPlayerName()
+    {
+        return player;
     }
     
     @Override
@@ -116,7 +130,10 @@ public class PlayerHandler implements Runnable
                 Logger.log(LogLevel.Info, "Request received: \"" + request.toString() + "\"");
                 if (request.getCommand() == Command.Quit)
                     setConnected(false);
+                request.setPlayer(player);
                 Response response = game.processRequest(request);
+                if (getPlayerName() == null)
+                    setPlayerName(response.getPlayer());
                 Logger.log(LogLevel.Info, "Sending response: \"" + response.toString() + "\"");
                 socket.send(response);
             }
@@ -135,13 +152,27 @@ public class PlayerHandler implements Runnable
     {
         Logger.log(LogLevel.Debug, "Starting notifications thread");
         List<EventObserver> eventObservers = new ArrayList<EventObserver>();
+
         EventObserver playerConnected = new EventObserver(new PlayerConnectedEventHandler());
         game.subscribe(Consts.EVENT_PLAYER_CONNECTED, playerConnected);
         eventObservers.add(playerConnected);
+
+        EventObserver playerUpdated = new EventObserver(new PlayerUpdatedEventHandler());
+        game.subscribe(Consts.EVENT_PLAYER_UPDATED, playerUpdated);
+        eventObservers.add(playerUpdated);
+
         while (isConnected())
         {
-            for (EventObserver observer : eventObservers)
-                observer.processEvents();
+            if (getPlayerName() == null) //TODO: there must be a better way to do it. E.g. initialize this thread only after login. Missing my own connected notification.
+            {
+                for (EventObserver observer : eventObservers)
+                    observer.clearEventQueue();
+            }
+            else
+            {
+                for (EventObserver observer : eventObservers)
+                    observer.processEvents();
+            }
         }
         for (EventObserver observer : eventObservers)
             game.unsubscribe(observer);

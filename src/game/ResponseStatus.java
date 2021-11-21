@@ -6,7 +6,8 @@ public enum ResponseStatus
     Update(100),
     PlayerUpdate(101),
     Success(200),
-    BadRequest(400);
+    BadRequest(400),
+    ServerError(500);
 
     private int code; // response code
 
@@ -35,6 +36,8 @@ public enum ResponseStatus
             return Success;
         else if (code == 400)
             return BadRequest;
+        else if (code == 500)
+            return ServerError;
         else
             return Unknown;
     }

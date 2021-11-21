@@ -4,6 +4,7 @@ public enum Command
 {
     Unknown,
     Login,
+    Move,
     Quit;
 
     /**
@@ -16,6 +17,8 @@ public enum Command
     {
         if (command.equalsIgnoreCase("login"))
             return Login;
+        if (command.equalsIgnoreCase("move"))
+            return Move;
         else if (command.equalsIgnoreCase("quit"))
             return Quit;
         else

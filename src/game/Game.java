@@ -5,6 +5,7 @@ import java.util.List;
 
 import game.consts.Consts;
 import game.events.PlayerConnectedEvent;
+import game.events.PlayerUpdatedEvent;
 import observer.Observable;
 
 // login
@@ -26,6 +27,7 @@ public class Game extends Observable
     public Game()
     {
         register(Consts.EVENT_PLAYER_CONNECTED);
+        register(Consts.EVENT_PLAYER_UPDATED);
     }
 
     /**
@@ -41,19 +43,61 @@ public class Game extends Observable
     {
         if (request.getCommand() == Command.Login)
             return processLogin(request);
+        if (request.getCommand() == Command.Move)
+            return processMove(request);
         else    
             return new Response(ResponseStatus.BadRequest, "Unknown command");
     }
 
+    // Processes a login request
+    // TODO: Organize this into different functions
     private Response processLogin(Request request)
     {
+        Response response = new Response();
         if (request.getData().size() != 1)
-            return new Response(ResponseStatus.BadRequest, "Request badly formatted");
+        {
+            response.setResponseStatus(ResponseStatus.BadRequest);
+            response.setData("Error: missing player name - \"login <name>\"");
+            return response;
+        }
+        
+        if (request.getPlayer() != null)
+        {
+            response.setPlayer(request.getPlayer());
+            response.setResponseStatus(ResponseStatus.BadRequest);
+            response.setData("You are already logged in!");
+            return response;
+        }
+        
         Player player = new Player(request.getData().get((0)));
         if (players.contains(player))
-            return new Response(ResponseStatus.BadRequest, "You are already logged in!");
+        {
+            response.setResponseStatus(ResponseStatus.BadRequest);
+            response.setData("Error: could not connect you to \"" + player.getName() + "\"");
+            return response;
+        }
         players.add(player);
         notifyAll(new PlayerConnectedEvent(player));
-        return new Response(ResponseStatus.Success, "Welcome to Octothorpe # The Game, " + player.getName());
+        response.setPlayer(player.getName());
+        response.setResponseStatus(ResponseStatus.Success);
+        response.setData("Welcome to Octothorpe # The Game, " + player.getName());
+        return response;
+    }
+
+    private Response processMove(Request request)
+    {
+        Response response = new Response(ResponseStatus.Success, request.toString());
+        Player player = null;
+        for (Player p : players)
+        {
+            if (p.getName().equals(request.getPlayer()))
+                player = p;
+        }
+        if (player != null)
+        {
+            player.setPositionX(1);
+            notifyAll(new PlayerUpdatedEvent(player));
+        }
+        return response;
     }
 }
