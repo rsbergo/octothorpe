@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 import game.Game;
-import game.Request;
 import logger.Logger;
+import observer.Event;
 import observer.Observer;
 import logger.LogLevel;
 
@@ -130,15 +130,15 @@ public class PlayerHandler implements Runnable
     private void processNotifications()
     {
         Logger.log(LogLevel.Debug, "Starting notifications thread");
-        game.subscribe(new Observer<Request>()
+        Observer observer = new Observer()
         {
             @Override
-            public void processEvent(Request req)
+            public void processEvent(Event req)
             {
                 try
                 {
-                    Logger.log(LogLevel.Debug, "Request received! - " + req.getCommand() + ": " + req.getData());
-                    socket.send("Request received! - " + req.getCommand() + ": " + req.getData());
+                    Logger.log(LogLevel.Debug, "Event received! - " + req.getSubject());
+                    socket.send("Event received! - " + req.getSubject());
                 }
                 catch (IOException e)
                 {
@@ -147,8 +147,10 @@ public class PlayerHandler implements Runnable
                     setConnected(false);
                 }
             }
-        });
+        };
+        game.subscribe("login", observer);
         while (isConnected())
             ; // keep running while connected
+        game.unsubscribe(observer);
     }
 }
