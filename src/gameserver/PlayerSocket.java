@@ -7,14 +7,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import game.Request;
+import game.Response;
 import logger.Logger;
 import logger.LogLevel;
 
 /**
  * Represents a socket for a player connected to the GameServer.
- * The PlayerSocket provides access to the socket connected to the client by sending and receiving messages through this
- * socket.
- * Writing terminates the message by appending '\r\n'.
+ * The PlayerSocket provides access to the socket connected to the client by receiving Requests and sending Responses
+ * through this socket.
  */
 public class PlayerSocket implements Closeable
 {
@@ -42,33 +43,37 @@ public class PlayerSocket implements Closeable
     public int getId() { return id; }
     
     /**
-     * Reads a String line from the underlying socket.
+     * Receives a Request from the underlying socket.
      * Blocks until input is available.
      * 
-     * @return A String containing a line from the underlying socket
+     * @return A Request received through the socket
      * @throws IOException if an I/O error occurs while reading from the underlying socket
      */
-    public String receive() throws IOException
+    public Request receive() throws IOException
     {
         Logger.log(LogLevel.Info, "Waiting for message from socket...");
         if (reader != null)
-            return reader.readLine();
+        {
+            Request request = null;
+            String message = null;
+            if ((message = reader.readLine()) != null)
+                request = new Request(message);
+            return request;
+        }
         throw new IOException("Socket reader is not set up correctly for this socket");
     }
     
     /**
-     * Writes the specified message into the underlying socket.
-     * The message is sent right away; i.e. the message is not buffered.
-     * Line termination "\r\n" is appended to the message before sending.
+     * Sends the specified Response through the underlying socket.
      * 
-     * @param message the message to be sent through the underlying socket
+     * @param response the response to be sent
      */
-    public synchronized void send(String message) throws IOException
+    public synchronized void send(Response response) throws IOException
     {
         Logger.log(LogLevel.Debug, "Sending message...");
         if (writer != null)
         {
-            writer.print(message + "\r\n");
+            writer.print(response + "\r\n");
             writer.flush();
             return;
         }

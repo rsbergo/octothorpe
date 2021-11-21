@@ -3,6 +3,7 @@ package game;
 public enum ResponseStatus
 {
     Unknown(0),
+    Update(100),
     Success(200),
     BadRequest(400);
 

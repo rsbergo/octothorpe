@@ -3,7 +3,11 @@ package gameserver;
 import java.io.IOException;
 import java.net.Socket;
 
+import game.Command;
 import game.Game;
+import game.Request;
+import game.Response;
+import game.ResponseStatus;
 import logger.Logger;
 import observer.Event;
 import observer.Observer;
@@ -102,19 +106,19 @@ public class PlayerHandler implements Runnable
         Logger.log(LogLevel.Debug, "Starting game thread for player " + socket.getId());
         try
         {
-            String message = null;
-            while (isConnected() && (message = socket.receive()) != null)
+            Request request = null;
+            while (isConnected() && (request = socket.receive()) != null)
             {
-                // TODO: Create request based on input (message)
-                // TODO: Call Game.ProcessRequest on input
-                // TODO: Send response
-                Logger.log(LogLevel.Debug, message);
-                if (message.equals("quit"))
+                // TODO: Game receives Requests and returns Responses
+                // TODO: Add "disconnect" to Response
+                // TODO: Create "Request Handlers" for the game
+                Logger.log(LogLevel.Debug, request.toString());
+                if (request.getCommand() == Command.Quit)
                     setConnected(false);
-                else if (message.startsWith("login"))
-                    game.processLogin(new game.Request(message));
+                else if (request.getCommand() == Command.Login)
+                    game.processLogin(request);
                 else
-                    socket.send("Echo: " + message);
+                    socket.send(new Response(ResponseStatus.Success, "Echo: " + request));
             }
             setConnected(false);
         }
@@ -138,7 +142,7 @@ public class PlayerHandler implements Runnable
                 try
                 {
                     Logger.log(LogLevel.Debug, "Event received! - " + req.getSubject());
-                    socket.send("Event received! - " + req.getSubject());
+                    socket.send(new Response(ResponseStatus.Update, "Event received! - " + req.getSubject()));
                 }
                 catch (IOException e)
                 {
