@@ -6,6 +6,12 @@ public class Response
     private String data = "";                               // this Response's data
 
     /**
+     * Default constructor.
+     */
+    public Response()
+    {}
+
+    /**
      * Constructor.
      * Buids a response based on the status and data specified.
      * 
@@ -19,7 +25,9 @@ public class Response
     }
 
     // Setters and Getters
+    public void setResponseStatus(ResponseStatus status) { this.status = status; }
     public ResponseStatus getResponseStatus() { return status; }
+    public void setData(String data) { this.data = data; }
     public String getData() { return data; }
 
     @Override

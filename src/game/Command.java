@@ -3,7 +3,8 @@ package game;
 public enum Command
 {
     Unknown,
-    Login;
+    Login,
+    Quit;
 
     /**
      * Gets the Command based on the specified string.
@@ -15,6 +16,8 @@ public enum Command
     {
         if (command.equalsIgnoreCase("login"))
             return Login;
+        else if (command.equalsIgnoreCase("quit"))
+            return Quit;
         else
             return Unknown;
     }

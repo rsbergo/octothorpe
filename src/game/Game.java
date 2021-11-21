@@ -2,34 +2,42 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-// TODO: The server may need to be changed. Should the server run a game for each client? Or should the game open a thread for each client?
+import game.consts.Consts;
+import game.events.PlayerConnectedEvent;
+import observer.Observable;
+
 // login
 // map
 // move
 // notifications
 // treasures
 
-public class Game
+/**
+ * An instance of the game being played.
+ * Receives requests and generates responses to these requests.
+ * Also generates asynchronous events.
+ */
+public class Game extends Observable
 {
     private List<Player> players = new ArrayList<Player>(); // list of players in the game
+    boolean running = false;                                // indicates whether this game has started
+
+    public Game()
+    {
+        register(Consts.EVENT_PLAYER_CONNECTED);
+    }
 
     /**
      * Runs the Octothorpe game
      */
-    public void run()
+    public void start()
     {
-        try (Scanner scanner  = new Scanner(System.in))
-        {
-            Request req = new Request( scanner.nextLine());
-            Response resp = processRequest(req);
-            System.out.println(resp);
-        }
+        running = true;
     }
 
     // Processes a request received
-    private Response processRequest(Request request)
+    public Response processRequest(Request request)
     {
         if (request.getCommand() == Command.Login)
             return processLogin(request);
@@ -41,10 +49,11 @@ public class Game
     {
         if (request.getData().size() != 1)
             return new Response(ResponseStatus.BadRequest, "Request badly formatted");
-        Player p = new Player(request.getData().get((0)));
-        if (players.contains(p))
-            return new Response(ResponseStatus.BadRequest, "Player [" + p.getName() + "] already logged in");
-        players.add(p);
-        return new Response(ResponseStatus.Success, "Welcome to Octothorpe # The Game, " + p.getName());
+        Player player = new Player(request.getData().get((0)));
+        if (players.contains(player))
+            return new Response(ResponseStatus.BadRequest, "You are already logged in!");
+        players.add(player);
+        notifyAll(new PlayerConnectedEvent(player));
+        return new Response(ResponseStatus.Success, "Welcome to Octothorpe # The Game, " + player.getName());
     }
 }
