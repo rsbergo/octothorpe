@@ -51,7 +51,7 @@ public class PlayerSocket implements Closeable
      */
     public Request receive() throws IOException
     {
-        Logger.log(LogLevel.Info, "Waiting for message from socket...");
+        Logger.log(LogLevel.Debug, "Waiting for message from socket...");
         if (reader != null)
         {
             Request request = null;
@@ -106,6 +106,7 @@ public class PlayerSocket implements Closeable
         BufferedReader reader = null;
         try
         {
+            Logger.log(LogLevel.Debug, "Setting up socket reader");
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         }
         catch (IOException e)
@@ -123,6 +124,7 @@ public class PlayerSocket implements Closeable
         PrintWriter writer = null;
         try
         {
+            Logger.log(LogLevel.Debug, "Setting up socket writer");
             writer = new PrintWriter(socket.getOutputStream());
         }
         catch (IOException e)

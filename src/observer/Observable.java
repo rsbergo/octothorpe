@@ -80,7 +80,7 @@ public abstract class Observable
         if (registrar.containsKey(event.getSubject()))
         {
             for (Observer observer : registrar.get(event.getSubject()))
-                observer.processEvent(event);
+                observer.queueEvent(event);
         }
     }
     

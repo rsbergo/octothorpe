@@ -4,6 +4,7 @@ public enum ResponseStatus
 {
     Unknown(0),
     Update(100),
+    PlayerUpdate(101),
     Success(200),
     BadRequest(400);
 
@@ -26,7 +27,11 @@ public enum ResponseStatus
      */
     public ResponseStatus fromCode(int code)
     {
-        if (code == 200)
+        if (code == 100)
+            return Update;
+        else if (code == 101)
+            return PlayerUpdate;
+        else if (code == 200)
             return Success;
         else if (code == 400)
             return BadRequest;

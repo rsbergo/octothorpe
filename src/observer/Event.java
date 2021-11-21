@@ -21,4 +21,10 @@ public class Event
 
     //Setters and Getters
     public String getSubject() { return subject; }
+
+    @Override
+    public String toString()
+    {
+        return "Subject: " + subject;
+    }
 }
