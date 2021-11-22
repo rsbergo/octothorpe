@@ -5,10 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import game.commandhandlers.Message;
-import game.commandhandlers.Move;
-import game.commandhandlers.Players;
-import game.commandhandlers.Quit;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
+import game.command.commandhandlers.CommandHandler;
+import game.command.commandhandlers.MessageCommandHandler;
+import game.command.commandhandlers.MoveCommandHandler;
+import game.command.commandhandlers.PlayersCommandHandler;
+import game.command.commandhandlers.QuitCommandHandler;
 
 /**
  * An instance of the Octothorpe Game.
@@ -32,11 +37,11 @@ public class OctothorpeGame
     public OctothorpeGame()
     {
         map = new game.Map(new File(MAP_FILE));
-        commandHandlers.put(Action.Map, new game.commandhandlers.Map(this));
-        commandHandlers.put(Action.Message, new Message(this));
-        commandHandlers.put(Action.Move, new Move(this));
-        commandHandlers.put(Action.Players, new Players(this));
-        commandHandlers.put(Action.Quit, new Quit(this));
+        commandHandlers.put(Action.Map, new game.command.commandhandlers.MapCommandHandler(this));
+        commandHandlers.put(Action.Message, new MessageCommandHandler(this));
+        commandHandlers.put(Action.Move, new MoveCommandHandler(this));
+        commandHandlers.put(Action.Players, new PlayersCommandHandler(this));
+        commandHandlers.put(Action.Quit, new QuitCommandHandler(this));
     }
 
     // Setters and Getters

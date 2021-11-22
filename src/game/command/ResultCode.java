@@ -1,4 +1,4 @@
-package game;
+package game.command;
 
 /**
  * Represents the type of outcome of an action executed by a player on the game.

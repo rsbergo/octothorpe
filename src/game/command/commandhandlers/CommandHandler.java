@@ -1,12 +1,20 @@
-package game;
+package game.command.commandhandlers;
+
+import game.OctothorpeGame;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
 
 /**
  * A function that processes a command and returns a result for the command.
+ * 
+ * TODO: review the need to have an instance of the game. Maybe just receive what is actually needed (e.g. list of players, map, etc.)
  */
 public abstract class CommandHandler
 {
     protected OctothorpeGame game = null; // instance of the game running
-
+    
     /**
      * Constructor.
      * Gets a reference of the game running.
@@ -17,7 +25,7 @@ public abstract class CommandHandler
     {
         this.game = game;
     }
-
+    
     /**
      * Processes the command and returns the result of the command.
      * 

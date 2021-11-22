@@ -1,14 +1,13 @@
-package game.commandhandlers;
+package game.command.commandhandlers;
 
-import game.Action;
-import game.Command;
-import game.CommandHandler;
 import game.OctothorpeGame;
 import game.Player;
-import game.Result;
-import game.ResultCode;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
 
-public class Quit extends CommandHandler
+public class QuitCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -16,7 +15,7 @@ public class Quit extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public Quit(OctothorpeGame game)
+    public QuitCommandHandler(OctothorpeGame game)
     {
         super(game);
     }

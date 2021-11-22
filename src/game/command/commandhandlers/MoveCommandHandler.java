@@ -1,19 +1,17 @@
-package game.commandhandlers;
+package game.command.commandhandlers;
 
-import game.Action;
-import game.Command;
-import game.CommandHandler;
-import game.MoveDirection;
 import game.OctothorpeGame;
 import game.Player;
 import game.Position;
-import game.Result;
-import game.ResultCode;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
 
 /**
  * Handles commands whose action is "players".
  */
-public class Move extends CommandHandler
+public class MoveCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -21,7 +19,7 @@ public class Move extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public Move(OctothorpeGame game)
+    public MoveCommandHandler(OctothorpeGame game)
     {
         super(game);
     }

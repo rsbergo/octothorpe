@@ -1,13 +1,12 @@
-package game.commandhandlers;
+package game.command.commandhandlers;
 
-import game.Action;
-import game.Command;
-import game.CommandHandler;
 import game.OctothorpeGame;
-import game.Result;
-import game.ResultCode;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
 
-public class Message extends CommandHandler
+public class MessageCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -15,7 +14,7 @@ public class Message extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public Message(OctothorpeGame game)
+    public MessageCommandHandler(OctothorpeGame game)
     {
         super(game);
     }

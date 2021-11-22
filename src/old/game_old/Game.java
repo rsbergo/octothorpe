@@ -3,7 +3,7 @@ package old.game_old;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.Action;
+import game.command.Action;
 import old.game_old.consts.Consts;
 import old.game_old.events.PlayerConnectedEvent;
 import old.game_old.events.PlayerUpdatedEvent;

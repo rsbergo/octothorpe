@@ -1,13 +1,15 @@
-package game.commandhandlers;
+package game.command.commandhandlers;
 
-import game.Action;
-import game.Command;
-import game.CommandHandler;
 import game.OctothorpeGame;
-import game.Result;
-import game.ResultCode;
+import game.command.Action;
+import game.command.Command;
+import game.command.Result;
+import game.command.ResultCode;
 
-public class Map extends CommandHandler
+/**
+ * Handles commands whose action is "players".
+ */
+public class PlayersCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -15,7 +17,7 @@ public class Map extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public Map(OctothorpeGame game)
+    public PlayersCommandHandler(OctothorpeGame game)
     {
         super(game);
     }
@@ -23,24 +25,21 @@ public class Map extends CommandHandler
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Map))
+        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Players))
         {
+            // TODO: start notifying player about players in the game
             result.setResultCode(ResultCode.Success);
             StringBuilder sb = new StringBuilder();
-            sb.append("OK. Game world if ");
-            sb.append(game.getMap().getNumberOfRows());
-            sb.append("x");
-            sb.append(game.getMap().getNumberOfColumns());
-            sb.append(" spaces");
+            sb.append("OK. ");
+            sb.append(game.getPlayerCount());
+            sb.append(game.getPlayerCount() == 1 ? " player" : " players");
+            sb.append(" in the game.");
             result.setMessage(sb.toString());
-            // TODO: start sending map synchronously
-            game.sendMapSize(command.getPlayer());
-            game.sendMapData(command.getPlayer());
         }
     }
-    
+
     // Checks whether args in command are empty.
-    // Action.Map doesn't expect any arguments.
+    // Action.Players doesn't expect any arguments.
     private boolean isArgsEmpty(Command command, Result result)
     {
         if (!command.getArgs().isEmpty())

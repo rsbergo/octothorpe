@@ -1,4 +1,4 @@
-package game;
+package game.command;
 
 /**
  * Represents an action a player can execute on the game.
