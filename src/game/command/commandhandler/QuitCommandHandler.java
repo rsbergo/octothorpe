@@ -1,12 +1,13 @@
-package game.command.commandhandlers;
+package game.command.commandhandler;
 
 import game.OctothorpeGame;
+import game.Player;
 import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 
-public class MapCommandHandler extends CommandHandler
+public class QuitCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -14,7 +15,7 @@ public class MapCommandHandler extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public MapCommandHandler(OctothorpeGame game)
+    public QuitCommandHandler(OctothorpeGame game)
     {
         super(game);
     }
@@ -22,24 +23,18 @@ public class MapCommandHandler extends CommandHandler
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Map))
+        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Quit))
         {
+            game.removePlayer(command.getPlayer());
             result.setResultCode(ResultCode.Success);
-            StringBuilder sb = new StringBuilder();
-            sb.append("OK. Game world if ");
-            sb.append(game.getMap().getNumberOfRows());
-            sb.append("x");
-            sb.append(game.getMap().getNumberOfColumns());
-            sb.append(" spaces");
-            result.setMessage(sb.toString());
-            // TODO: start sending map synchronously
-            game.sendMapSize(command.getPlayer());
-            game.sendMapData(command.getPlayer());
+            Player player = new Player(command.getPlayer(), -1, -1, 0);
+            result.setMessage(player + ", disconnected");
+            // TODO: send asynchronous player information. Maybe manage through PlayerHandler, similar to login.
         }
     }
     
     // Checks whether args in command are empty.
-    // Action.Map doesn't expect any arguments.
+    // Action.Quit doesn't expect any arguments.
     private boolean isArgsEmpty(Command command, Result result)
     {
         if (!command.getArgs().isEmpty())

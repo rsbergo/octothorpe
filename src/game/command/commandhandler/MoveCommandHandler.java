@@ -1,4 +1,4 @@
-package game.command.commandhandlers;
+package game.command.commandhandler;
 
 import game.OctothorpeGame;
 import game.Player;

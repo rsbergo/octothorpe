@@ -1,13 +1,15 @@
-package game.command.commandhandlers;
+package game.command.commandhandler;
 
 import game.OctothorpeGame;
-import game.Player;
 import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 
-public class QuitCommandHandler extends CommandHandler
+/**
+ * Handles commands whose action is "players".
+ */
+public class PlayersCommandHandler extends CommandHandler
 {
     /**
      * Constructor.
@@ -15,7 +17,7 @@ public class QuitCommandHandler extends CommandHandler
      * 
      * @param game the game to which this command handler was installed
      */
-    public QuitCommandHandler(OctothorpeGame game)
+    public PlayersCommandHandler(OctothorpeGame game)
     {
         super(game);
     }
@@ -23,18 +25,21 @@ public class QuitCommandHandler extends CommandHandler
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Quit))
+        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Players))
         {
-            game.removePlayer(command.getPlayer());
+            // TODO: start notifying player about players in the game
             result.setResultCode(ResultCode.Success);
-            Player player = new Player(command.getPlayer(), -1, -1, 0);
-            result.setMessage(player + ", disconnected");
-            // TODO: send asynchronous player information. Maybe manage through PlayerHandler, similar to login.
+            StringBuilder sb = new StringBuilder();
+            sb.append("OK. ");
+            sb.append(game.getPlayerCount());
+            sb.append(game.getPlayerCount() == 1 ? " player" : " players");
+            sb.append(" in the game.");
+            result.setMessage(sb.toString());
         }
     }
-    
+
     // Checks whether args in command are empty.
-    // Action.Quit doesn't expect any arguments.
+    // Action.Players doesn't expect any arguments.
     private boolean isArgsEmpty(Command command, Result result)
     {
         if (!command.getArgs().isEmpty())

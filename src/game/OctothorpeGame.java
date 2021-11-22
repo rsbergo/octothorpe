@@ -9,11 +9,13 @@ import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
-import game.command.commandhandlers.CommandHandler;
-import game.command.commandhandlers.MessageCommandHandler;
-import game.command.commandhandlers.MoveCommandHandler;
-import game.command.commandhandlers.PlayersCommandHandler;
-import game.command.commandhandlers.QuitCommandHandler;
+import game.command.commandhandler.CommandHandler;
+import game.command.commandhandler.CommandHandlerManager;
+import game.command.commandhandler.MapCommandHandler;
+import game.command.commandhandler.MessageCommandHandler;
+import game.command.commandhandler.MoveCommandHandler;
+import game.command.commandhandler.PlayersCommandHandler;
+import game.command.commandhandler.QuitCommandHandler;
 
 /**
  * An instance of the Octothorpe Game.
@@ -24,11 +26,12 @@ import game.command.commandhandlers.QuitCommandHandler;
  */
 public class OctothorpeGame
 {
-    private final String MAP_FILE = "res/game.map";                                              // default game map
+    private final String MAP_FILE = "res/game.map";                       // default game map
 
-    private game.Map map = null;                                                                 // the map used in the game
-    private Map<String, Player> players = new HashMap<String, Player>();                         // list of players in the game
-    private Map<Action, CommandHandler> commandHandlers = new HashMap<Action, CommandHandler>(); // list of command handlers for the gale
+    private game.Map map = null;                                          // the map used in the game
+    private Map<String, Player> players = new HashMap<String, Player>();  // list of players in the game
+    private CommandHandlerManager handlers = new CommandHandlerManager(); // command handler manager
+    //private Map<Action, CommandHandler> commandHandlers = new HashMap<Action, CommandHandler>(); // list of command handlers for the gale
 
     /**
      * Constructor.
@@ -37,11 +40,11 @@ public class OctothorpeGame
     public OctothorpeGame()
     {
         map = new game.Map(new File(MAP_FILE));
-        commandHandlers.put(Action.Map, new game.command.commandhandlers.MapCommandHandler(this));
-        commandHandlers.put(Action.Message, new MessageCommandHandler(this));
-        commandHandlers.put(Action.Move, new MoveCommandHandler(this));
-        commandHandlers.put(Action.Players, new PlayersCommandHandler(this));
-        commandHandlers.put(Action.Quit, new QuitCommandHandler(this));
+        handlers.installCommandHandler(Action.Map, new MapCommandHandler(this));
+        handlers.installCommandHandler(Action.Message, new MessageCommandHandler(this));
+        handlers.installCommandHandler(Action.Move, new MoveCommandHandler(this));
+        handlers.installCommandHandler(Action.Players, new PlayersCommandHandler(this));
+        handlers.installCommandHandler(Action.Quit, new QuitCommandHandler(this));
     }
 
     // Setters and Getters
@@ -150,13 +153,13 @@ public class OctothorpeGame
                 result.setPlayer(command.getPlayer());
                 if (isValidCommand(command, result))
                 {
-                    if (commandHandlers.get(command.getAction()) == null)
+                    if (handlers.getCommandHandler(command.getAction()) == null)
                     {
                         result.setResultCode(ResultCode.ServerError);
                         result.setMessage("Error. Cannot execute command.");
                     }
                     else
-                        commandHandlers.get(command.getAction()).processCommand(command, result);
+                        handlers.getCommandHandler(command.getAction()).processCommand(command, result);
                 }
                 System.out.println(result);
             }
