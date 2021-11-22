@@ -1,4 +1,4 @@
-package game;
+package old.game_old;
 
 public enum ResponseStatus
 {

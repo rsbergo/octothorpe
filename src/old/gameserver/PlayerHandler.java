@@ -1,22 +1,22 @@
-package gameserver;
+package old.gameserver;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.consts.Consts;
-import gameserver.eventhandlers.PlayerConnectedEventHandler;
-import gameserver.eventhandlers.PlayerUpdatedEventHandler;
-import game.Command;
-import game.Game;
-import game.Request;
-import game.Response;
-import logger.Logger;
-import observer.Event;
-import observer.EventHandler;
-import observer.Observer;
+import game.Action;
 import logger.LogLevel;
+import logger.Logger;
+import old.game_old.Game;
+import old.game_old.Request;
+import old.game_old.Response;
+import old.game_old.consts.Consts;
+import old.gameserver.eventhandlers.PlayerConnectedEventHandler;
+import old.gameserver.eventhandlers.PlayerUpdatedEventHandler;
+import old.observer.Event;
+import old.observer.EventHandler;
+import old.observer.Observer;
 
 /**
  * Coordinates the communication between the Player and the Game.
@@ -128,7 +128,7 @@ public class PlayerHandler implements Runnable
                 // TODO: Add "disconnect" to Response
                 // TODO: Create "Request Handlers" for the game
                 Logger.log(LogLevel.Info, "Request received: \"" + request.toString() + "\"");
-                if (request.getCommand() == Command.Quit)
+                if (request.getCommand() == Action.Quit)
                     setConnected(false);
                 request.setPlayer(player);
                 Response response = game.processRequest(request);

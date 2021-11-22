@@ -1,8 +1,8 @@
-package game.events;
+package old.game_old.events;
 
-import game.Player;
-import game.consts.Consts;
-import observer.Event;
+import old.game_old.Player;
+import old.game_old.consts.Consts;
+import old.observer.Event;
 
 public class PlayerConnectedEvent extends Event
 {

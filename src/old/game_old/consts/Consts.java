@@ -1,4 +1,4 @@
-package game.consts;
+package old.game_old.consts;
 
 public class Consts
 {

@@ -1,10 +1,10 @@
-package gameserver.eventhandlers;
+package old.gameserver.eventhandlers;
 
-import game.Response;
-import game.ResponseStatus;
-import game.events.PlayerUpdatedEvent;
-import observer.Event;
-import observer.EventHandler;
+import old.game_old.Response;
+import old.game_old.ResponseStatus;
+import old.game_old.events.PlayerUpdatedEvent;
+import old.observer.Event;
+import old.observer.EventHandler;
 
 public class PlayerUpdatedEventHandler implements EventHandler
 {

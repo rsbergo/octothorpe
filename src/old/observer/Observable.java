@@ -1,4 +1,4 @@
-package observer;
+package old.observer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

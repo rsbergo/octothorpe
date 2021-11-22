@@ -1,14 +1,13 @@
-import gameserver.GameServer;
-import logger.Logger;
-import logger.LogLevel;;
+import java.io.File;
 
-public class Octothorpe 
+import game.OctothorpeGame;
+
+public class Octothorpe
 {
-    // TODO: Parameterize port number
-
     public static void main(String[] args)
     {
-        Logger.setLogLevel(LogLevel.Debug);
-        new GameServer(7777).runGameServer();
-    }    
+        OctothorpeGame game = new OctothorpeGame();
+        game.addPlayer("rafael");
+        game.run();
+    }
 }

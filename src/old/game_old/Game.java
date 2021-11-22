@@ -1,12 +1,13 @@
-package game;
+package old.game_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import game.consts.Consts;
-import game.events.PlayerConnectedEvent;
-import game.events.PlayerUpdatedEvent;
-import observer.Observable;
+import game.Action;
+import old.game_old.consts.Consts;
+import old.game_old.events.PlayerConnectedEvent;
+import old.game_old.events.PlayerUpdatedEvent;
+import old.observer.Observable;
 
 // login
 // map
@@ -41,9 +42,9 @@ public class Game extends Observable
     // Processes a request received
     public Response processRequest(Request request)
     {
-        if (request.getCommand() == Command.Login)
+        if (request.getCommand() == Action.Map)
             return processLogin(request);
-        if (request.getCommand() == Command.Move)
+        if (request.getCommand() == Action.Move)
             return processMove(request);
         else    
             return new Response(ResponseStatus.BadRequest, "Unknown command");

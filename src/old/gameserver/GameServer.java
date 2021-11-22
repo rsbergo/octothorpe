@@ -1,4 +1,4 @@
-package gameserver;
+package old.gameserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -6,9 +6,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.Game;
-import logger.Logger;
 import logger.LogLevel;
+import logger.Logger;
+import old.game_old.Game;
 
 /**
  * A GameServer hosts a game and coordinates the coonections of players to the game being hosted.

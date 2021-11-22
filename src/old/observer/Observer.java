@@ -1,4 +1,4 @@
-package observer;
+package old.observer;
 
 import java.util.LinkedList;
 import java.util.Queue;
