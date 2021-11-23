@@ -1,9 +1,9 @@
-package game.command.commandhandler;
+package command.commandhandler;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import game.command.Action;
+import command.Action;
 import logger.LogLevel;
 import logger.Logger;
 

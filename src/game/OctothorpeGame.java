@@ -5,17 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import game.command.Action;
-import game.command.Command;
-import game.command.Result;
-import game.command.ResultCode;
-import game.command.commandhandler.CommandHandlerManager;
-import game.command.commandhandler.LoginCommandHandler;
-import game.command.commandhandler.MapCommandHandler;
-import game.command.commandhandler.MessageCommandHandler;
-import game.command.commandhandler.MoveCommandHandler;
-import game.command.commandhandler.PlayersCommandHandler;
-import game.command.commandhandler.QuitCommandHandler;
+import command.Action;
+import command.Command;
+import command.Result;
+import command.ResultCode;
+import command.commandhandler.CommandHandlerManager;
+import command.commandhandler.LoginCommandHandler;
+import command.commandhandler.MapCommandHandler;
+import command.commandhandler.MessageCommandHandler;
+import command.commandhandler.MoveCommandHandler;
+import command.commandhandler.PlayersCommandHandler;
+import command.commandhandler.QuitCommandHandler;
 
 /**
  * An instance of the Octothorpe Game.

@@ -3,7 +3,7 @@ package old.game_old;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.command.Action;
+import command.Action;
 
 public class Request
 {

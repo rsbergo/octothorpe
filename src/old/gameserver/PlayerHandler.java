@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.command.Action;
+import command.Action;
 import logger.LogLevel;
 import logger.Logger;
 import old.game_old.Game;

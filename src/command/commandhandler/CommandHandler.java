@@ -1,11 +1,11 @@
-package game.command.commandhandler;
+package command.commandhandler;
 
 import java.util.List;
 
-import game.command.Action;
-import game.command.Command;
-import game.command.Result;
-import game.command.ResultCode;
+import command.Action;
+import command.Command;
+import command.Result;
+import command.ResultCode;
 
 /**
  * Provides a mechanism to process commands for a game.

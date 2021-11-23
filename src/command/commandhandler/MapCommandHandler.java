@@ -1,10 +1,10 @@
-package game.command.commandhandler;
+package command.commandhandler;
 
+import command.Action;
+import command.Command;
+import command.Result;
+import command.ResultCode;
 import game.GameMap;
-import game.command.Action;
-import game.command.Command;
-import game.command.Result;
-import game.command.ResultCode;
 
 /**
  * Processes commands whose action is Action.Map.
