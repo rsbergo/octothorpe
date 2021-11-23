@@ -4,6 +4,8 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import event.MapDataEvent;
+import eventmanager.EventManager;
 import game.GameMap;
 import logger.LogLevel;
 import logger.Logger;
@@ -11,27 +13,29 @@ import logger.Logger;
 /**
  * Processes commands whose action is Action.Map.
  * Receives an instance of the game map when installed.
+ * Receives an instance of the game's event manager in order to generate events.
  * Action.Map does not expect any arguments (command args should be empty).
  * Initiates synchronous map_data events containing map data.
- * 
- * TODO: Also receive game's event manager, so it can trigger map_data events
  */
 public class MapCommandHandler implements CommandHandler
 {
     private final Action EXPECTED_ACTION = Action.Map; // expected command action
     private final int EXPECTED_ARGS_COUNT = 0;         // expected number of args for the Map action
     
-    private GameMap map = null; // reference to the map the game is running
+    private GameMap map = null;               // reference to the map the game is running
+    private EventManager eventManager = null; // reference to the game's event manager
     
     /**
      * Constructor.
      * Receives a reference to the map the game is using.
      * 
-     * @param map the game map
+     * @param map          the game map
+     * @param eventManager the game's event manager
      */
-    public MapCommandHandler(GameMap map)
+    public MapCommandHandler(GameMap map, EventManager eventManager)
     {
         this.map = map;
+        this.eventManager = eventManager;
     }
     
     @Override
@@ -42,8 +46,7 @@ public class MapCommandHandler implements CommandHandler
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage(getSuccessMessage());
-            // TODO: create map_data event
-            // TODO: trigger map_data synchronous event
+            eventManager.notify(new MapDataEvent(map)); // TODO: notify only player
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
@@ -53,18 +56,11 @@ public class MapCommandHandler implements CommandHandler
     {
         StringBuilder sb = new StringBuilder();
         sb.append("OK. Game world is ");
-        sb.append(map.getNumberOfRows());
+        sb.append(map.getRowsCount());
         sb.append("x");
-        sb.append(map.getNumberOfColumns());
+        sb.append(map.getColsCount());
         sb.append(" spaces");
         return sb.toString();
-    }
-    
-    // Create a map_data event.
-    // The map_data event contains the map size and the character representation of the map
-    private void getMapDataEvent()
-    {
-        // TODO: should it trigger one event or a series of events?
     }
     
     // TODO: Delete

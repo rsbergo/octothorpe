@@ -50,8 +50,8 @@ public class GameMap
     // Setters and Getters
     public Position getSpawnPoint() { return spawnPoint; }
     public List<Item> getItems() { return items; }
-    public int getNumberOfRows() { return rows; }
-    public int getNumberOfColumns() { return cols; }
+    public int getRowsCount() { return rows; }
+    public int getColsCount() { return cols; }
 
     /**
      * Checks whether the specified position is valid for a player move.
@@ -118,6 +118,12 @@ public class GameMap
     public Item getItemAtPosition(int x, int y)
     {
         return getItemAtPosition(new Position(x, y));
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Map size: " + rows + "x" + cols;
     }
     
     // Loads a map layout from the specified file.

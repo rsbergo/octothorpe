@@ -6,7 +6,12 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import event.ItemCollectedEvent;
+import event.ItemDataEvent;
+import event.PlayerUpdateEvent;
+import eventmanager.EventManager;
 import game.GameMap;
+import game.Item;
 import game.MoveDirection;
 import game.Player;
 import game.Position;
@@ -16,6 +21,7 @@ import logger.Logger;
 /**
  * Processes commands whose action is Action.Move.
  * Receives an instance of the list of players in the game and an instance of the game map when installed.
+ * Receives an instance of the game's event manager in order to generate events.
  * Action.Move expects a single argument: the movement direction.
  * The movement attempts to update the player's position according to the movement direction:
  * - North: decrements the player's y coordinate by 1
@@ -24,8 +30,6 @@ import logger.Logger;
  * - West: decrements the player's x coordinate by 1
  * Initiates synchronous treasure_found event for the player.
  * Initiates an asynchronous player_update event containing the updated player information.
- * 
- * TODO: Also receive game's event manager, so it can trigger treasure_found and player_update events
  */
 public class MoveCommandHandler implements CommandHandler
 {
@@ -34,18 +38,21 @@ public class MoveCommandHandler implements CommandHandler
     
     private Map<String, Player> players = null; // reference to the list of players in the game
     private GameMap map = null;                 // reference to the map the game is running
+    private EventManager eventManager = null; // reference to the game's event manager
     
     /**
      * Constructor.
      * Receives a reference to the list of players in the game and a reference to the map the game is using.
      * 
-     * @param players the list of players in the game
-     * @param map     the game map
+     * @param players      the list of players in the game
+     * @param map          the game map
+     * @param eventManager the game's event manager
      */
-    public MoveCommandHandler(Map<String, Player> players, GameMap map)
+    public MoveCommandHandler(Map<String, Player> players, GameMap map, EventManager eventManager)
     {
         this.players = players;
         this.map = map;
+        this.eventManager = eventManager;
     }
     
     @Override
@@ -59,10 +66,8 @@ public class MoveCommandHandler implements CommandHandler
             Position currentPos = player.getPosition();
             Position newPos = getNewPosition(currentPos, direction);
             movePlayer(player, newPos, result);
-            // TODO: create treasure_found event
-            // TODO: trigger synchronous treasure_found event
-            // TODO: create player_update event
-            // TODO: trigger player_update asynchronous event
+            eventManager.notify(new PlayerUpdateEvent(player));
+            revealItemsNearby(player);
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
@@ -92,12 +97,14 @@ public class MoveCommandHandler implements CommandHandler
     }
     
     // Executes player movement.
+    // Updates the player score if movement leads to a space containing an item.
     // Updates result with the appropriate outcome.
     private void movePlayer(Player player, Position newPos, Result result)
     {
         if (map.isValidPosition(newPos))
         {
             player.updatePosition(newPos);
+            grabItem(player);
             getValidMovementResult(result, player);
         }
         else
@@ -111,9 +118,9 @@ public class MoveCommandHandler implements CommandHandler
             return new Position(pos.getX(), pos.getY() - 1);
         if (direction == MoveDirection.South)
             return new Position(pos.getX(), pos.getY() + 1);
-        if (direction == MoveDirection.North)
+        if (direction == MoveDirection.East)
             return new Position(pos.getX() + 1, pos.getY());
-        if (direction == MoveDirection.North)
+        if (direction == MoveDirection.West)
             return new Position(pos.getX() - 1, pos.getY());
         return null;
     }
@@ -135,5 +142,41 @@ public class MoveCommandHandler implements CommandHandler
         sb.append(", " + player.getPosition().getY());
         sb.append(", " + player.getScore());
         result.setMessage(sb.toString());
+    }
+
+    // Updates player's score if movement lands player on a space that contains an item.
+    // Notifies player of item collected.
+    private void grabItem(Player player)
+    {
+        Position pos = player.getPosition();
+        Item item = map.getItemAtPosition(pos);
+        if (item != null)
+        {
+            player.updateScore(item.getValue());
+            eventManager.notify(new ItemCollectedEvent(item)); // TODO: notify only player
+        }
+    }
+
+    // Reveals items at positions surrounding the player's position.
+    private void revealItemsNearby(Player player)
+    {
+        int x = player.getPosition().getX();
+        int y = player.getPosition().getY();
+        revealItemAtPosition(player, x - 1, y - 1); // top left
+        revealItemAtPosition(player, x, y - 1);     // top
+        revealItemAtPosition(player, x + 1, y - 1); // top right
+        revealItemAtPosition(player, x - 1, y);     // left
+        revealItemAtPosition(player, x + 1, y);     // right
+        revealItemAtPosition(player, x - 1, y + 1); // bottom left
+        revealItemAtPosition(player, x, y + 1);     // bottom
+        revealItemAtPosition(player, x + 1, y + 1); // bottom right
+    }
+
+    // Notifies player if there is an itam at position (x, y).
+    private void revealItemAtPosition(Player player, int x, int y)
+    {
+        Item item = map.getItemAtPosition(x, y);
+        if (item != null)
+            eventManager.notify(new ItemDataEvent(item)); // TODO: notify only player
     }
 }

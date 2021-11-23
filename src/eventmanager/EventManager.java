@@ -29,7 +29,7 @@ public class EventManager
      */
     public void registerSubject(Subject subject)
     {
-        Logger.log(LogLevel.Debug, "Registering event subject: " + subject);
+        Logger.log(LogLevel.Info, "Registering event subject: " + subject);
         registrar.putIfAbsent(subject, new ArrayList<EventListener>());
     }
     
@@ -109,13 +109,11 @@ public class EventManager
      */
     public void notify(Event event)
     {
+        Logger.log(LogLevel.Debug, "Notifying event listeners: \"" + event + "\"");
         if (registrar.containsKey(event.getSubject()))
         {
             for (EventListener listener : registrar.get(event.getSubject()))
-            {
-                Logger.log(LogLevel.Debug, "Notifying event listeners: \"" + event + "\"");
                 listener.processEvent(event);
-            }
         }
     }
     
@@ -128,7 +126,7 @@ public class EventManager
      */
     public void notify(EventListener listener, Event event)
     {
-        Logger.log(LogLevel.Debug, "Notifying event listeners: \"" + event + "\"");
+        Logger.log(LogLevel.Debug, "Notifying event listener: \"" + event + "\"");
         if (registrar.containsKey(event.getSubject()) && registrar.get(event.getSubject()).contains(listener))
             listener.processEvent(event);
     }

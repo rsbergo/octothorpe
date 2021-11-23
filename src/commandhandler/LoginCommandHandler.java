@@ -6,9 +6,12 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import event.ItemDataEvent;
+import event.MapDataEvent;
 import event.PlayerConnectedEvent;
 import eventmanager.EventManager;
 import game.GameMap;
+import game.Item;
 import game.Player;
 import logger.LogLevel;
 import logger.Logger;
@@ -36,8 +39,9 @@ public class LoginCommandHandler implements CommandHandler
      * Constructor.
      * Receives a reference to the list of players in the game and a reference to the map the game is using.
      * 
-     * @param players the list of players in the game
-     * @param map     the game map
+     * @param players      the list of players in the game
+     * @param map          the game map
+     * @param eventManager the game's event manager
      */
     public LoginCommandHandler(Map<String, Player> players, GameMap map, EventManager eventManager)
     {
@@ -63,16 +67,10 @@ public class LoginCommandHandler implements CommandHandler
                 player.updatePosition(map.getSpawnPoint());
                 players.put(player.getName(), player);
                 getSuccessResult(result, player.getName());
-                generatePlayerConnectedEvent(player);
+                // TODO: subscribe player to events
+                generateEvents(player);
             }
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
-
-            // TODO: create map_data event
-            // TODO: trigger synchronous map_data event
-            // TODO: create item_data events
-            // TODO: trigger synchronous item_data events
-            // TODO: create player_connected event
-            // TODO: trigger asynchronous player_connected event
         }
     }
     
@@ -105,11 +103,12 @@ public class LoginCommandHandler implements CommandHandler
         result.setMessage("Welcome to Octothorpe # The Game, <" + name + ">");
     }
 
-    // Generates a PlayerConnected event and notifies subscribers
-    private void generatePlayerConnectedEvent(Player player)
+    // Generates events triggered by a successful login
+    private void generateEvents(Player player)
     {
-        PlayerConnectedEvent event = new PlayerConnectedEvent(player);
-        Logger.log(LogLevel.Debug, "New event: \"" + event + "\"");
-        eventManager.notify(event);
+        eventManager.notify(new MapDataEvent(map)); // TODO: notify only the player
+        for (Item item : map.getItems())
+            eventManager.notify(new ItemDataEvent(item)); // TODO: notify only the player
+        eventManager.notify(new PlayerConnectedEvent(player));
     }
 }

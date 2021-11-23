@@ -6,26 +6,32 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import event.SendMessageEvent;
+import eventmanager.EventManager;
 import logger.LogLevel;
 import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Message.
+ * Receives an instance of the game's event manager in order to generate events.
  * Action.Message expects a non-empty list of arguments. These arguments are assembled in a string, separated by a
  * whitespace (' ') to re-build the message to be sent.
  * Initiates an asynchronous send_message event containing the message to be sent.
- * 
- * TODO: Also receive game's event manager, so it can trigger send_message events
  */
 public class MessageCommandHandler implements CommandHandler
 {
     private final Action EXPECTED_ACTION = Action.Message; // expected command action
 
+    private EventManager eventManager = null; // reference to the game's event manager
+
     /**
      * Constructor.
+     * 
+     * @param eventManager the game's event manager
      */
-    public MessageCommandHandler()
+    public MessageCommandHandler(EventManager eventManager)
     {
+        this.eventManager = eventManager;
     }
     
     @Override
@@ -36,8 +42,7 @@ public class MessageCommandHandler implements CommandHandler
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage("OK. Message sent.");
-            // TODO: create send_message event
-            // TODO: trigger send_message asynchronous event
+            eventManager.notify(new SendMessageEvent(buildMessage(command.getPlayer(), command.getArgs())));
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }

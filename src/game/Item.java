@@ -58,6 +58,6 @@ public class Item
     @Override
     public String toString()
     {
-        return "Item " + itemId + ": " + pos + ", " + value + "points";
+        return "Item " + itemId + ": " + pos + ", " + value + " points";
     }
 }

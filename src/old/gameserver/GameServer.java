@@ -50,6 +50,9 @@ public class GameServer
         {
             PlayerHandler handler = acceptConnection(socket);
             handlers.add(handler);
+            // TODO: create player
+            // TODO: give player its player handler
+            // TODO: start threads for player
             startPlayerThread(handler);
         }
         stopGameServer();
