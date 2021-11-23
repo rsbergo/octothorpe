@@ -1,5 +1,7 @@
 package old.gameserver;
 
+import gameserver.PlayerSocket;
+
 /**
  * Thread responsible for the interactions between a player and a game.
  */

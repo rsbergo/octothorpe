@@ -153,7 +153,7 @@ public class MoveCommandHandler implements CommandHandler
         if (item != null)
         {
             player.updateScore(item.getValue());
-            eventManager.notify(new ItemCollectedEvent(item)); // TODO: notify only player
+            eventManager.notify(new ItemCollectedEvent(item));
         }
     }
 

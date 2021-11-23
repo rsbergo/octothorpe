@@ -1,4 +1,4 @@
-package old.gameserver;
+package gameserver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,7 +8,7 @@ import java.util.List;
 
 import logger.LogLevel;
 import logger.Logger;
-import old.game_old.Game;
+import game.Game;
 
 /**
  * A GameServer hosts a game and coordinates the coonections of players to the game being hosted.
@@ -68,8 +68,7 @@ public class GameServer
         running = false;
         try
         {
-            for (PlayerHandler handler : handlers)
-                handler.terminate();
+            // TODO: close player sockets in player handlers
             Logger.log(LogLevel.Info, "Stopping the server...");
             socket.close();
             Logger.log(LogLevel.Info, "Goodbye");
@@ -109,7 +108,7 @@ public class GameServer
             Logger.log(LogLevel.Debug, "Waiting for a new connection...");
             Socket playerSocket = server.accept();
             handler = new PlayerHandler(playerSocket, game);
-            Logger.log(LogLevel.Info, "New connection: Player" + handler.getId() + ", " + playerSocket);
+            Logger.log(LogLevel.Info, "New connection: " + playerSocket);
         }
         catch (IOException e)
         {
@@ -123,7 +122,6 @@ public class GameServer
     private void startPlayerThread(PlayerHandler handler)
     {
         Thread thread = new Thread(handler);
-        thread.setName("Player" + handler.getId());
         thread.start();
     }    
 }

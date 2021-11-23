@@ -1,4 +1,4 @@
-package old.game_old;
+package gameserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +7,8 @@ import command.Action;
 
 public class Request
 {
-    private String player = null;                        // the player who originated the request
-    private Action command = Action.Unknown;           // the command to be executed
-    private List<String> data = new ArrayList<String>(); // the arguments for the command to be executed
+    private Action action = Action.Unknown;              // the command to be executed
+    private List<String> args = new ArrayList<String>(); // the arguments for the command to be executed
     
     /**
      * Constructor.
@@ -24,9 +23,9 @@ public class Request
         String[] tokens = request.split(" ");
         if (tokens.length > 0)
         {
-            command = Action.fromString(tokens[0]);
+            action = Action.fromString(tokens[0]);
             for (int i = 1; i < tokens.length; i++)
-                data.add(tokens[i]);
+                args.add(tokens[i]);
         }
     }
     
@@ -37,28 +36,24 @@ public class Request
      * @param command The command of this Request
      * @param data    The arguments for this Request's command
      */
-    public Request(String player, Action command, String... data)
+    public Request(Action command, String... data)
     {
-        this.player = player;
-        this.command = command;
+        this.action = command;
         for (String s : data)
-            this.data.add(s);
+            this.args.add(s);
     }
     
     // Setters and Getters
-    public void setPlayer(String player) { this.player = player; }
-    public String getPlayer() { return player; }
-    public Action getCommand() { return command; }
-    public List<String> getData() { return data; }
+    public Action getAction() { return action; }
+    public List<String> getArgs() { return args; }
 
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(command + " ");
-        for (String s : data)
-            sb.append(s + " ");
-        sb.deleteCharAt(sb.length() - 1); // remove extra " " added for last element of data
+        sb.append(action);
+        for (String s : args)
+            sb.append(" " + s);
         return sb.toString();
     }
 }

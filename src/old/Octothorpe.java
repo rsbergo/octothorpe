@@ -1,7 +1,7 @@
 package old;
+import gameserver.GameServer;
 import logger.LogLevel;
-import logger.Logger;
-import old.gameserver.GameServer;;
+import logger.Logger;;
 
 public class Octothorpe 
 {

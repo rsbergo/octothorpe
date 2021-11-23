@@ -26,7 +26,7 @@ import eventmanager.EventManager;
  * TODO: persist information about players
  * TODO: parameterize map used by game
  */
-public class OctothorpeGame
+public class Game
 {
     private final String MAP_FILE = "res/game.map"; // default game map
     
@@ -40,7 +40,7 @@ public class OctothorpeGame
      * Initializes the game map.
      * Installs command handlers.
      */
-    public OctothorpeGame()
+    public Game()
     {
         map = new game.GameMap(new File(MAP_FILE));
         installCommandHandlers();
@@ -59,6 +59,26 @@ public class OctothorpeGame
         players.put(player.getName(), player);
     }
     
+    /**
+     * Processes a command, returning a result with the outcome of the command processing.
+     * 
+     * @param command the command to be processed
+     * @return A Result containing the outcome of the command
+     */
+    public Result processCommand(Command command)
+    {
+        Result result = new Result();
+        result.setPlayer(command.getPlayer());
+        if (handlers.getCommandHandler(command.getAction()) == null)
+        {
+            result.setResultCode(ResultCode.ServerError);
+            result.setMessage("Error. Cannot execute command.");
+        }
+        else
+            handlers.getCommandHandler(command.getAction()).processCommand(command, result);
+        return result;
+    }
+
     // run the game
     public void run()
     {

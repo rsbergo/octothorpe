@@ -1,4 +1,4 @@
-package old.gameserver;
+package gameserver;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -9,8 +9,6 @@ import java.net.Socket;
 
 import logger.LogLevel;
 import logger.Logger;
-import old.game_old.Request;
-import old.game_old.Response;
 
 /**
  * Represents a socket for a player connected to the GameServer.

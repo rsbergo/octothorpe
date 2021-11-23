@@ -100,6 +100,7 @@ public class LoginCommandHandler implements CommandHandler
     private void getSuccessResult(Result result, String name)
     {
         result.setResultCode(ResultCode.Success);
+        result.setPlayer(name);
         result.setMessage("Welcome to Octothorpe # The Game, <" + name + ">");
     }
 

@@ -1,6 +1,6 @@
 package old.observer;
 
-import old.game_old.Response;
+import gameserver.Response;
 
 /**
  * Defines a method to process an event and return a response built based on the event.

@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import command.Action;
+import gameserver.PlayerSocket;
+import gameserver.Request;
+import gameserver.Response;
 import logger.LogLevel;
 import logger.Logger;
 import old.game_old.Game;
-import old.game_old.Request;
-import old.game_old.Response;
 import old.game_old.consts.Consts;
 import old.gameserver.eventhandlers.PlayerConnectedEventHandler;
 import old.gameserver.eventhandlers.PlayerUpdatedEventHandler;
@@ -128,12 +129,12 @@ public class PlayerHandler implements Runnable
                 // TODO: Add "disconnect" to Response
                 // TODO: Create "Request Handlers" for the game
                 Logger.log(LogLevel.Info, "Request received: \"" + request.toString() + "\"");
-                if (request.getCommand() == Action.Quit)
+                if (request.getAction() == Action.Quit)
                     setConnected(false);
-                request.setPlayer(player);
+                //request.setPlayer(player);
                 Response response = game.processRequest(request);
                 if (getPlayerName() == null)
-                    setPlayerName(response.getPlayer());
+                    //setPlayerName(response.getPlayer());
                 Logger.log(LogLevel.Info, "Sending response: \"" + response.toString() + "\"");
                 socket.send(response);
             }

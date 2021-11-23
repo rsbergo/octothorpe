@@ -1,7 +1,7 @@
 package old.gameserver.eventhandlers;
 
-import old.game_old.Response;
-import old.game_old.ResponseStatus;
+import command.ResultCode;
+import gameserver.Response;
 import old.game_old.events.PlayerUpdatedEvent;
 import old.observer.Event;
 import old.observer.EventHandler;
@@ -15,13 +15,13 @@ public class PlayerUpdatedEventHandler implements EventHandler
         if (event instanceof PlayerUpdatedEvent)
         {
             PlayerUpdatedEvent playerUpdated = (PlayerUpdatedEvent) event;
-            response.setResponseStatus(ResponseStatus.PlayerUpdate);
+            response.setResponseCode(ResultCode.PlayerUpdate);
             StringBuilder data = new StringBuilder();
             data.append(playerUpdated.getPlayer().getName());
             data.append(", " + playerUpdated.getPlayer().getPositionX());
             data.append(", " + playerUpdated.getPlayer().getPositionY());
             data.append(", " + playerUpdated.getPlayer().getPoints());
-            response.setData(data.toString());
+            response.setMessage(data.toString());
         }
         return response;
     }
