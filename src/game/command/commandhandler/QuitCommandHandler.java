@@ -1,48 +1,50 @@
 package game.command.commandhandler;
 
-import game.OctothorpeGame;
+import java.util.Map;
+
 import game.Player;
 import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 
-public class QuitCommandHandler extends CommandHandler
+/**
+ * Processes commands whose action is Action.Quit.
+ * Receives an instance of the list of players in the game.
+ * Action.Quit does not expect any arguments (command args should be empty).
+ * Removes the player from the game
+ * Initiates asynchronous player_disconnected.
+ * 
+ * TODO: Also receive game's event manager, so it can trigger player_disconnected events
+ */
+public class QuitCommandHandler implements CommandHandler
 {
+    private final Action EXPECTED_ACTION = Action.Quit; // expected command action
+    private final int EXPECTED_ARGS_COUNT = 0;          // expected number of args for the Move action
+    
+    private Map<String, Player> players = null; // reference to the list of players in the game
+    
     /**
      * Constructor.
-     * Gets a reference of the game running.
+     * Receives a reference to the list of players in the game.
      * 
-     * @param game the game to which this command handler was installed
+     * @param players the list of players in the game
      */
-    public QuitCommandHandler(OctothorpeGame game)
+    public QuitCommandHandler(Map<String, Player> players)
     {
-        super(game);
+        this.players = players;
     }
-
+    
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Quit))
+        if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
-            game.removePlayer(command.getPlayer());
+            players.remove(command.getPlayer());
             result.setResultCode(ResultCode.Success);
-            Player player = new Player(command.getPlayer(), -1, -1, 0);
-            result.setMessage(player + ", disconnected");
-            // TODO: send asynchronous player information. Maybe manage through PlayerHandler, similar to login.
+            result.setMessage("So long, and thanks for all the fish!");
+            // TODO: create player_disconnected event
+            // TODO: trigger asynchronous player_disconnected event
         }
-    }
-    
-    // Checks whether args in command are empty.
-    // Action.Quit doesn't expect any arguments.
-    private boolean isArgsEmpty(Command command, Result result)
-    {
-        if (!command.getArgs().isEmpty())
-        {
-            result.setResultCode(ResultCode.BadRequest);
-            result.setMessage("Error. Command malformed, no arguments expected.");
-            return false;
-        }
-        return true;
     }
 }

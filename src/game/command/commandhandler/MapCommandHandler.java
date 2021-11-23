@@ -1,53 +1,102 @@
 package game.command.commandhandler;
 
-import game.OctothorpeGame;
+import game.GameMap;
 import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 
-public class MapCommandHandler extends CommandHandler
+/**
+ * Processes commands whose action is Action.Map.
+ * Receives an instance of the game map when installed.
+ * Action.Map does not expect any arguments (command args should be empty).
+ * Initiates synchronous map_data events containing map data.
+ * 
+ * TODO: Also receive game's event manager, so it can trigger map_data events
+ */
+public class MapCommandHandler implements CommandHandler
 {
+    private final Action EXPECTED_ACTION = Action.Map; // expected command action
+    private final int EXPECTED_ARGS_COUNT = 0;         // expected number of args for the Map action
+    
+    private GameMap map = null; // reference to the map the game is running
+    
     /**
      * Constructor.
-     * Gets a reference of the game running.
+     * Receives a reference to the map the game is using.
      * 
-     * @param game the game to which this command handler was installed
+     * @param map the game map
      */
-    public MapCommandHandler(OctothorpeGame game)
+    public MapCommandHandler(GameMap map)
     {
-        super(game);
+        this.map = map;
     }
-
+    
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Map))
+        if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
             result.setResultCode(ResultCode.Success);
-            StringBuilder sb = new StringBuilder();
-            sb.append("OK. Game world if ");
-            sb.append(game.getMap().getNumberOfRows());
-            sb.append("x");
-            sb.append(game.getMap().getNumberOfColumns());
-            sb.append(" spaces");
-            result.setMessage(sb.toString());
-            // TODO: start sending map synchronously
-            game.sendMapSize(command.getPlayer());
-            game.sendMapData(command.getPlayer());
+            result.setMessage(getSuccessMessage());
+            // TODO: create map_data event
+            // TODO: trigger map_data synchronous event
         }
     }
     
-    // Checks whether args in command are empty.
-    // Action.Map doesn't expect any arguments.
-    private boolean isArgsEmpty(Command command, Result result)
+    // Builds the message to be sent in a successful result.
+    private String getSuccessMessage()
     {
-        if (!command.getArgs().isEmpty())
-        {
-            result.setResultCode(ResultCode.BadRequest);
-            result.setMessage("Error. Command malformed, no arguments expected.");
-            return false;
-        }
-        return true;
+        StringBuilder sb = new StringBuilder();
+        sb.append("OK. Game world is ");
+        sb.append(map.getNumberOfRows());
+        sb.append("x");
+        sb.append(map.getNumberOfColumns());
+        sb.append(" spaces");
+        return sb.toString();
     }
+    
+    // Create a map_data event.
+    // The map_data event contains the map size and the character representation of the map
+    private void getMapDataEvent()
+    {
+        // TODO: should it trigger one event or a series of events?
+    }
+    
+    // TODO: Delete
+    /**
+     * Sends the map data to the player.
+     * 
+     * @param player the player who requested the map data
+     */
+    /*
+     * public void sendMapData(String player)
+     * {
+     * Result result = new Result();
+     * result.setPlayer(player);
+     * result.setResultCode(ResultCode.MapData);
+     * for (int row = 0; row < map.getNumberOfRows(); row++)
+     * {
+     * result.setResultCode(ResultCode.MapData);
+     * result.setMessage(map.getMapRow(row));
+     * // TODO: send result synchronously
+     * }
+     * }
+     */
+    
+    /**
+     * Sends the map size to the player.
+     * 
+     * @param player the player who requested the map data
+     */
+    /*
+     * public void sendMapSize(String player)
+     * {
+     * Result result = new Result();
+     * result.setPlayer(player);
+     * result.setResultCode(ResultCode.MapData);
+     * result.setMessage(map.getNumberOfRows() + ", " + map.getNumberOfColumns());
+     * // TODO: send result synchronously
+     * }
+     */
 }

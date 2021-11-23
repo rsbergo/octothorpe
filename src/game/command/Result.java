@@ -45,7 +45,7 @@ public class Result
     {
         StringBuilder sb = new StringBuilder();
         sb.append(player);
-        sb.append(" " + code.getCode());
+        sb.append(" " + code.getCode() + ":");
         sb.append(" " + message);
         return sb.toString();
     }

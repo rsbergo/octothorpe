@@ -1,53 +1,59 @@
 package game.command.commandhandler;
 
-import game.OctothorpeGame;
+import java.util.Map;
+
+import game.Player;
 import game.command.Action;
 import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 
 /**
- * Handles commands whose action is "players".
+ * Processes commands whose action is Action.Players.
+ * Receives an instance of the list of players in the game.
+ * Action.Players does not expect any arguments (command args should be empty).
+ * Initiates asynchronous player_update events containing the updated player informationfor all players.
+ * 
+ * TODO: Also receive game's event manager, so it can trigger player_update events
  */
-public class PlayersCommandHandler extends CommandHandler
+public class PlayersCommandHandler implements CommandHandler
 {
+    private final Action EXPECTED_ACTION = Action.Players; // expected command action
+    private final int EXPECTED_ARGS_COUNT = 0;             // expected number of args for the Move action
+    
+    private Map<String, Player> players = null; // reference to the list of players in the game
+    
     /**
      * Constructor.
-     * Gets a reference of the game running.
+     * Receives a reference to the list of players in the game.
      * 
-     * @param game the game to which this command handler was installed
+     * @param players the list of players in the game
      */
-    public PlayersCommandHandler(OctothorpeGame game)
+    public PlayersCommandHandler(Map<String, Player> players)
     {
-        super(game);
+        this.players = players;
     }
-
+    
     @Override
     public void processCommand(Command command, Result result)
     {
-        if (isArgsEmpty(command, result) && isActionExpected(command, result, Action.Players))
+        if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
-            // TODO: start notifying player about players in the game
             result.setResultCode(ResultCode.Success);
-            StringBuilder sb = new StringBuilder();
-            sb.append("OK. ");
-            sb.append(game.getPlayerCount());
-            sb.append(game.getPlayerCount() == 1 ? " player" : " players");
-            sb.append(" in the game.");
-            result.setMessage(sb.toString());
+            result.setMessage(getSuccessMessage());
+            // TODO: Create a player_update event for each player in the game
+            // TODO: Trigger an asynchronous player_update event for each player in the game
         }
     }
-
-    // Checks whether args in command are empty.
-    // Action.Players doesn't expect any arguments.
-    private boolean isArgsEmpty(Command command, Result result)
+    
+    // Builds the message to be sent in a successful result.
+    private String getSuccessMessage()
     {
-        if (!command.getArgs().isEmpty())
-        {
-            result.setResultCode(ResultCode.BadRequest);
-            result.setMessage("Error. Command malformed, no arguments expected.");
-            return false;
-        }
-        return true;
+        StringBuilder sb = new StringBuilder();
+        sb.append("OK. ");
+        sb.append(players.size());
+        sb.append(players.size() == 1 ? " player" : " players");
+        sb.append(" in the game.");
+        return sb.toString();
     }
 }

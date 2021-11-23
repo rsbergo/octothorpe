@@ -24,7 +24,7 @@ import logger.Logger;
  * TODO: randomize spawn point
  * TODO: support moving from one edge to another
  */
-public class Map
+public class GameMap
 {
     private final char OBSTACLE = '#';
     private final char SPAWN = 'S';
@@ -42,7 +42,7 @@ public class Map
      * 
      * @param map the file containing the map layout
      */
-    public Map(File mapFile)
+    public GameMap(File mapFile)
     {
         loadMapFromFile(mapFile);
     }
