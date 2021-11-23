@@ -10,6 +10,7 @@ import game.command.Command;
 import game.command.Result;
 import game.command.ResultCode;
 import game.command.commandhandler.CommandHandlerManager;
+import game.command.commandhandler.LoginCommandHandler;
 import game.command.commandhandler.MapCommandHandler;
 import game.command.commandhandler.MessageCommandHandler;
 import game.command.commandhandler.MoveCommandHandler;
@@ -31,8 +32,6 @@ public class OctothorpeGame
     private game.GameMap map = null;                                          // the map used in the game
     private Map<String, Player> players = new HashMap<String, Player>();  // list of players in the game
     private CommandHandlerManager handlers = new CommandHandlerManager(); // command handler manager
-    // private Map<Action, CommandHandler> commandHandlers = new HashMap<Action, CommandHandler>(); // list of command
-    // handlers for the gale
     
     /**
      * Constructor.
@@ -42,6 +41,7 @@ public class OctothorpeGame
     public OctothorpeGame()
     {
         map = new game.GameMap(new File(MAP_FILE));
+        handlers.installCommandHandler(Action.Login, new LoginCommandHandler(players, map));
         handlers.installCommandHandler(Action.Map, new MapCommandHandler(map));
         handlers.installCommandHandler(Action.Message, new MessageCommandHandler());
         handlers.installCommandHandler(Action.Move, new MoveCommandHandler(players, map));

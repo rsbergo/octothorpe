@@ -51,7 +51,7 @@ public class Command
         String[] tokens = commandString.split(" ");
         if (tokens.length >= 2)
         {
-            player = tokens[0];
+            player = tokens[0].equalsIgnoreCase("null") ? null : tokens[0]; // TODO: remove, this is for testing only
             action = Action.fromString(tokens[1]);
             for (int i = 2; i < tokens.length; i++)
                 args.add(tokens[i]);

@@ -3,6 +3,7 @@ package game.command.commandhandler;
 import java.util.Map;
 
 import game.GameMap;
+import game.MoveDirection;
 import game.Player;
 import game.Position;
 import game.command.Action;

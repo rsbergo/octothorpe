@@ -5,6 +5,7 @@ package game.command;
  */
 public enum Action
 {
+    Login,
     Map, 
     Message, 
     Move, 
@@ -20,6 +21,8 @@ public enum Action
      */
     public static Action fromString(String action)
     {
+        if (action.equalsIgnoreCase("login"))
+            return Login;
         if (action.equalsIgnoreCase("map"))
             return Map;
         if (action.equalsIgnoreCase("message"))

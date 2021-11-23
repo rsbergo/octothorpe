@@ -106,7 +106,7 @@ public interface CommandHandler
         if (player != null)
             return true;
         result.setResultCode(ResultCode.BadRequest);
-        result.setMessage("Error. The player who issued the command must be identified.");
+        result.setMessage("Error. You must log in first.");
         return false;
     }
     

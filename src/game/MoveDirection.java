@@ -1,4 +1,4 @@
-package game.command.commandhandler;
+package game;
 
 public enum MoveDirection 
 {
