@@ -1,10 +1,12 @@
-package command.commandhandler;
+package commandhandler;
 
 import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
 import game.GameMap;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Map.
@@ -37,10 +39,12 @@ public class MapCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage(getSuccessMessage());
             // TODO: create map_data event
             // TODO: trigger map_data synchronous event
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
     

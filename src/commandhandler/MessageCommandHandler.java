@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.List;
 
@@ -6,6 +6,8 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Message.
@@ -31,10 +33,12 @@ public class MessageCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage("OK. Message sent.");
             // TODO: create send_message event
             // TODO: trigger send_message asynchronous event
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
     

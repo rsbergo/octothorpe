@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.Map;
 
@@ -10,6 +10,8 @@ import game.GameMap;
 import game.MoveDirection;
 import game.Player;
 import game.Position;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Move.
@@ -51,6 +53,7 @@ public class MoveCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             Player player = players.get(command.getPlayer());
             MoveDirection direction = MoveDirection.fromString(command.getArgs().get(0));
             Position currentPos = player.getPosition();
@@ -60,6 +63,7 @@ public class MoveCommandHandler implements CommandHandler
             // TODO: trigger synchronous treasure_found event
             // TODO: create player_update event
             // TODO: trigger player_update asynchronous event
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
     

@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.Map;
 
@@ -7,6 +7,8 @@ import command.Command;
 import command.Result;
 import command.ResultCode;
 import game.Player;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Quit.
@@ -40,11 +42,13 @@ public class QuitCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             players.remove(command.getPlayer());
             result.setResultCode(ResultCode.Success);
             result.setMessage("So long, and thanks for all the fish!");
             // TODO: create player_disconnected event
             // TODO: trigger asynchronous player_disconnected event
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
 }

@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.List;
 
@@ -9,7 +9,7 @@ import command.ResultCode;
 
 /**
  * Provides a mechanism to process commands for a game.
- * The processCommand method receives the command to be processed and an instance of Result to be updated with the
+ * The processCommand() method receives the command to be processed and an instance of Result to be updated with the
  * result of processing the command.
  * Each command handler should validate the command received according to its own rules. Validation should include
  * whether the command's action is the action expected to be processed and whether the args received are appropriate for

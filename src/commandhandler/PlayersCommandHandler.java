@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.Map;
 
@@ -7,6 +7,8 @@ import command.Command;
 import command.Result;
 import command.ResultCode;
 import game.Player;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Players.
@@ -39,10 +41,12 @@ public class PlayersCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage(getSuccessMessage());
             // TODO: Create a player_update event for each player in the game
             // TODO: Trigger an asynchronous player_update event for each player in the game
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
     

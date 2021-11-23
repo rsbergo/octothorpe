@@ -1,4 +1,4 @@
-package command.commandhandler;
+package commandhandler;
 
 import java.util.Map;
 
@@ -6,19 +6,22 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import event.PlayerConnectedEvent;
+import eventmanager.EventManager;
 import game.GameMap;
 import game.Player;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Processes commands whose action is Action.Login.
  * Receives an instance of the list of players in the game and an instance of the game map when installed.
+ * Receives an instance of the game's event manager in order to generate events.
  * Action.Login expects a single argument: the player's name.
  * The player is added to the game if not already logged in and if there are no players with the same name in the game.
  * Initiates synchronous map_data event for the player.
  * Initiates synchronous item_data events for the player.
  * Initiates an asynchronous player_connected event containing the new player information.
- * 
- * TODO: Also receive game's event manager, so it can trigger map_data, item_data, and player_connected events
  */
 public class LoginCommandHandler implements CommandHandler
 {
@@ -27,6 +30,7 @@ public class LoginCommandHandler implements CommandHandler
     
     private Map<String, Player> players = null; // reference to the list of players in the game
     private GameMap map = null;                 // reference to the map the game is running
+    private EventManager eventManager = null;   // reference to the game's event manager
     
     /**
      * Constructor.
@@ -35,10 +39,11 @@ public class LoginCommandHandler implements CommandHandler
      * @param players the list of players in the game
      * @param map     the game map
      */
-    public LoginCommandHandler(Map<String, Player> players, GameMap map)
+    public LoginCommandHandler(Map<String, Player> players, GameMap map, EventManager eventManager)
     {
         this.players = players;
         this.map = map;
+        this.eventManager = eventManager;
     }
     
     @Override
@@ -46,6 +51,7 @@ public class LoginCommandHandler implements CommandHandler
     {
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
+            Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             String name = command.getArgs().get(0);
             if (command.getPlayer() != null)         // player has already logged in
                 getPlayerLoggedInResult(result);
@@ -57,7 +63,10 @@ public class LoginCommandHandler implements CommandHandler
                 player.updatePosition(map.getSpawnPoint());
                 players.put(player.getName(), player);
                 getSuccessResult(result, player.getName());
+                generatePlayerConnectedEvent(player);
             }
+            Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
+
             // TODO: create map_data event
             // TODO: trigger synchronous map_data event
             // TODO: create item_data events
@@ -71,8 +80,8 @@ public class LoginCommandHandler implements CommandHandler
     public boolean isValidCommand(Command command, Action expectedAction, int expectedArgsCount, Result result)
     {
         return hasValidAction(command.getAction(), result)
-                && isExpectedAction(expectedAction, command.getAction(), result)
-                && hasExpectedNumberofArguments(command.getArgs(), expectedArgsCount, result);
+               && isExpectedAction(expectedAction, command.getAction(), result)
+               && hasExpectedNumberofArguments(command.getArgs(), expectedArgsCount, result);
     }
     
     // Updates result with the outcome of a login attempt when the player is already logged in.
@@ -94,5 +103,13 @@ public class LoginCommandHandler implements CommandHandler
     {
         result.setResultCode(ResultCode.Success);
         result.setMessage("Welcome to Octothorpe # The Game, <" + name + ">");
+    }
+
+    // Generates a PlayerConnected event and notifies subscribers
+    private void generatePlayerConnectedEvent(Player player)
+    {
+        PlayerConnectedEvent event = new PlayerConnectedEvent(player);
+        Logger.log(LogLevel.Debug, "New event: \"" + event + "\"");
+        eventManager.notify(event);
     }
 }
