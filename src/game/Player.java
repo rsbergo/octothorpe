@@ -1,5 +1,7 @@
 package game;
 
+import eventhandler.EventHandlerManager;
+
 /**
  * Represents a player within the game.
  * A player is identified by its name. Two players cannot have the same name.
@@ -9,9 +11,10 @@ package game;
  */
 public class Player
 {
-    String name = null;            // the player's name
-    Position pos = new Position(); // the player's position
-    int score = 0;                 // the player's score
+    String name = null;                       // the player's name
+    Position pos = new Position();            // the player's position
+    int score = 0;                            // the player's score
+    EventHandlerManager eventHandlers = null; // reference to this player's handler's event handler manager
     
     /**
      * Constructor.
@@ -56,9 +59,12 @@ public class Player
     }
     
     // Setters and Getters
+    public void setName(String name) { this.name = name; }
     public String getName() { return name; }
     public Position getPosition() { return pos; }
     public int getScore() { return score; }
+    public void setEventHandlerManager(EventHandlerManager eventHandlers) { this.eventHandlers = eventHandlers; }
+    public EventHandlerManager getEventHandlerManager() { return eventHandlers; }
 
     /**
      * Updates the player's positions.

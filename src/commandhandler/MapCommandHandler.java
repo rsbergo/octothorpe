@@ -5,6 +5,7 @@ import command.Command;
 import command.Result;
 import command.ResultCode;
 import event.MapDataEvent;
+import event.Subject;
 import eventmanager.EventManager;
 import game.GameMap;
 import logger.LogLevel;
@@ -46,7 +47,7 @@ public class MapCommandHandler implements CommandHandler
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage(getSuccessMessage());
-            eventManager.notify(new MapDataEvent(map)); // TODO: notify only player
+            eventManager.notify(command.getPlayer().getEventHandlerManager().getEventHandler(Subject.MapData), new MapDataEvent(map));
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }
@@ -62,41 +63,4 @@ public class MapCommandHandler implements CommandHandler
         sb.append(" spaces");
         return sb.toString();
     }
-    
-    // TODO: Delete
-    /**
-     * Sends the map data to the player.
-     * 
-     * @param player the player who requested the map data
-     */
-    /*
-     * public void sendMapData(String player)
-     * {
-     * Result result = new Result();
-     * result.setPlayer(player);
-     * result.setResultCode(ResultCode.MapData);
-     * for (int row = 0; row < map.getNumberOfRows(); row++)
-     * {
-     * result.setResultCode(ResultCode.MapData);
-     * result.setMessage(map.getMapRow(row));
-     * // TODO: send result synchronously
-     * }
-     * }
-     */
-    
-    /**
-     * Sends the map size to the player.
-     * 
-     * @param player the player who requested the map data
-     */
-    /*
-     * public void sendMapSize(String player)
-     * {
-     * Result result = new Result();
-     * result.setPlayer(player);
-     * result.setResultCode(ResultCode.MapData);
-     * result.setMessage(map.getNumberOfRows() + ", " + map.getNumberOfColumns());
-     * // TODO: send result synchronously
-     * }
-     */
 }

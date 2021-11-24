@@ -1,7 +1,5 @@
 package commandhandler;
 
-import java.util.Map;
-
 import command.Action;
 import command.Command;
 import command.Result;
@@ -9,6 +7,7 @@ import command.ResultCode;
 import event.ItemCollectedEvent;
 import event.ItemDataEvent;
 import event.PlayerUpdateEvent;
+import event.Subject;
 import eventmanager.EventManager;
 import game.GameMap;
 import game.Item;
@@ -36,7 +35,6 @@ public class MoveCommandHandler implements CommandHandler
     private final Action EXPECTED_ACTION = Action.Move; // expected command action
     private final int EXPECTED_ARGS_COUNT = 1;          // expected number of args for the Move action
     
-    private Map<String, Player> players = null; // reference to the list of players in the game
     private GameMap map = null;                 // reference to the map the game is running
     private EventManager eventManager = null; // reference to the game's event manager
     
@@ -44,13 +42,11 @@ public class MoveCommandHandler implements CommandHandler
      * Constructor.
      * Receives a reference to the list of players in the game and a reference to the map the game is using.
      * 
-     * @param players      the list of players in the game
      * @param map          the game map
      * @param eventManager the game's event manager
      */
-    public MoveCommandHandler(Map<String, Player> players, GameMap map, EventManager eventManager)
+    public MoveCommandHandler(GameMap map, EventManager eventManager)
     {
-        this.players = players;
         this.map = map;
         this.eventManager = eventManager;
     }
@@ -61,7 +57,7 @@ public class MoveCommandHandler implements CommandHandler
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
-            Player player = players.get(command.getPlayer());
+            Player player = command.getPlayer();
             MoveDirection direction = MoveDirection.fromString(command.getArgs().get(0));
             Position currentPos = player.getPosition();
             Position newPos = getNewPosition(currentPos, direction);
@@ -153,7 +149,7 @@ public class MoveCommandHandler implements CommandHandler
         if (item != null)
         {
             player.updateScore(item.getValue());
-            eventManager.notify(new ItemCollectedEvent(item));
+            eventManager.notify(new ItemCollectedEvent(player, item));
         }
     }
 
@@ -177,6 +173,6 @@ public class MoveCommandHandler implements CommandHandler
     {
         Item item = map.getItemAtPosition(x, y);
         if (item != null)
-            eventManager.notify(new ItemDataEvent(item)); // TODO: notify only player
+            eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.ItemData), new ItemDataEvent(item));
     }
 }

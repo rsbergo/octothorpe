@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import command.Action;
+import eventhandler.EventHandler;
 import gameserver.PlayerSocket;
 import gameserver.Request;
 import gameserver.Response;
@@ -13,10 +14,9 @@ import logger.LogLevel;
 import logger.Logger;
 import old.game_old.Game;
 import old.game_old.consts.Consts;
-import old.gameserver.eventhandlers.PlayerConnectedEventHandler;
-import old.gameserver.eventhandlers.PlayerUpdatedEventHandler;
+//import old.gameserver.eventhandlers.PlayerConnectedEventHandler;
+//import old.gameserver.eventhandlers.PlayerUpdatedEventHandler;
 import old.observer.Event;
-import old.observer.EventHandler;
 import old.observer.Observer;
 
 /**
@@ -151,32 +151,32 @@ public class PlayerHandler implements Runnable
     // Processes notifications received from the game.
     private void processNotifications()
     {
-        Logger.log(LogLevel.Debug, "Starting notifications thread");
-        List<EventObserver> eventObservers = new ArrayList<EventObserver>();
+        // Logger.log(LogLevel.Debug, "Starting notifications thread");
+        // List<EventObserver> eventObservers = new ArrayList<EventObserver>();
 
-        EventObserver playerConnected = new EventObserver(new PlayerConnectedEventHandler());
-        game.subscribe(Consts.EVENT_PLAYER_CONNECTED, playerConnected);
-        eventObservers.add(playerConnected);
+        // EventObserver playerConnected = new EventObserver(new PlayerConnectedEventHandler());
+        // game.subscribe(Consts.EVENT_PLAYER_CONNECTED, playerConnected);
+        // eventObservers.add(playerConnected);
 
-        EventObserver playerUpdated = new EventObserver(new PlayerUpdatedEventHandler());
-        game.subscribe(Consts.EVENT_PLAYER_UPDATED, playerUpdated);
-        eventObservers.add(playerUpdated);
+        // EventObserver playerUpdated = new EventObserver(new PlayerUpdatedEventHandler());
+        // game.subscribe(Consts.EVENT_PLAYER_UPDATED, playerUpdated);
+        // eventObservers.add(playerUpdated);
 
-        while (isConnected())
-        {
-            if (getPlayerName() == null) //TODO: there must be a better way to do it. E.g. initialize this thread only after login. Missing my own connected notification.
-            {
-                for (EventObserver observer : eventObservers)
-                    observer.clearEventQueue();
-            }
-            else
-            {
-                for (EventObserver observer : eventObservers)
-                    observer.processEvents();
-            }
-        }
-        for (EventObserver observer : eventObservers)
-            game.unsubscribe(observer);
+        // while (isConnected())
+        // {
+        //     if (getPlayerName() == null) //TODO: there must be a better way to do it. E.g. initialize this thread only after login. Missing my own connected notification.
+        //     {
+        //         for (EventObserver observer : eventObservers)
+        //             observer.clearEventQueue();
+        //     }
+        //     else
+        //     {
+        //         for (EventObserver observer : eventObservers)
+        //             observer.processEvents();
+        //     }
+        // }
+        // for (EventObserver observer : eventObservers)
+        //     game.unsubscribe(observer);
     }
     
     /**
@@ -201,19 +201,19 @@ public class PlayerHandler implements Runnable
         @Override
         protected void processEvent(Event event)
         {
-            try
-            {
-                Logger.log(LogLevel.Debug, "Event received: \"" + event + "\"");
-                Response response = handler.processEvent(event);
-                Logger.log(LogLevel.Info, "Sending notification: \"" + response.toString() + "\"");
-                socket.send(response);
-            }
-            catch (IOException e)
-            {
-                Logger.log(LogLevel.Error, "Socket error sending message");
-                e.printStackTrace();
-                setConnected(false);
-            }
+            // try
+            // {
+            //     Logger.log(LogLevel.Debug, "Event received: \"" + event + "\"");
+            //     Response response = handler.processEvent(event);
+            //     Logger.log(LogLevel.Info, "Sending notification: \"" + response.toString() + "\"");
+            //     socket.send(response);
+            // }
+            // catch (IOException e)
+            // {
+            //     Logger.log(LogLevel.Error, "Socket error sending message");
+            //     e.printStackTrace();
+            //     setConnected(false);
+            // }
         }
     }
 }

@@ -31,7 +31,7 @@ public class SendMessageEvent extends Event
     
     // Setters and Getters
     public void setMessage(String message) { this.message = message; }
-    public String getItem() { return message; }
+    public String getMessage() { return message; }
 
     @Override
     public String toString()

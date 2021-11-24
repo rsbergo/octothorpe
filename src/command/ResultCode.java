@@ -8,8 +8,8 @@ public enum ResultCode
     Unknown(0),
     Message(100),
     PlayerUpdate(101),
-    TreasureNotification(102),
-    TreasureTaken(103),
+    ItemNotification(102),
+    ItemTaken(103),
     MapData(104),
     Success(200),
     BadRequest(400),
@@ -39,9 +39,9 @@ public enum ResultCode
         if (code == 101)
             return PlayerUpdate;
         if (code == 102)
-            return TreasureNotification;
+            return ItemNotification;
         if (code == 103)
-            return TreasureTaken;
+            return ItemTaken;
         if (code == 104)
             return MapData;
         if (code == 200)

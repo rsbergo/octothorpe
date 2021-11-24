@@ -3,6 +3,8 @@ package command;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Player;
+
 /**
  * Represents a command received by the game.
  * A command must have the player that is issuing the command and an action to be executed, and may have a list of
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public class Command
 {
-    private String player = null;                        // the player issuing the command
+    private Player player = null;                        // the player issuing the command
     private Action action = Action.Unknown;              // the command action
     private List<String> args = new ArrayList<String>(); // the list of arguments for the action
     
@@ -28,7 +30,7 @@ public class Command
      * @param action the action to be executed
      * @param args   the list of arguments for the action to be executed
      */
-    public Command(String player, Action action, List<String> args)
+    public Command(Player player, Action action, List<String> args)
     {
         this.player = player;
         this.action = action;
@@ -51,7 +53,7 @@ public class Command
         String[] tokens = commandString.split(" ");
         if (tokens.length >= 2)
         {
-            player = tokens[0].equalsIgnoreCase("null") ? null : tokens[0]; // TODO: remove, this is for testing only
+            player.setName(tokens[0]);
             action = Action.fromString(tokens[1]);
             for (int i = 2; i < tokens.length; i++)
                 args.add(tokens[i]);
@@ -59,8 +61,8 @@ public class Command
     }
 
     // Setters and Getters
-    public void setPlayer(String player) { this.player = player; }
-    public String getPlayer() { return player; }
+    public void setPlayer(Player player) { this.player = player; }
+    public Player getPlayer() { return player; }
     public void setAction(Action action) { this.action = action; }
     public Action getAction() { return action; }
     public void setArgs(List<String> args) { this.args = args; }
@@ -70,7 +72,7 @@ public class Command
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(player);
+        sb.append(player.getName());
         sb.append(" " + action);
         for (String arg : args)
             sb.append(" " + arg);

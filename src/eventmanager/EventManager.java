@@ -66,13 +66,13 @@ public class EventManager
      * Listener will only be notified of events with the subject specified.
      * 
      * @param subject  the subject the new listener is listening to
-     * @param observer the listener that will listen to this event manager's events
+     * @param listener the listener that will listen to this event manager's events
      */
-    public void subscribe(Subject subject, EventListener observer)
+    public void subscribe(Subject subject, EventListener listener)
     {
         Logger.log(LogLevel.Debug, "New event listener subscription: " + subject);
         if (registrar.containsKey(subject))
-            registrar.get(subject).add(observer);
+            registrar.get(subject).add(listener);
     }
     
     /**
@@ -93,13 +93,13 @@ public class EventManager
      * Unsubscribes listener from events of the subject specfied.
      * 
      * @param subject  the subject the event listener is unsubscribing from
-     * @param observer the event listener unsubscribing
+     * @param listener the event listener unsubscribing
      */
-    public void unsubscribe(Subject subject, EventListener observer)
+    public void unsubscribe(Subject subject, EventListener listener)
     {
         Logger.log(LogLevel.Debug, "Event listener unsubscribed for " + subject);
         if (registrar.containsKey(subject))
-            registrar.get(subject).remove(observer);
+            registrar.get(subject).remove(listener);
     }
 
     /**
@@ -127,7 +127,7 @@ public class EventManager
     public void notify(EventListener listener, Event event)
     {
         Logger.log(LogLevel.Debug, "Notifying event listener: \"" + event + "\"");
-        if (registrar.containsKey(event.getSubject()) && registrar.get(event.getSubject()).contains(listener))
+        if (registrar.containsKey(event.getSubject()) /*&& registrar.get(event.getSubject()).contains(listener)*/)
             listener.processEvent(event);
     }
 }

@@ -48,18 +48,6 @@ public class Game
     }
     
     /**
-     * Adds a player to the game.
-     * 
-     * @param name the player's name
-     */
-    public void addPlayer(String name)
-    {
-        Player player = new Player(name);
-        player.updatePosition(map.getSpawnPoint());
-        players.put(player.getName(), player);
-    }
-    
-    /**
      * Processes a command, returning a result with the outcome of the command processing.
      * 
      * @param command the command to be processed
@@ -68,7 +56,7 @@ public class Game
     public Result processCommand(Command command)
     {
         Result result = new Result();
-        result.setPlayer(command.getPlayer());
+        result.setPlayer(command.getPlayer().getName());
         if (handlers.getCommandHandler(command.getAction()) == null)
         {
             result.setResultCode(ResultCode.ServerError);
@@ -88,7 +76,7 @@ public class Game
             while ((command = new Command(sc.nextLine())) != null)
             {
                 Result result = new Result();
-                result.setPlayer(command.getPlayer());
+                result.setPlayer(command.getPlayer().getName());
                 if (handlers.getCommandHandler(command.getAction()) == null)
                 {
                     result.setResultCode(ResultCode.ServerError);
@@ -107,7 +95,7 @@ public class Game
         handlers.installCommandHandler(Action.Login, new LoginCommandHandler(players, map, eventManager));
         handlers.installCommandHandler(Action.Map, new MapCommandHandler(map, eventManager));
         handlers.installCommandHandler(Action.Message, new MessageCommandHandler(eventManager));
-        handlers.installCommandHandler(Action.Move, new MoveCommandHandler(players, map, eventManager));
+        handlers.installCommandHandler(Action.Move, new MoveCommandHandler(map, eventManager));
         handlers.installCommandHandler(Action.Players, new PlayersCommandHandler(players, eventManager));
         handlers.installCommandHandler(Action.Quit, new QuitCommandHandler(players, eventManager));
     }

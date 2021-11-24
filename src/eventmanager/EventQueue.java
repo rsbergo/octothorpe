@@ -52,7 +52,7 @@ public abstract class EventQueue implements EventListener
                 while (isRunning() || !eventQueue.isEmpty())
                 {
                     if (!eventQueue.isEmpty())
-                        processQueuedEvent(eventQueue.poll());
+                    processQueuedEvent(eventQueue.poll());
                 }
             });
             eventProcessor.start();
@@ -80,7 +80,7 @@ public abstract class EventQueue implements EventListener
             }
         }
     }
-
+    
     /**
      * Processes an event that has been added to the event queue.
      * 

@@ -7,6 +7,7 @@ import command.Command;
 import command.Result;
 import command.ResultCode;
 import event.PlayerDisconnectedEvent;
+import eventmanager.EventListener;
 import eventmanager.EventManager;
 import game.Player;
 import logger.LogLevel;
@@ -47,9 +48,11 @@ public class QuitCommandHandler implements CommandHandler
         if (isValidCommand(command, EXPECTED_ACTION, EXPECTED_ARGS_COUNT, result))
         {
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
-            Player player = players.remove(command.getPlayer());
+            Player player = players.remove(command.getPlayer().getName());
             result.setResultCode(ResultCode.Success);
             result.setMessage("So long, and thanks for all the fish!");
+            for (EventListener listener : player.getEventHandlerManager().getEventHandlerList())
+                eventManager.unsubscribe(listener);
             eventManager.notify(new PlayerDisconnectedEvent(player));
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }

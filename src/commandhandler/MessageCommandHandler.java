@@ -42,7 +42,7 @@ public class MessageCommandHandler implements CommandHandler
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             result.setResultCode(ResultCode.Success);
             result.setMessage("OK. Message sent.");
-            eventManager.notify(new SendMessageEvent(buildMessage(command.getPlayer(), command.getArgs())));
+            eventManager.notify(new SendMessageEvent(buildMessage(command.getPlayer().getName(), command.getArgs())));
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }

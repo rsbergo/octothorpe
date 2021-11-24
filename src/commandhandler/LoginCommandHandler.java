@@ -9,6 +9,7 @@ import command.ResultCode;
 import event.ItemDataEvent;
 import event.MapDataEvent;
 import event.PlayerConnectedEvent;
+import event.Subject;
 import eventmanager.EventManager;
 import game.GameMap;
 import game.Item;
@@ -57,17 +58,25 @@ public class LoginCommandHandler implements CommandHandler
         {
             Logger.log(LogLevel.Debug, "Start processing command: \"" + command + "\"");
             String name = command.getArgs().get(0);
-            if (command.getPlayer() != null)         // player has already logged in
+            if (command.getPlayer().getName() != null) // player has already logged in
                 getPlayerLoggedInResult(result);
-            else if (players.get(name) != null)      // player's name already in use in the game
+            else if (players.get(name) != null)        // player's name already in use in the game
                 getPlayerInGameResult(result, name);
-            else                                     // command's player is null and name is not in use
+            else                                       // command's player is null and name is not in use
             {
-                Player player = new Player(name);
+                //Player player = new Player(name);
+                Player player = command.getPlayer();
+                player.setName(name);
                 player.updatePosition(map.getSpawnPoint());
                 players.put(player.getName(), player);
                 getSuccessResult(result, player.getName());
-                // TODO: subscribe player to events
+                eventManager.subscribe(Subject.MapData, player.getEventHandlerManager().getEventHandler(Subject.MapData));
+                eventManager.subscribe(Subject.ItemCollected, player.getEventHandlerManager().getEventHandler(Subject.ItemCollected));
+                eventManager.subscribe(Subject.ItemData, player.getEventHandlerManager().getEventHandler(Subject.ItemData));
+                eventManager.subscribe(Subject.PlayerConnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerConnected));
+                eventManager.subscribe(Subject.PlayerDisconnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerDisconnected));
+                eventManager.subscribe(Subject.PlayerUpdate, player.getEventHandlerManager().getEventHandler(Subject.PlayerUpdate));
+                eventManager.subscribe(Subject.SendMessage, player.getEventHandlerManager().getEventHandler(Subject.SendMessage));
                 generateEvents(player);
             }
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
@@ -107,9 +116,9 @@ public class LoginCommandHandler implements CommandHandler
     // Generates events triggered by a successful login
     private void generateEvents(Player player)
     {
-        eventManager.notify(new MapDataEvent(map)); // TODO: notify only the player
+        eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.MapData), new MapDataEvent(map));
         for (Item item : map.getItems())
-            eventManager.notify(new ItemDataEvent(item)); // TODO: notify only the player
+            eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.ItemData), new ItemDataEvent(item));
         eventManager.notify(new PlayerConnectedEvent(player));
     }
 }

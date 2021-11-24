@@ -7,6 +7,7 @@ import command.Command;
 import command.Result;
 import command.ResultCode;
 import event.PlayerUpdateEvent;
+import event.Subject;
 import eventmanager.EventManager;
 import game.Player;
 import logger.LogLevel;
@@ -49,7 +50,7 @@ public class PlayersCommandHandler implements CommandHandler
             result.setResultCode(ResultCode.Success);
             result.setMessage(getSuccessMessage());
             for (String player : players.keySet())
-                eventManager.notify(new PlayerUpdateEvent(players.get(player)));
+                eventManager.notify(command.getPlayer().getEventHandlerManager().getEventHandler(Subject.PlayerUpdate), new PlayerUpdateEvent(players.get(player)));
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
         }
     }

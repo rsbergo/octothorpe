@@ -6,6 +6,7 @@ import command.Action;
 import command.Command;
 import command.Result;
 import command.ResultCode;
+import game.Player;
 
 /**
  * Provides a mechanism to process commands for a game.
@@ -101,9 +102,9 @@ public interface CommandHandler
      * @param result the result to be returned once the command has been processed
      * @return true if the player received is not null; false otherwise
      */
-    default boolean hasValidPlayer(String player, Result result)
+    default boolean hasValidPlayer(Player player, Result result)
     {
-        if (player != null)
+        if ((player != null) && (player.getName() != null))
             return true;
         result.setResultCode(ResultCode.BadRequest);
         result.setMessage("Error. You must log in first.");
