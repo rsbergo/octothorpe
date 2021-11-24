@@ -1,6 +1,9 @@
 package commandhandler;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Map;
+import java.util.Scanner;
 
 import command.Action;
 import command.Command;
@@ -64,19 +67,12 @@ public class LoginCommandHandler implements CommandHandler
                 getPlayerInGameResult(result, name);
             else                                       // command's player is null and name is not in use
             {
-                //Player player = new Player(name);
                 Player player = command.getPlayer();
                 player.setName(name);
-                player.updatePosition(map.getSpawnPoint());
                 players.put(player.getName(), player);
+                updatePlayerPosition(player);
                 getSuccessResult(result, player.getName());
-                eventManager.subscribe(Subject.MapData, player.getEventHandlerManager().getEventHandler(Subject.MapData));
-                eventManager.subscribe(Subject.ItemCollected, player.getEventHandlerManager().getEventHandler(Subject.ItemCollected));
-                eventManager.subscribe(Subject.ItemData, player.getEventHandlerManager().getEventHandler(Subject.ItemData));
-                eventManager.subscribe(Subject.PlayerConnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerConnected));
-                eventManager.subscribe(Subject.PlayerDisconnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerDisconnected));
-                eventManager.subscribe(Subject.PlayerUpdate, player.getEventHandlerManager().getEventHandler(Subject.PlayerUpdate));
-                eventManager.subscribe(Subject.SendMessage, player.getEventHandlerManager().getEventHandler(Subject.SendMessage));
+                installPlayerListeners(player);
                 generateEvents(player);
             }
             Logger.log(LogLevel.Debug, "Processing command finished. Result: \"" + result + "\"");
@@ -91,6 +87,34 @@ public class LoginCommandHandler implements CommandHandler
                && hasExpectedNumberofArguments(command.getArgs(), expectedArgsCount, result);
     }
     
+    // Updates the player position to be either the map's spawn point or the player's last saved position.
+    // Player data is stored as a comma-separated list of fields:
+    // name,score,x,y
+    private void updatePlayerPosition(Player player)
+    {
+        String file = "res/players.data";
+        try (Scanner sc = new Scanner(new File(file)))
+        {
+            while (sc.hasNextLine())
+            {
+                String[] tokens = sc.nextLine().split(",");
+                if (player.getName().equalsIgnoreCase(tokens[0]))
+                {
+                    player.getPosition().setX(Integer.parseInt(tokens[2]));
+                    player.getPosition().setY(Integer.parseInt(tokens[3]));
+                    player.updateScore(Integer.parseInt(tokens[1]));
+                    return;
+                }
+            }
+            player.updatePosition(map.getSpawnPoint());
+        }
+        catch (FileNotFoundException e)
+        {
+            Logger.log(LogLevel.Debug, "Could not find players data file", e);
+            // do nothing, use spawn point from map
+        }
+    }
+
     // Updates result with the outcome of a login attempt when the player is already logged in.
     private void getPlayerLoggedInResult(Result result)
     {
@@ -111,6 +135,18 @@ public class LoginCommandHandler implements CommandHandler
         result.setResultCode(ResultCode.Success);
         result.setPlayer(name);
         result.setMessage("Welcome to Octothorpe # The Game, <" + name + ">");
+    }
+
+    // Installs player's listeners to the games event manager.
+    private void installPlayerListeners(Player player)
+    {
+        eventManager.subscribe(Subject.MapData, player.getEventHandlerManager().getEventHandler(Subject.MapData));
+        eventManager.subscribe(Subject.ItemCollected, player.getEventHandlerManager().getEventHandler(Subject.ItemCollected));
+        eventManager.subscribe(Subject.ItemData, player.getEventHandlerManager().getEventHandler(Subject.ItemData));
+        eventManager.subscribe(Subject.PlayerConnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerConnected));
+        eventManager.subscribe(Subject.PlayerDisconnected, player.getEventHandlerManager().getEventHandler(Subject.PlayerDisconnected));
+        eventManager.subscribe(Subject.PlayerUpdate, player.getEventHandlerManager().getEventHandler(Subject.PlayerUpdate));
+        eventManager.subscribe(Subject.SendMessage, player.getEventHandlerManager().getEventHandler(Subject.SendMessage));
     }
 
     // Generates events triggered by a successful login

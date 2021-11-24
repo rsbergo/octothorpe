@@ -102,4 +102,15 @@ public class Player
     {
         return name + ", " + pos.getX() + ", " + pos.getY() + ", " + score;
     }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj instanceof Player)
+        {
+            Player player = (Player) obj;
+            return this.name.equalsIgnoreCase(player.name);
+        }
+        return false;
+    }
 }

@@ -1,9 +1,9 @@
 package game;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 import command.Action;
 import command.Command;
@@ -31,7 +31,7 @@ public class Game
     private final String MAP_FILE = "res/game.map"; // default game map
     
     private game.GameMap map = null;                                      // the map used in the game
-    private Map<String, Player> players = new HashMap<String, Player>();  // list of players in the game
+    private Map<String, Player> players = new ConcurrentHashMap<String, Player>();  // list of players in the game
     private CommandHandlerManager handlers = new CommandHandlerManager(); // command handler manager
     private EventManager eventManager = new EventManager();               // list of event managers
     

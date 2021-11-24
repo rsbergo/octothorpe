@@ -36,6 +36,8 @@ public abstract class EventQueue implements EventListener
     public void processEvent(Event event)
     {
         eventQueue.add(event);
+        if (!isRunning())
+            startProcessing();
     }
     
     /**
@@ -49,11 +51,9 @@ public abstract class EventQueue implements EventListener
             setRunning(true);
             eventProcessor = new Thread(() ->
             {
-                while (isRunning() || !eventQueue.isEmpty())
-                {
-                    if (!eventQueue.isEmpty())
+                while (isRunning() && !eventQueue.isEmpty())
                     processQueuedEvent(eventQueue.poll());
-                }
+                stopProcessing();
             });
             eventProcessor.start();
             Logger.log(LogLevel.Debug, "Event processor thread started");
