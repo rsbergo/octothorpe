@@ -32,7 +32,7 @@ public class MapDataEventHandler extends EventQueue implements EventHandler
             {
                 Response response = new Response();
                 response.setResponseCode(ResultCode.MapData);
-                response.setMessage(mapDataEvent.getMap().getRowsCount() + "," + mapDataEvent.getMap().getRowsCount());
+                response.setMessage(mapDataEvent.getMap().getRowsCount() + "," + mapDataEvent.getMap().getColsCount());
                 list.add(response);
             }
             
