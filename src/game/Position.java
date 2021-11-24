@@ -90,9 +90,21 @@ public class Position
         if (obj instanceof Position)
         {
             Position pos = (Position) obj;
-            return this.x == pos.x
-                   && this.y == pos.y;
+            return equals(pos.x, pos.y);
         }
         return false;
+    }
+
+    /**
+     * Compare this position's coordinates to the coordinates specified.
+     * 
+     * @param x an x coordinate
+     * @param y an y coordinate
+     * @return true if the coordinates specified math this position's coordinates; false otherwise
+     */
+    public boolean equals(int x, int y)
+    {
+        return this.x == x
+               && this.y == y;
     }
 }

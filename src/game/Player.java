@@ -97,6 +97,16 @@ public class Player
         score += points;
     }
 
+    /**
+     * Resets the player's score to the specified points.
+     * 
+     * @param points the number of points to be set as the player's score
+     */
+    public void resetScore(int points)
+    {
+        score = points;
+    }
+
     @Override
     public String toString()
     {
