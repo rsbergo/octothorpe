@@ -47,7 +47,7 @@ public class GameMap
         loadMapFromFile(mapFile);
         checkSpawnPoint();
         checkItems();
-        Logger.log(LogLevel.Debug, "Map loaded:\r\n" + getMapString());
+        Logger.log(LogLevel.Info, "Map loaded:\r\n" + getMapString());
     }
 
     // Setters and Getters
@@ -65,7 +65,9 @@ public class GameMap
      */
     public boolean isValidPosition(Position pos)
     {
-        return map[pos.getY()][pos.getX()] != OBSTACLE;
+        return pos.getX() < cols
+               && pos.getY() < rows
+               && map[pos.getY()][pos.getX()] != OBSTACLE;
     }
 
     /**

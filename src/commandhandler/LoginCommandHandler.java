@@ -67,9 +67,11 @@ public class LoginCommandHandler implements CommandHandler
             {
                 Player player = command.getPlayer();
                 player.setName(name);
-                player.updatePosition(map.getSpawnPoint());
+                player.updatePosition(map.getSpawnPoint());        // initial position
                 players.put(player.getName(), player);
-                PlayerDataPersistence.getStoredPlayerData(player);
+                PlayerDataPersistence.getStoredPlayerData(player); // update position and score
+                if (!map.isValidPosition(player.getPosition()))    // if map changed, check if it's still valid position
+                    player.updatePosition(map.getSpawnPoint());
                 getSuccessResult(result, player.getName());
                 installPlayerListeners(player);
                 generateEvents(player);
