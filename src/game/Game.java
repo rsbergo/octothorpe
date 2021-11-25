@@ -21,28 +21,24 @@ import eventmanager.EventManager;
 
 /**
  * An instance of the Octothorpe Game.
- * A player can be added to the game and issue commands to move around the map.
- * 
- * TODO: persist information about players
- * TODO: parameterize map used by game
  */
 public class Game
 {
-    private final String MAP_FILE = "res/game.map"; // default game map
-    
-    private game.GameMap map = null;                                      // the map used in the game
+    private game.GameMap map = null;                                                // the map used in the game
     private Map<String, Player> players = new ConcurrentHashMap<String, Player>();  // list of players in the game
-    private CommandHandlerManager handlers = new CommandHandlerManager(); // command handler manager
-    private EventManager eventManager = new EventManager();               // list of event managers
+    private CommandHandlerManager handlers = new CommandHandlerManager();           // command handler manager
+    private EventManager eventManager = new EventManager();                         // list of event managers
     
     /**
      * Constructor.
      * Initializes the game map.
      * Installs command handlers.
+     * 
+     * @param mapFile the file containing the map information
      */
-    public Game()
+    public Game(File mapFile)
     {
-        map = new game.GameMap(new File(MAP_FILE));
+        map = new game.GameMap(mapFile);
         installCommandHandlers();
         registerEvents();
     }

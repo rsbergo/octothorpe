@@ -1,20 +1,25 @@
+import java.io.File;
+
 import gameserver.GameServer;
 import logger.Logger;
 import logger.LogLevel;
 
 public class Octothorpe
 {
+    private static final String DEFAULT_MAP = "res/default.map";
+
     public static void main(String[] args)
     {
-        if (args.length != 1)
+        if (args.length < 1 || args.length > 2)
         {
-            System.err.println("Usage: java Octothorpe <port number>");
+            System.err.println("Usage: java Octothorpe <port number> [<map file>]");
             System.exit(1);
         }
         
         Logger.setLogLevel(LogLevel.Debug);
         int port = getPort(args[0]);
-        new GameServer(port).runGameServer();
+        File mapFile = getMapFile(args);
+        new GameServer(port).runGameServer(mapFile);
     }
     
     // Gets the port number from command line arguments
@@ -38,5 +43,19 @@ public class Octothorpe
             System.exit(1);
         }
         return 0;
+    }
+
+    // Gets the file name for the map file from command line arguments
+    private static File getMapFile(String[] args)
+    {
+        File mapFile = new File(DEFAULT_MAP);
+        if (args.length == 2)
+            mapFile = new File(args[1]);
+        if (!mapFile.exists())
+        {
+            System.err.println("Could not find map fils \"" + mapFile.getAbsolutePath() + "\"");
+            System.exit(1);
+        }
+        return mapFile;
     }
 }

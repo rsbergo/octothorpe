@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import logger.LogLevel;
@@ -16,24 +17,23 @@ import logger.Logger;
  * The character '#' represents an obstacle on the map. A player cannot move into a position represented by '#'.
  * Players spawn at the spawn point at their login. The character 'S' represents a spawn point for players.
  * Maps can have a list of items. The character 'i' represents an item on the map.
- * 
- * TODO: add support for variable line lenght
- * TODO: determine item value on map file
- * TODO: randomize item position
- * TODO: randomize item value
- * TODO: randomize spawn point
- * TODO: support moving from one edge to another
+ * If the map file doesn't define the spawn point or items, these are defined randomly once the map is loaded.
+ * Item values are defined randomly.
  */
 public class GameMap
 {
     private final char OBSTACLE = '#';
     private final char SPAWN = 'S';
     private final char ITEM = 'i';
+    private final char SPACE = ' ';
+    private final double MAX_ITEM_RATIO = 0.15;
+    private final int MAX_ITEM_VALUE = 100;
 
+    private String name = null;                       // the name of the map
     private int rows = 0;                             // the number of rows in the map
     private int cols = 0;                             // the number of columns in the map
     private char[][] map;                             // the map representation
-    private Position spawnPoint = new Position();     // spawn point of players
+    private Position spawnPoint = null;               // spawn point of players
     private List<Item> items = new ArrayList<Item>(); // list of items contained in the map
     
     /**
@@ -45,9 +45,13 @@ public class GameMap
     public GameMap(File mapFile)
     {
         loadMapFromFile(mapFile);
+        checkSpawnPoint();
+        checkItems();
+        Logger.log(LogLevel.Debug, "Map loaded:\r\n" + getMapString());
     }
 
     // Setters and Getters
+    public String getName() { return name; }
     public Position getSpawnPoint() { return spawnPoint; }
     public List<Item> getItems() { return items; }
     public int getRowsCount() { return rows; }
@@ -131,6 +135,7 @@ public class GameMap
     private void loadMapFromFile(File mapFile)
     {
         Logger.log(LogLevel.Info, "Loading map from file: \"" + mapFile.getAbsolutePath() + "\"");
+        name = mapFile.getName().substring(0, mapFile.getName().indexOf('.'));
         List<String> lines = readFileLines(mapFile);
         rows = lines.size();
         cols = lines.get(0).length();
@@ -144,7 +149,7 @@ public class GameMap
                 if (map[i][j] == SPAWN)
                     spawnPoint = new Position(j, i);
                 if (map[i][j] == ITEM)
-                    items.add(new Item(j, i, i + j));
+                    items.add(new Item(j, i, getRandomItemValue()));
             }
         }
     }
@@ -164,5 +169,67 @@ public class GameMap
             Logger.log(LogLevel.Error, message, e);
         }
         return lines;
+    }
+
+    // Checks whether a spawn point was defined in the map.
+    // If not defined, picks a random position.
+    private void checkSpawnPoint()
+    {
+        if (spawnPoint == null)
+        {
+            spawnPoint = getRandomPosition();
+            Logger.log(LogLevel.Info, "Spawn point randomly defined at " + spawnPoint);
+        }
+    }
+
+    // Checks whether there are items on the map.
+    // If not, create randomized items.
+    private void checkItems()
+    {
+        if (items.isEmpty())
+        {
+            Random rand = new Random();
+            int maxItemCount = (int) (rows * cols * MAX_ITEM_RATIO);
+            int itemCount = rand.nextInt(maxItemCount);
+            for (int i = 0; i < itemCount; i++)
+            {
+                Position pos = getRandomPosition();
+                Item item = new Item(pos, getRandomItemValue());
+                items.add(item);
+                map[pos.getY()][pos.getX()] = ITEM;
+                Logger.log(LogLevel.Info, "New item generated: " + item);
+            }
+        }
+    }
+
+    // Gets a random valid position within the map
+    private Position getRandomPosition()
+    {
+        Random rand = new Random();
+        int x = 0;
+        int y = 0;
+        do
+        {
+            x = rand.nextInt(cols);
+            y = rand.nextInt(rows);
+        } while (map[y][x] != SPACE);
+        map[y][x] = SPAWN;
+        return new Position(x, y);
+    }
+
+    // Gets a random value for an item
+    private int getRandomItemValue()
+    {
+        Random rand = new Random();
+        return rand.nextInt(MAX_ITEM_VALUE);
+    }
+
+    // Retrieves a string representation of the map
+    private String getMapString()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < rows; i++)
+            sb.append(new String(map[i]) + "\r\n");
+        return sb.toString();
     }
 }

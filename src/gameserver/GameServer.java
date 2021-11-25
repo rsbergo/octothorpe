@@ -1,5 +1,6 @@
 package gameserver;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -40,19 +41,18 @@ public class GameServer
      * Instantiates the game being hosted and sets the GameServer status to true.
      * Initializers the server socket and starts listening for player connections.
      * When a new player connection is established, creates a thread for this player and starts it.
+     * 
+     * @param mapFile the file containing map data
      */
-    public void runGameServer()
+    public void runGameServer(File mapFile)
     {
-        game = new Game();
+        game = new Game(mapFile);
         running = true;
         socket = createServerSocket(port);
         while (running)
         {
             PlayerHandler handler = acceptConnection(socket);
             handlers.add(handler);
-            // TODO: create player
-            // TODO: give player its player handler
-            // TODO: start threads for player
             startPlayerThread(handler);
         }
         stopGameServer();
@@ -68,7 +68,8 @@ public class GameServer
         running = false;
         try
         {
-            // TODO: close player sockets in player handlers
+            for (PlayerHandler handler : handlers)
+                handler.terminate();
             Logger.log(LogLevel.Info, "Stopping the server...");
             socket.close();
             Logger.log(LogLevel.Info, "Goodbye");
