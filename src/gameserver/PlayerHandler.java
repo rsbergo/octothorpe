@@ -114,8 +114,6 @@ public class PlayerHandler implements Runnable
     private EventHandlerManager createEventHandlerManager()
     {
         EventHandlerManager handlers = new EventHandlerManager();
-
-        // TODO: Install Event Handlers
         handlers.installEventHandler(Subject.MapData, new MapDataEventHandler(this));
         handlers.installEventHandler(Subject.ItemCollected, new ItemCollectedEventHandler(this));
         handlers.installEventHandler(Subject.ItemData, new ItemDataEventHandler(this));

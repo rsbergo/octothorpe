@@ -16,7 +16,7 @@ public class Octothorpe
             System.exit(1);
         }
         
-        Logger.setLogLevel(LogLevel.Debug);
+        Logger.setLogLevel(LogLevel.Info);
         int port = getPort(args[0]);
         File mapFile = getMapFile(args);
         new GameServer(port).runGameServer(mapFile);
