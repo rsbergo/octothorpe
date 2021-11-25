@@ -45,7 +45,6 @@ public class GameMap
     public GameMap(File mapFile)
     {
         loadMapFromFile(mapFile);
-        checkSpawnPoint();
         checkItems();
         Logger.log(LogLevel.Info, "Map loaded:\r\n" + getMapString());
     }
@@ -56,6 +55,12 @@ public class GameMap
     public int getRowsCount() { return rows; }
     public int getColsCount() { return cols; }
     
+    /**
+     * Retrieves the map spawn point.
+     * If the map doesn't define a spawn point, return a randomized position.
+     * 
+     * @return the spawn point for the map
+     */
     public Position getSpawnPoint()
     {
         if (spawnPoint == null)
@@ -181,17 +186,6 @@ public class GameMap
             Logger.log(LogLevel.Error, message, e);
         }
         return lines;
-    }
-
-    // Checks whether a spawn point was defined in the map.
-    // If not defined, picks a random position.
-    private void checkSpawnPoint()
-    {
-        if (spawnPoint == null)
-        {
-            spawnPoint = getRandomPosition();
-            Logger.log(LogLevel.Info, "Spawn point randomly defined at " + spawnPoint);
-        }
     }
 
     // Checks whether there are items on the map.
