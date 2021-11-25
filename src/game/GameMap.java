@@ -52,10 +52,20 @@ public class GameMap
 
     // Setters and Getters
     public String getName() { return name; }
-    public Position getSpawnPoint() { return spawnPoint; }
     public List<Item> getItems() { return items; }
     public int getRowsCount() { return rows; }
     public int getColsCount() { return cols; }
+    
+    public Position getSpawnPoint()
+    {
+        if (spawnPoint == null)
+        {
+            Position pos = getRandomPosition();
+            Logger.log(LogLevel.Info, "Spawn point randomly defined at " + spawnPoint);
+            return pos;
+        }
+        return spawnPoint;
+    }
 
     /**
      * Checks whether the specified position is valid for a player move.
