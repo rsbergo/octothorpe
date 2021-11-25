@@ -50,7 +50,7 @@ public class Octothorpe
     {
         File mapFile = new File(DEFAULT_MAP);
         if (args.length == 2)
-            mapFile = new File(args[1]);
+            mapFile = new File("res/" + args[1]);
         if (!mapFile.exists())
         {
             System.err.println("Could not find map fils \"" + mapFile.getAbsolutePath() + "\"");
