@@ -55,8 +55,8 @@ public class Game
         result.setPlayer(command.getPlayer().getName());
         if (handlers.getCommandHandler(command.getAction()) == null)
         {
-            result.setResultCode(ResultCode.ServerError);
-            result.setMessage("Error. Cannot execute command.");
+            result.setResultCode(ResultCode.BadRequest);
+            result.setMessage("Error. Cannot process request.");
         }
         else
             handlers.getCommandHandler(command.getAction()).processCommand(command, result);
