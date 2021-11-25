@@ -10,6 +10,7 @@ import datapersistence.PlayerDataPersistence;
 import event.ItemDataEvent;
 import event.MapDataEvent;
 import event.PlayerConnectedEvent;
+import event.PlayerUpdateEvent;
 import event.Subject;
 import eventmanager.EventManager;
 import game.GameMap;
@@ -128,6 +129,8 @@ public class LoginCommandHandler implements CommandHandler
         eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.MapData), new MapDataEvent(map));
         for (Item item : map.getItems())
             eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.ItemData), new ItemDataEvent(item));
+        for (String p : players.keySet())
+            eventManager.notify(player.getEventHandlerManager().getEventHandler(Subject.PlayerUpdate), new PlayerUpdateEvent(players.get(p)));
         eventManager.notify(new PlayerConnectedEvent(player));
     }
 }
