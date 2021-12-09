@@ -8,15 +8,29 @@ This project is written in **Java (JavaSE-17)** on **Windows**.
 ## How to compile
 
 From the repository root folder:
+
+Server:
 ```
-javac server/src/Octothorpe.java -cp server/src -d server/bin
+javac src/server/Octothorpe.java -cp src -d bin
+```
+
+Client
+```
+javac src/client/Octothorpe.java -cp src -d bin
 ```
 
 ## How to run
 
 From the repository root folder:
+
+Server:
 ```
-java -cp server/bin Octothorpe <port>
+java -cp bin server.Octothorpe <port>
+```
+
+Client:
+```
+java -cp bin client.Octothorpe <host>
 ```
 
 ## My experience with this project
