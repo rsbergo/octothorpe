@@ -6,11 +6,19 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Octothorpe",
+            "name": "Launch Octothorpe Server",
             "request": "launch",
-            "mainClass": "Octothorpe",
+            "mainClass": "server.Octothorpe",
             "projectName": "octothorpe-rsbergo_30cc0493",
             "args": ["7777"]
+        },
+        {
+            "type": "java",
+            "name": "Launch Octothorpe Client",
+            "request": "launch",
+            "mainClass": "client.Octothorpe",
+            "projectName": "octothorpe-rsbergo_30cc0493",
+            "args": []
         }
     ]
 }

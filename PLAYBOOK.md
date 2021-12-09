@@ -9,14 +9,14 @@ This project is written in **Java (JavaSE-17)** on **Windows**.
 
 From the repository root folder:
 ```
-javac src/Octothorpe.java -cp src -d bin
+javac server/src/Octothorpe.java -cp server/src -d server/bin
 ```
 
 ## How to run
 
 From the repository root folder:
 ```
-java -cp bin Octothorpe <port>
+java -cp server/bin Octothorpe <port>
 ```
 
 ## My experience with this project
