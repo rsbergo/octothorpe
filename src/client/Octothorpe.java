@@ -8,6 +8,10 @@ import client.gameclient.GameClient;
 
 public class Octothorpe
 {
+    // TODO: add logger
+    // TODO: parameterize host and port
+    // TODO: replace terminal with Swing
+
     public static void main(String[] args)
     {
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in)))

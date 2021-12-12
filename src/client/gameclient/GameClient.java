@@ -5,9 +5,12 @@ import java.io.IOException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import javax.swing.JFrame;
+
 import client.connector.Connector;
 import client.connector.Request;
 import client.connector.Response;
+import client.gui.ClientWindow;
 
 /**
  * Coordinates the interactions between the player and the game server.
@@ -35,6 +38,13 @@ public class GameClient
             initialize(host, port, in);
             listener.start();
             running = true;
+            
+            java.awt.EventQueue.invokeLater(() -> 
+            {
+                JFrame mainWindow = new ClientWindow();
+                mainWindow.setVisible(true);
+            });
+
             while (running)
             {
                 String command = null;
