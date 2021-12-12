@@ -55,7 +55,7 @@ public class PlayerConnectedEventHandler extends EventQueue implements EventHand
                 {
                     Logger.log(LogLevel.Info, "Sending notification: \"" + response.toString() + "\"");
                     handler.getSocket().send(response);
-                    Logger.log(LogLevel.Info, "Sending notification: \"" + response.toString() + "\"");
+                    Logger.log(LogLevel.Info, "Notification sent");
                 }
             }
             catch (IOException e)
