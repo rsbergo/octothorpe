@@ -16,6 +16,7 @@ public class Connector implements Closeable
     private Socket socket = null;         // the socket connected to the game server.
     private BufferedReader reader = null; // reads data from the socket.
     private PrintWriter writer = null;    // writes data into the socket.
+    private boolean connected = false;    // indicates whether this connector is connected to the game server
     
     /**
      * Establishes a new connection to the specified port number on the named host.
@@ -26,21 +27,46 @@ public class Connector implements Closeable
      */
     public void connectTo(String host, int port) throws IOException
     {
+        // TODO: throw exception if already connected
         try
         {
             System.out.println("Connecting to \"" + host + ":" + port + "\"..."); // TODO: replace with logger
             socket = new Socket(host, port);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream());
+            connected = true;
             System.out.println("Connection established!"); // TODO: replace with logger
         }
         catch (IOException e)
         {
+            disconnect();
             System.err.println("Something went wrong while setting up the connection."); // TODO: replace with logger
             throw e;
         }
     }
+
+    /**
+     * Checks whether the Connector is connected to the game server.
+     * 
+     * @return true if the Connector is connected to a game server, false otherwise
+     */
+    public boolean isConnected()
+    {
+        return connected;
+    }
     
+    /**
+     * Disconnects the Connector from the game server.
+     */
+    public void disconnect()
+    {
+        if (isConnected())
+        {
+            connected = false;
+            close();
+        }
+    }
+
     /**
      * Sends the specified request through the connection.
      * A line termination sequence, "\r\n", is appended to the request being sent.
@@ -50,9 +76,9 @@ public class Connector implements Closeable
      */
     public void send(Request request) throws IOException
     {
-        if (writer != null)
+        if (isConnected() && writer != null)
         {
-            System.out.println("Sending request: \"" + request + "\""); // TODO: replace with logger
+//            System.out.println("Sending request: \"" + request + "\""); // TODO: replace with logger
             writer.print(request + "\r\n");
             writer.flush();
             return;
@@ -72,15 +98,15 @@ public class Connector implements Closeable
     {
         // TODO: run in its own thread, so it doesn't block send?
         // TODO: generate events
-        System.out.println("Waiting for message from socket"); // TODO: replace with logger
-        if (reader != null)
+        if (isConnected() && reader != null)
         {
+//            System.out.println("Waiting for message from socket"); // TODO: replace with logger
             Response response = null;
             String message = null;
             if ((message = reader.readLine()) != null)
             {
                 response = new Response(message);
-                System.out.println("Response received: \"" + response + "\"");
+//                System.out.println("Response received: \"" + response + "\"");
             }
             return response;
         }
@@ -88,10 +114,11 @@ public class Connector implements Closeable
     }
 
     @Override
-    public void close() throws IOException
+    public void close()
     {
         try
         {
+            connected = false;
             System.out.println("Closing connection..."); // TODO: replace with logger
             if (reader != null)
                 reader.close();
