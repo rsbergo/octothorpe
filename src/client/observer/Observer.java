@@ -1,5 +1,7 @@
 package client.observer;
 
+import client.event.Event;
+
 /**
  * An observer listens to events and processes them.
  */
