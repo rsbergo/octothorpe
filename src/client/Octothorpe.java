@@ -1,10 +1,11 @@
 package client;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import logger.Logger;
 
 public class Octothorpe
 {
-    private static final String LOG_FOLDER = "out";
+    private static final String LOG_FOLDER = "log";
     public static void main(String[] args)
     {
         if (args.length < 2)
@@ -24,7 +25,7 @@ public class Octothorpe
         }
 
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-             PrintStream logger = new PrintStream(new File(getLogFileName())))
+             PrintStream logger = new PrintStream(createLogFile()))
         {
             Logger.setLogLevel(LogLevel.Debug, logger);
             GameClient game = new GameClient();
@@ -37,11 +38,24 @@ public class Octothorpe
         }
     }
 
-    // Returns the file name for the log file.
-    private static String getLogFileName()
+    // Creates the logger PrintStream.
+    // Attempts to initialize a log file. If not possible, return stdout.
+    private static PrintStream createLogFile()
     {
-        String dateString = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
-        return (LOG_FOLDER + "/" + "log_" + dateString + ".log");
+        PrintStream out = new PrintStream(System.out);
+        try
+        {
+            String dateString = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date());
+            String fileName = LOG_FOLDER + "/" + "log_" + dateString + ".log";
+            Files.createDirectories(Paths.get(LOG_FOLDER));
+            out = new PrintStream(fileName);
+        }
+        catch (IOException e)
+        {
+            System.err.println("It was not possible to create log file...");
+            e.printStackTrace();
+        }
+        return out;
     }
 
     // Gets the port number from command line arguments
