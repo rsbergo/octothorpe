@@ -7,10 +7,15 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.swing.JFrame;
 
+import client.connector.Command;
 import client.connector.Connector;
 import client.connector.Request;
-import client.connector.Response;
+import client.connector.ResponseCode;
+import client.event.Event;
+import client.event.Subject;
+import client.event.SynchronousResponseEvent;
 import client.gui.ClientWindow;
+import client.observer.Observer;
 
 /**
  * Coordinates the interactions between the player and the game server.
@@ -19,17 +24,15 @@ import client.gui.ClientWindow;
  * Responses are received in a different thread. Only synchronous responses (ResponseCode >= 200) are sent to player.
  * Asynchronous responses are consumed by the listener thread.
  */
-public class GameClient
+public class GameClient implements Observer
 {
-    // TODO: make it an observer. Listener thread becomes an object that generates "synchronous events" (Observable). This processEvent puts the response in the response queue.
-
     private Connector conn = null;    // the connection with the game server
     private BufferedReader in = null; // the input stream for player commands
     private boolean running = false;  // indicates whether the game client is running
     private Thread listener = null;   // thread that listens to messages from game server
 
     // synchronizes synchronous responses between the listener thread and the main thread
-    private BlockingDeque<Response> responseQueue = new LinkedBlockingDeque<Response>();
+    private BlockingDeque<Event> eventQueue = new LinkedBlockingDeque<Event>();
     
     public void run(String host, int port, BufferedReader in)
     {
@@ -44,18 +47,16 @@ public class GameClient
                 JFrame mainWindow = new ClientWindow();
                 mainWindow.setVisible(true);
             });
-
-            while (running)
+            
+            String command = null;
+            System.out.print("> ");
+            while (running && (command = in.readLine()) != null)
             {
-                String command = null;
+                Request request = new Request(command);
+                conn.send(request);
+                Event responseEvent = receiveEvent();
+                handleEvent(request, responseEvent);
                 System.out.print("> ");
-                while ((command = in.readLine()) != null)
-                {
-                    conn.send(new Request(command));
-                    Response response = receiveResponse();
-                    System.out.println("< " + response);
-                    System.out.print("> ");
-                }
             }
             terminate();
         }
@@ -90,6 +91,12 @@ public class GameClient
         }
     }
 
+    @Override
+    public void processEvent(Event event)
+    {
+        eventQueue.add(event);
+    }
+
     // Initializes the resources for the game server
     private void initialize(String host, int port, BufferedReader in) throws IOException
     {
@@ -97,43 +104,53 @@ public class GameClient
         conn = new Connector();
         conn.connectTo(host, port);
         this.in = in;
-        listener = new Thread(() -> { startListening(); } );
+        listener = new Thread(initializerNotificationManager(conn));
         System.out.println("Game server initialized"); // TODO: replace with logger
     }
 
-    // Starts listening to messages from the game server
-    private void startListening()
+    // Initializes the notifications manager for the game client.
+    private NotificationManager initializerNotificationManager(Connector conn)
     {
-        try
-        {
-            Response response = null;
-            while ((response = conn.receive()) != null)
-            {
-                if (response.getResponseCode().getCode() >= 200)
-                    responseQueue.add(response);
-            }
-        }
-        catch (IOException e)
-        {
-            System.err.println("Error receiving message from game server"); // TODO: replace with logger
-            e.printStackTrace();
-        }
+        NotificationManager notificationManager = new NotificationManager(conn);
+
+        notificationManager.registerSubject(Subject.SynchronousResponse);
+        notificationManager.registerSubject(Subject.PlayerUpdated);
+        notificationManager.registerSubject(Subject.ItemData);
+        notificationManager.registerSubject(Subject.ItemTaken);
+        notificationManager.registerSubject(Subject.MapData);
+
+        notificationManager.subscribe(Subject.SynchronousResponse, this);
+
+        return notificationManager;
     }
 
-    // Retrieves the first element from response queue.
-    // Blocks if response queue is empty, until a response becomes available.
-    private Response receiveResponse()
+    // Retrieves the first element from event queue.
+    // Blocks if event queue is empty, until an event becomes available.
+    private Event receiveEvent()
     {
-        Response response = null;
+        Event event = null;
         try
         {
-            response = responseQueue.takeFirst();
+            event = eventQueue.takeFirst();
         }
         catch (InterruptedException e)
         {
             System.err.println("Waiting for a response was interrupted"); // TODO: replace with logger
             e.printStackTrace();
         }
-        return response;
+        return event;
+    }
+
+    // Prints the response.
+    // If the command was Quit and the response is successful, stop the game client.
+    private void handleEvent(Request request, Event event)
+    {
+        if (event.getSubject() == Subject.SynchronousResponse)
+        {
+            SynchronousResponseEvent responseEvent = (SynchronousResponseEvent) event;
+            System.out.println("< " + responseEvent.getResponse().getMessage());
+            if (request.getCommand() == Command.Quit && responseEvent.getResponse().getResponseCode() == ResponseCode.Success)
+                running = false;
+        }
     }
 }

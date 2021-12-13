@@ -1,4 +1,4 @@
-package client.observer;
+package client.event;
 
 /**
  * Represents an event trigerred by a response received from the game server.
@@ -7,7 +7,7 @@ package client.observer;
  */
 public class Event
 {
-    private String subject; // the event subject
+    private Subject subject; // the event subject
 
     /**
      * Default constructor.
@@ -21,12 +21,12 @@ public class Event
      * 
      * @param subject the event subject
      */
-    public Event(String subject)
+    public Event(Subject subject)
     {
         this.subject = subject;
     }
 
     // Setters and Getters
-    public void setSubject(String subject) { this.subject = subject; }
-    public String getSubject() { return subject; }
+    public void setSubject(Subject subject) { this.subject = subject; }
+    public Subject getSubject() { return subject; }
 }
