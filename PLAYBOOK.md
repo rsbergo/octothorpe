@@ -25,7 +25,7 @@ From the repository root folder:
 
 Server:
 ```
-java -cp bin server.Octothorpe <port>
+java -cp bin server.Octothorpe <port> [<map file>]
 ```
 
 Client:
