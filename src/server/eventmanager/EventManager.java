@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.event.Event;
 import server.event.Subject;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Generates events of subjects that have been registered.

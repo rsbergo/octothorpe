@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import server.logger.LogLevel;
-import server.logger.Logger;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Represents a map within the game.

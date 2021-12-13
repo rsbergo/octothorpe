@@ -13,6 +13,8 @@ import client.event.Event;
 import client.event.Subject;
 import client.event.SynchronousResponseEvent;
 import client.observer.Observer;
+import logger.Logger;
+import logger.LogLevel;
 
 /**
  * Coordinates the interactions between the player and the game server.
@@ -39,21 +41,20 @@ public class GameClient implements Observer
             listener.start();
             running = true;
             String command = null;
-            System.out.print("> ");
+            System.out.print("> "); // print to stdout
             while (running && (command = in.readLine()) != null)
             {
                 Request request = new Request(command);
                 conn.send(request);
                 Event responseEvent = receiveEvent();
                 handleEvent(request, responseEvent);
-                System.out.print("> ");
+                System.out.print("> "); // print to stdout
             }
             terminate();
         }
         catch (IOException e)
         {
-            System.err.println("Error initializing the game client"); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Error initializing the game client", e);
         }
     }
     
@@ -71,13 +72,11 @@ public class GameClient implements Observer
         }
         catch (IOException e)
         {
-            System.err.println("Something went wrong while terminating the game client..."); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Something went wrong while terminating the game client...", e);
         }
         catch (InterruptedException e)
         {
-            System.err.println("Error while joining listener thread"); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Error while joining listener thread", e);
         }
     }
 
@@ -90,12 +89,12 @@ public class GameClient implements Observer
     // Initializes the resources for the game server
     private void initialize(String host, int port, BufferedReader in) throws IOException
     {
-        System.out.println("Initializing game server..."); // TODO: replace with logger
+        Logger.log(LogLevel.Info, "Initializing game server...");
         conn = new Connector();
         conn.connectTo(host, port);
         this.in = in;
         listener = new Thread(initializerNotificationManager(conn));
-        System.out.println("Game server initialized"); // TODO: replace with logger
+        Logger.log(LogLevel.Info, "Game server initialized");
     }
 
     // Initializes the notifications manager for the game client.
@@ -125,8 +124,7 @@ public class GameClient implements Observer
         }
         catch (InterruptedException e)
         {
-            System.err.println("Waiting for a response was interrupted"); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Waiting for a response was interrupted", e);
         }
         return event;
     }
@@ -138,7 +136,7 @@ public class GameClient implements Observer
         if (event.getSubject() == Subject.SynchronousResponse)
         {
             SynchronousResponseEvent responseEvent = (SynchronousResponseEvent) event;
-            System.out.println("< " + responseEvent.getResponse().getMessage());
+            System.out.println("< " + responseEvent.getResponse().getMessage()); // print to stdout
             if (request.getCommand() == Command.Quit && responseEvent.getResponse().getResponseCode() == ResponseCode.Success)
                 running = false;
         }

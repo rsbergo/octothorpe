@@ -12,6 +12,8 @@ import client.event.PlayerUpdatedEvent;
 import client.event.SynchronousResponseEvent;
 import client.game.Map;
 import client.observer.Observable;
+import logger.Logger;
+import logger.LogLevel;
 
 /**
  * The notification manager is responsible for listening to messages sent by the game server and distribute them
@@ -24,6 +26,7 @@ public class NotificationManager extends Observable implements Runnable
 {
     private Connector conn; // the connection to the game server
     private Map map = null; // TODO: this seems to be out of place. Review.
+    // TODO: add "Response handler"
 
     /**
      * Constructor.
@@ -47,8 +50,7 @@ public class NotificationManager extends Observable implements Runnable
         }
         catch (IOException e)
         {
-            System.err.println("Error receiving message from game server"); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Error receiving message from game server", e);
         }
     }
     

@@ -1,4 +1,4 @@
-package server.logger;
+package logger;
 
 import java.io.PrintStream;
 

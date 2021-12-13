@@ -1,5 +1,7 @@
 package server.commandhandler;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
@@ -14,8 +16,6 @@ import server.game.Item;
 import server.game.MoveDirection;
 import server.game.Player;
 import server.game.Position;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Processes commands whose action is Action.Move.

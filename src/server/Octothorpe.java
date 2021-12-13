@@ -1,9 +1,9 @@
 package server;
 import java.io.File;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.gameserver.GameServer;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 public class Octothorpe
 {

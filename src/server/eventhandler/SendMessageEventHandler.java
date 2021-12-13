@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.ResultCode;
 import server.event.Event;
 import server.event.SendMessageEvent;
 import server.eventmanager.EventQueue;
 import server.gameserver.PlayerHandler;
 import server.gameserver.Response;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 public class SendMessageEventHandler extends EventQueue implements EventHandler
 {

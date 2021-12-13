@@ -3,9 +3,9 @@ package server.commandhandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Manages command handlers for the game.
