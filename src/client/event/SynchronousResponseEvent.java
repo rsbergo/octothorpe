@@ -12,7 +12,7 @@ public class SynchronousResponseEvent extends Event
 
     /**
      * Constructor.
-     * Creates a new PlayerUpdatedEvent with the subject PlayerUpdated.
+     * Creates a new SynchronousResponseEvent with the subject SynchronousResponseEvent.
      */
     public SynchronousResponseEvent()
     {

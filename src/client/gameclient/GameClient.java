@@ -5,16 +5,16 @@ import java.io.IOException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import javax.swing.JFrame;
-
 import client.connector.Command;
 import client.connector.Connector;
 import client.connector.Request;
+import client.connector.Response;
 import client.connector.ResponseCode;
 import client.event.Event;
+import client.event.RequestEvent;
 import client.event.Subject;
 import client.event.SynchronousResponseEvent;
-import client.gui.ClientWindow;
+import client.gui.ClientGUI;
 import client.observer.Observer;
 import logger.Logger;
 import logger.LogLevel;
@@ -34,7 +34,9 @@ public class GameClient implements Observer
     private Thread listener = null;   // thread that listens to messages from game server
 
     // synchronizes synchronous responses between the listener thread and the main thread
-    private BlockingDeque<Event> eventQueue = new LinkedBlockingDeque<Event>();
+    private BlockingDeque<RequestEvent> requestQueue = new LinkedBlockingDeque<RequestEvent>();
+    private BlockingDeque<SynchronousResponseEvent> responseQueue = new LinkedBlockingDeque<SynchronousResponseEvent>();
+    private NotificationManager notifier = null; // event generator
     
     public void run(String host, int port, BufferedReader in)
     {
@@ -42,23 +44,18 @@ public class GameClient implements Observer
         {
             initialize(host, port, in);
             listener.start();
+            
+            ClientGUI gui = new ClientGUI();
+            gui.start(notifier);
+            
             running = true;
-            
-            java.awt.EventQueue.invokeLater(() -> 
+            while (running)
             {
-                JFrame mainWindow = new ClientWindow();
-                mainWindow.setVisible(true);
-            });
-            
-            String command = null;
-            System.out.print("> "); // print to stdout
-            while (running && (command = in.readLine()) != null)
-            {
-                Request request = new Request(command);
+                Request request = receiveRequest();
+                System.out.println("> " + request); // print to stdout
                 conn.send(request);
-                Event responseEvent = receiveEvent();
-                handleEvent(request, responseEvent);
-                System.out.print("> "); // print to stdout
+                Response response = receiveResponse();
+                handleEvent(request, response);
             }
             terminate();
         }
@@ -93,7 +90,10 @@ public class GameClient implements Observer
     @Override
     public void processEvent(Event event)
     {
-        eventQueue.add(event);
+        if (event.getSubject() == Subject.Request)
+            requestQueue.add((RequestEvent) event);
+        else if (event.getSubject() == Subject.SynchronousResponse)
+            responseQueue.add((SynchronousResponseEvent) event);
     }
 
     // Initializes the resources for the game server
@@ -103,52 +103,68 @@ public class GameClient implements Observer
         conn = new Connector();
         conn.connectTo(host, port);
         this.in = in;
-        listener = new Thread(initializerNotificationManager(conn));
+        initializerNotifier(conn);
+        listener = new Thread(notifier);
         Logger.log(LogLevel.Info, "Game server initialized");
     }
 
     // Initializes the notifications manager for the game client.
-    private NotificationManager initializerNotificationManager(Connector conn)
+    private void initializerNotifier(Connector conn)
     {
-        NotificationManager notificationManager = new NotificationManager(conn);
+        notifier = new NotificationManager(conn);
 
-        notificationManager.registerSubject(Subject.SynchronousResponse);
-        notificationManager.registerSubject(Subject.PlayerUpdated);
-        notificationManager.registerSubject(Subject.ItemData);
-        notificationManager.registerSubject(Subject.ItemTaken);
-        notificationManager.registerSubject(Subject.MapData);
+        notifier.registerSubject(Subject.SynchronousResponse);
+        notifier.registerSubject(Subject.PlayerUpdated);
+        notifier.registerSubject(Subject.ItemData);
+        notifier.registerSubject(Subject.ItemTaken);
+        notifier.registerSubject(Subject.MapData);
+        notifier.registerSubject(Subject.Request);
 
-        notificationManager.subscribe(Subject.SynchronousResponse, this);
-
-        return notificationManager;
+        notifier.subscribe(Subject.SynchronousResponse, this);
+        notifier.subscribe(Subject.Request, this);
     }
 
-    // Retrieves the first element from event queue.
-    // Blocks if event queue is empty, until an event becomes available.
-    private Event receiveEvent()
+    // Retrieves the first element from request queue.
+    // Blocks if request queue is empty, until a request becomes available.
+    private Request receiveRequest()
     {
-        Event event = null;
+        Request request = null;
         try
         {
-            event = eventQueue.takeFirst();
+            RequestEvent event = requestQueue.takeFirst();
+            request = event.getRequest();
+        }
+        catch (InterruptedException e)
+        {
+            Logger.log(LogLevel.Error, "Waiting for a request was interrupted", e);
+        }
+        return request;
+    }
+    
+    // Retrieves the first element from response queue.
+    // Blocks if response queue is empty, until a response becomes available.
+    private Response receiveResponse()
+    {
+        Response response = null;
+        try
+        {
+            SynchronousResponseEvent event = responseQueue.takeFirst();
+            response = event.getResponse();
+
         }
         catch (InterruptedException e)
         {
             Logger.log(LogLevel.Error, "Waiting for a response was interrupted", e);
         }
-        return event;
+        return response;
     }
 
     // Prints the response.
     // If the command was Quit and the response is successful, stop the game client.
-    private void handleEvent(Request request, Event event)
+    private void handleEvent(Request request, Response response)
     {
-        if (event.getSubject() == Subject.SynchronousResponse)
-        {
-            SynchronousResponseEvent responseEvent = (SynchronousResponseEvent) event;
-            System.out.println("< " + responseEvent.getResponse().getMessage()); // print to stdout
-            if (request.getCommand() == Command.Quit && responseEvent.getResponse().getResponseCode() == ResponseCode.Success)
-                running = false;
-        }
+        System.out.println("< " + response.getMessage()); // print to stdout
+        if (request.getCommand() == Command.Quit && response.getResponseCode() == ResponseCode.Success)
+            running = false;
     }
 }
