@@ -1,5 +1,7 @@
 package server.commandhandler;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
@@ -8,8 +10,6 @@ import server.event.MapDataEvent;
 import server.event.Subject;
 import server.eventmanager.EventManager;
 import server.game.GameMap;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Processes commands whose action is Action.Map.

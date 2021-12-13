@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import server.logger.LogLevel;
-import server.logger.Logger;
+import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Represents a socket for a player connected to the GameServer.

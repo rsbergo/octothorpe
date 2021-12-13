@@ -7,9 +7,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.game.Game;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * A GameServer hosts a game and coordinates the coonections of players to the game being hosted.

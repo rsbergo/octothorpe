@@ -1,5 +1,8 @@
 package client.connector;
 
+import logger.Logger;
+import logger.LogLevel;
+
 /**
  * Represents the type of response received.
  */
@@ -61,7 +64,7 @@ public enum ResponseCode
         }
         catch (NumberFormatException e)
         {
-            System.err.println("Error getting response code from string"); // TODO: replace with logger
+            Logger.log(LogLevel.Error, "Error getting response code from string", e);
             return Unknown;
         }
     }

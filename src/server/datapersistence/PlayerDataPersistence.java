@@ -7,10 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.game.Player;
 import server.game.Position;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Provides synchronized read and write operations on a file storing player data.

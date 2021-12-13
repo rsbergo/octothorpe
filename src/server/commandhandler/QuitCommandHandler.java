@@ -3,6 +3,8 @@ package server.commandhandler;
 import java.util.ArrayList;
 import java.util.Map;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
@@ -12,8 +14,6 @@ import server.event.PlayerDisconnectedEvent;
 import server.eventmanager.EventListener;
 import server.eventmanager.EventManager;
 import server.game.Player;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Processes commands whose action is Action.Quit.

@@ -3,6 +3,8 @@ package server.gameserver;
 import java.io.IOException;
 import java.net.Socket;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
@@ -18,8 +20,6 @@ import server.eventhandler.PlayerUpdateEventHandler;
 import server.eventhandler.SendMessageEventHandler;
 import server.game.Game;
 import server.game.Player;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Coordinates the communication between the Player and the Game.

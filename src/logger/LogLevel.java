@@ -1,4 +1,4 @@
-package server.logger;
+package logger;
 
 /**
  * Represents different levels for logging.

@@ -3,9 +3,9 @@ package server.eventmanager;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.event.Event;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Provides a mechanism to process events asynchronously.

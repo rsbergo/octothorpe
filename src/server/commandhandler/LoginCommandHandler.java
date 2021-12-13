@@ -2,6 +2,8 @@ package server.commandhandler;
 
 import java.util.Map;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
@@ -16,8 +18,6 @@ import server.eventmanager.EventManager;
 import server.game.GameMap;
 import server.game.Item;
 import server.game.Player;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Processes commands whose action is Action.Login.

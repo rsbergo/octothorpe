@@ -25,12 +25,12 @@ From the repository root folder:
 
 Server:
 ```
-java -cp bin server.Octothorpe <port>
+java -cp bin server.Octothorpe <port> [<map file>]
 ```
 
 Client:
 ```
-java -cp bin client.Octothorpe <host>
+java -cp bin client.Octothorpe <host> <port number>
 ```
 
 ## My experience with this project

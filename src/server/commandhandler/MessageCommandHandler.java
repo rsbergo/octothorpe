@@ -2,14 +2,14 @@ package server.commandhandler;
 
 import java.util.List;
 
+import logger.LogLevel;
+import logger.Logger;
 import server.command.Action;
 import server.command.Command;
 import server.command.Result;
 import server.command.ResultCode;
 import server.event.SendMessageEvent;
 import server.eventmanager.EventManager;
-import server.logger.LogLevel;
-import server.logger.Logger;
 
 /**
  * Processes commands whose action is Action.Message.

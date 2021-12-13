@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import logger.LogLevel;
+import logger.Logger;
+
 /**
  * Represents a connection with the game server.
  * Establishes a connection with the game server through a socket and manages the communication through that socket.
@@ -30,17 +33,17 @@ public class Connector implements Closeable
         // TODO: throw exception if already connected
         try
         {
-            System.out.println("Connecting to \"" + host + ":" + port + "\"..."); // TODO: replace with logger
+            Logger.log(LogLevel.Info, "Connecting to \"" + host + ":" + port + "\"...");
             socket = new Socket(host, port);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream());
             connected = true;
-            System.out.println("Connection established!"); // TODO: replace with logger
+            Logger.log(LogLevel.Info, "Connection established!");
         }
         catch (IOException e)
         {
             disconnect();
-            System.err.println("Something went wrong while setting up the connection."); // TODO: replace with logger
+            Logger.log(LogLevel.Error, "Something went wrong while setting up the connection.", e);
             throw e;
         }
     }
@@ -78,7 +81,7 @@ public class Connector implements Closeable
     {
         if (isConnected() && writer != null)
         {
-//            System.out.println("Sending request: \"" + request + "\""); // TODO: replace with logger
+            Logger.log(LogLevel.Debug, "Sending request: \"" + request + "\"");
             writer.print(request + "\r\n");
             writer.flush();
             return;
@@ -96,17 +99,15 @@ public class Connector implements Closeable
      */
     public Response receive() throws IOException
     {
-        // TODO: run in its own thread, so it doesn't block send?
-        // TODO: generate events
         if (isConnected() && reader != null)
         {
-//            System.out.println("Waiting for message from socket"); // TODO: replace with logger
+            Logger.log(LogLevel.Debug, "Waiting for message from socket");
             Response response = null;
             String message = null;
             if ((message = reader.readLine()) != null)
             {
                 response = new Response(message);
-//                System.out.println("Response received: \"" + response + "\"");
+                Logger.log(LogLevel.Info, "Response received: \"" + response + "\"");
             }
             return response;
         }
@@ -119,7 +120,7 @@ public class Connector implements Closeable
         try
         {
             connected = false;
-            System.out.println("Closing connection..."); // TODO: replace with logger
+            Logger.log(LogLevel.Info, "Closing connection...");
             if (reader != null)
                 reader.close();
             if (writer != null)
@@ -129,8 +130,7 @@ public class Connector implements Closeable
         }
         catch (IOException e)
         {
-            System.err.println("Error closing socket resources"); // TODO: replace with logger
-            e.printStackTrace();
+            Logger.log(LogLevel.Error, "Error closing socket resources", e);
         }
     }
 }
