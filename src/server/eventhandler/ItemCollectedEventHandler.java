@@ -31,9 +31,10 @@ public class ItemCollectedEventHandler extends EventQueue implements EventHandle
             ItemCollectedEvent itemCollectedEvent = (ItemCollectedEvent) event;
             {
                 Response response = new Response();
-                response.setResponseCode(ResultCode.ItemNotification);
+                response.setResponseCode(ResultCode.ItemTaken);
                 StringBuilder data = new StringBuilder();
-                data.append(itemCollectedEvent.getItem().getId());
+                data.append(itemCollectedEvent.getPlayer().getName());
+                data.append(", " + itemCollectedEvent.getItem().getId());
                 data.append(", " + itemCollectedEvent.getItem().getValue());
                 data.append(", " + itemCollectedEvent.getPlayer().getName());
                 data.append(" found ");
