@@ -9,6 +9,7 @@ import client.event.ItemDataEvent;
 import client.event.ItemTakenEvent;
 import client.event.MapDataEvent;
 import client.event.PlayerUpdatedEvent;
+import client.event.ResponseEvent;
 import client.event.SynchronousResponseEvent;
 import client.game.Map;
 import client.observer.Observable;
@@ -59,7 +60,7 @@ public class NotificationManager extends Observable implements Runnable
     {
         if (response.getResponseCode().getCode() >= 200)
             generateSynchronousResponseEvent(response);
-        else if (response.getResponseCode() == ResponseCode.PlayerUpdate)
+        if (response.getResponseCode() == ResponseCode.PlayerUpdate)
             generatePlayerUpdatedEvent(response);
         else if (response.getResponseCode() == ResponseCode.ItemNotification)
             generateItemDataEvent(response);
@@ -67,6 +68,7 @@ public class NotificationManager extends Observable implements Runnable
             generateItemTakenEvent(response);
         else if (response.getResponseCode() == ResponseCode.MapData)
             generateMapDataEvent(response);
+        generateResponseEvent(response); // TODO: review. Generate only response events. Game client generates the other events.
     }
 
     // Generates a new SynchronousResponseEvent and notifies subscribers.
@@ -106,7 +108,7 @@ public class NotificationManager extends Observable implements Runnable
                 if (map != null)
                     map.addRow(response.getMessage());
                 else
-                    System.err.println("Error retrieving map data");
+                    Logger.log(LogLevel.Error, "Error retrieving map data");
             }
             if (map.getMap().size() == map.getRowCount())
                 notify(new MapDataEvent(map));
@@ -114,8 +116,16 @@ public class NotificationManager extends Observable implements Runnable
         catch (NumberFormatException e)
         {
             map = null;
-            System.err.println("Error retrieving map size from response");
+            Logger.log(LogLevel.Error, "Error retrieving map size from response");
             e.printStackTrace();
         }
+    }
+
+    // Generates a new ResponseEvent whenever a response is received.
+    private void generateResponseEvent(Response response)
+    {
+        ResponseEvent event = new ResponseEvent();
+        event.setResponse(response);
+        notify(event);
     }
 }

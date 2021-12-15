@@ -1,58 +1,80 @@
 package client.gameclient;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import client.connector.Command;
 import client.connector.Connector;
 import client.connector.Request;
 import client.connector.Response;
-import client.connector.ResponseCode;
 import client.event.Event;
 import client.event.RequestEvent;
+import client.event.ResponseEvent;
 import client.event.Subject;
-import client.event.SynchronousResponseEvent;
-import client.gui.ClientGUI;
+import client.observer.Observable;
 import client.observer.Observer;
-import logger.Logger;
 import logger.LogLevel;
+import logger.Logger;
 
 /**
  * Coordinates the interactions between the player and the game server.
- * Receives instructions from the player and sends them as Requests to the game server.
- * Receives Responses from the game server and consumes them.
- * Responses are received in a different thread. Only synchronous responses (ResponseCode >= 200) are sent to player.
- * Asynchronous responses are consumed by the listener thread.
+ * Observes RequestEvents. When a RequestEvent is received, sends the request in the event to the game server.
+ * Observes ResponseEvents. When a response event is received, acts as a proxy and notifies its observers of the new 
+ * respose event.
+ * Expects one single synchronous response for each request sent. These responses have response code greater than or 
+ * equal to 200. After sending a request to the game server, blocks until a synchronous response is received, not 
+ * sending aditional requests.
  */
-public class GameClient implements Observer
+public class GameClient extends Observable implements Observer, Runnable
 {
-    private Connector conn = null;    // the connection with the game server
-    private BufferedReader in = null; // the input stream for player commands
-    private boolean running = false;  // indicates whether the game client is running
-    private Thread listener = null;   // thread that listens to messages from game server
+    // connection to the game server
+    private Connector conn = null; // the connection with the game server
+    private String host = null;    // the game server host
+    private int port = 0;          // the port in which the game server is listening for new connections
 
-    // synchronizes synchronous responses between the listener thread and the main thread
-    private BlockingDeque<RequestEvent> requestQueue = new LinkedBlockingDeque<RequestEvent>();
-    private BlockingDeque<SynchronousResponseEvent> responseQueue = new LinkedBlockingDeque<SynchronousResponseEvent>();
-    private NotificationManager notifier = null; // event generator
+    // state
+    private boolean running = false;  // indicates whether the game client is running
     
-    public void run(String host, int port, BufferedReader in)
+    // internal threads
+    private Thread listener = null;   // thread that listens to messages from game server
+    
+    // events
+    private NotificationManager notifier = null; // event generator
+
+    // synchrononous messages
+    private BlockingDeque<RequestEvent> requestQueue = new LinkedBlockingDeque<RequestEvent>();
+    private BlockingDeque<ResponseEvent> responseQueue = new LinkedBlockingDeque<ResponseEvent>();
+    
+    /**
+     * Constructor.
+     * Receives the parameters to connect with the game server
+     * 
+     * @param host the host where the game server is running
+     * @param port the port where the game server is listening for connections
+     */
+    public GameClient(String host, int port)
+    {
+        this.host = host;
+        this.port = port;
+        registerSubject(Subject.Response);
+    }
+
+    // Setters and Getters
+    public NotificationManager getNotificationManager() { return notifier; }
+
+    /**
+     * Starts running the game client.
+     */
+    public void run()
     {
         try
         {
-            initialize(host, port, in);
+            initialize(host, port);
             listener.start();
-            
-            ClientGUI gui = new ClientGUI();
-            gui.start(notifier);
-            
             running = true;
             while (running)
             {
                 Request request = receiveRequest();
-                System.out.println("> " + request); // print to stdout
                 conn.send(request);
                 Response response = receiveResponse();
                 handleEvent(request, response);
@@ -64,7 +86,7 @@ public class GameClient implements Observer
             Logger.log(LogLevel.Error, "Error initializing the game client", e);
         }
     }
-    
+
     /**
      * Stops the game client and closes all resources.
      */
@@ -73,13 +95,8 @@ public class GameClient implements Observer
         try
         {
             running = false;
-            in.close();
             conn.close();
             listener.join();
-        }
-        catch (IOException e)
-        {
-            Logger.log(LogLevel.Error, "Something went wrong while terminating the game client...", e);
         }
         catch (InterruptedException e)
         {
@@ -92,20 +109,24 @@ public class GameClient implements Observer
     {
         if (event.getSubject() == Subject.Request)
             requestQueue.add((RequestEvent) event);
-        else if (event.getSubject() == Subject.SynchronousResponse)
-            responseQueue.add((SynchronousResponseEvent) event);
+        else if (event.getSubject() == Subject.Response)
+        {
+            ResponseEvent responseEvent = (ResponseEvent) event;
+            if (responseEvent.getResponse().getResponseCode().getCode() >= 200) // synchronous response
+                responseQueue.add(responseEvent);
+            notify(event); // forward responses
+        }
     }
 
     // Initializes the resources for the game server
-    private void initialize(String host, int port, BufferedReader in) throws IOException
+    private void initialize(String host, int port) throws IOException
     {
-        Logger.log(LogLevel.Info, "Initializing game server...");
+        Logger.log(LogLevel.Info, "Initializing game client...");
         conn = new Connector();
         conn.connectTo(host, port);
-        this.in = in;
         initializerNotifier(conn);
         listener = new Thread(notifier);
-        Logger.log(LogLevel.Info, "Game server initialized");
+        Logger.log(LogLevel.Info, "Game client initialized");
     }
 
     // Initializes the notifications manager for the game client.
@@ -119,9 +140,10 @@ public class GameClient implements Observer
         notifier.registerSubject(Subject.ItemTaken);
         notifier.registerSubject(Subject.MapData);
         notifier.registerSubject(Subject.Request);
+        notifier.registerSubject(Subject.Response);
 
-        notifier.subscribe(Subject.SynchronousResponse, this);
         notifier.subscribe(Subject.Request, this);
+        notifier.subscribe(Subject.Response, this);
     }
 
     // Retrieves the first element from request queue.
@@ -148,7 +170,7 @@ public class GameClient implements Observer
         Response response = null;
         try
         {
-            SynchronousResponseEvent event = responseQueue.takeFirst();
+            ResponseEvent event = responseQueue.takeFirst();
             response = event.getResponse();
 
         }
@@ -160,11 +182,11 @@ public class GameClient implements Observer
     }
 
     // Prints the response.
-    // If the command was Quit and the response is successful, stop the game client.
     private void handleEvent(Request request, Response response)
     {
-        System.out.println("< " + response.getMessage()); // print to stdout
-        if (request.getCommand() == Command.Quit && response.getResponseCode() == ResponseCode.Success)
-            running = false;
+        ResponseEvent event = new  ResponseEvent();
+        event.setRequest(request);
+        event.setResponse(response);
+        notify(event);
     }
 }

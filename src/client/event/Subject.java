@@ -11,5 +11,6 @@ public enum Subject
     MapData,
     PlayerUpdated,
     Request,
+    Response,
     SynchronousResponse;
 }

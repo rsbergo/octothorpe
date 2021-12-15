@@ -36,5 +36,5 @@ public class RequestEvent extends Event
     public String toString()
     {
         return "Event " + getSubject() + ": \"" + request + "\"";
-    }    
+    }
 }
