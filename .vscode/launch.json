@@ -18,7 +18,7 @@
             "request": "launch",
             "mainClass": "client.Octothorpe",
             "projectName": "octothorpe-rsbergo_30cc0493",
-            "args": ["172.31.178.59", "7777"]
+            "args": ["172.31.180.212", "7777"]
         }
     ]
 }
