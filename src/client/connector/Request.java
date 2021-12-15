@@ -53,6 +53,20 @@ public class Request
     public void setArgs(List<String> args) { this.args = args; }
     public List<String> getArgs() { return args; }
 
+    /**
+     * Extracts the argument list from the string specified.
+     * Assumes the string is a whitespace (' ') separated list.
+     * 
+     * @param args the list of arguments for the command, each argument separated by a single whitespace (' ')
+     */
+    public void setArgs(String argList)
+    {
+        args.clear();
+        String[] values = argList.split(" ");
+        for (String value : values)
+            args.add(value);
+    }
+
     @Override
     public String toString()
     {
