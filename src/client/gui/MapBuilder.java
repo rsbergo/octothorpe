@@ -54,8 +54,8 @@ public class MapBuilder
         try
         {
             String[] tokens = mapData.split(", ");
-            int rows = Integer.parseInt(tokens[0]);
-            int cols = Integer.parseInt(tokens[1]);
+            int cols = Integer.parseInt(tokens[0]);
+            int rows = Integer.parseInt(tokens[1]);
             map = new Map(rows, cols);
         }
         catch (NumberFormatException e)

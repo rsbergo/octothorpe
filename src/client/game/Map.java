@@ -34,7 +34,7 @@ public class Map
     /**
      * Adds a row to the map representation.
      * 
-     * @param row   the row representation
+     * @param row the string representation for a row
      * @throws IllegalArgumentException if the row length isn't consistent for the map
      */
     public void addRow(String row) throws IllegalArgumentException

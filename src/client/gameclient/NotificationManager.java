@@ -94,7 +94,7 @@ public class NotificationManager extends Observable implements Runnable
         {
             String[] tokens = response.getMessage().split(", ");
             if (tokens.length == 2) // starting new map
-                map = new Map(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]));
+                map = new Map(Integer.parseInt(tokens[1]), Integer.parseInt(tokens[0]));
             else
             {
                 if (map != null)

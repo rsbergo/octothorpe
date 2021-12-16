@@ -26,7 +26,7 @@ public class GameMap
     private final char SPAWN = 'S';
     private final char ITEM = 'i';
     private final char SPACE = ' ';
-    private final double MAX_ITEM_RATIO = 0.15;
+    private final double MAX_ITEM_RATIO = 0.05;
     private final int MAX_ITEM_VALUE = 100;
 
     private String name = null;                       // the name of the map

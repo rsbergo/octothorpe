@@ -13,6 +13,7 @@ import client.event.RequestEvent;
 import client.event.ResponseEvent;
 import client.event.Subject;
 import client.game.Game;
+import client.game.Item;
 import client.game.Map;
 import client.game.Player;
 import client.game.Position;
@@ -187,6 +188,8 @@ public class ClientGUI extends Observable implements Observer
                 handlePlayerUpdatedEvent(response);
             if (response.getResponseCode() == ResponseCode.MapData)
                 handleMapDataEvent(response);
+            if (response.getResponseCode() == ResponseCode.ItemNotification)
+                handleItemDataEvent(response);
         }
     }
 
@@ -228,26 +231,6 @@ public class ClientGUI extends Observable implements Observer
             game.setMap(map);
             sendMapUpdate();
         }
-        
-//        try
-//        {
-//            String[] tokens = response.getMessage().split(", ");
-//            if (tokens.length == 2) // starting new map
-//                game.setMap(new Map(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]))); // TODO: invert y and x
-//            else
-//            {
-//                if (game.getMap() != null)
-//                    game.getMap().addRow(response.getMessage());
-//                else
-//                    Logger.log(LogLevel.Error, "Error retrieving map data");
-//            }
-//            if (game.getMap().getMap().size() == game.getMap().getRowCount())
-//                notify(new MapDataEvent(game.getMap()));
-//        }
-//        catch (NumberFormatException e)
-//        {
-//            Logger.log(LogLevel.Error, "Error retrieving map size from response", e);
-//        }
     }
 
     // Handles player updated events.
@@ -297,6 +280,48 @@ public class ClientGUI extends Observable implements Observer
         return player;
     }
 
+    // Handles player updated events.
+    // Update game with player information.
+    // Generate player update events.
+    private void handleItemDataEvent(Response response)
+    {
+        if (response.getResponseCode() == ResponseCode.ItemNotification)
+        {
+            Item item = getItemFromResponse(response);
+            if (item != null)
+                game.addItem(item);
+            sendMapUpdate();
+        }
+    }
+
+    // Retrieves player information from a response message
+    private Item getItemFromResponse(Response response)
+    {
+        final int FIELD_COUNT = 3;
+        Item item = null;
+
+        String[] tokens = response.getMessage().split(", ");
+        if (tokens.length < FIELD_COUNT)
+        {
+            Logger.log(LogLevel.Error, "Error getting item information from response");
+            return item;
+        }
+
+        try
+        {
+            // TODO: assumes that the item ID is a number. Could it be a string?
+            int id = Integer.parseInt(tokens[0]);
+            int x = Integer.parseInt(tokens[1]);
+            int y = Integer.parseInt(tokens[2]);
+            item = new Item(id, x, y);
+        }
+        catch (NumberFormatException e)
+        {
+            Logger.log(LogLevel.Error, "Error getting item information from response", e);
+        }
+        return item;
+    }
+        
     // Notifies the main window of an update in the list of players.
     private void sendPlayerListUpdate()
     {
