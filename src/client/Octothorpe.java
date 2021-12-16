@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import client.gameclient.GameClient;
+import client.gui.ClientGUI;
 import logger.LogLevel;
 import logger.Logger;
 
@@ -28,8 +29,9 @@ public class Octothorpe
              PrintStream logger = new PrintStream(createLogFile()))
         {
             Logger.setLogLevel(LogLevel.Debug, logger);
-            GameClient game = new GameClient();
-            game.run(args[0], getPort(args[1]), stdIn);
+            GameClient client = new GameClient(args[0], getPort(args[1]));
+            ClientGUI gui = new ClientGUI(client);
+            gui.start();
         }
         catch (IOException e)
         {

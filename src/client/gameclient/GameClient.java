@@ -60,6 +60,8 @@ public class GameClient extends Observable implements Observer, Runnable
     }
 
     // Setters and Getters
+    public String getHost() { return host; }
+    public int getPort() { return port; }
     public NotificationManager getNotificationManager() { return notifier; }
 
     /**
@@ -87,6 +89,11 @@ public class GameClient extends Observable implements Observer, Runnable
         }
     }
 
+    public void stop()
+    {
+        running = false;
+    }
+
     /**
      * Stops the game client and closes all resources.
      */
@@ -94,7 +101,7 @@ public class GameClient extends Observable implements Observer, Runnable
     {
         try
         {
-            running = false;
+            stop();
             conn.close();
             listener.join();
         }

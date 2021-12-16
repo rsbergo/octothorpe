@@ -8,6 +8,7 @@ public enum Subject
     Unknown,
     ItemData,
     ItemTaken,
+    Login,
     MapData,
     PlayerUpdated,
     Request,

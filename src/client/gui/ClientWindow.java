@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -40,7 +39,7 @@ public class ClientWindow extends JFrame implements Observer
     private List<Player> players = new ArrayList<Player>();
     private List<Item> items = new ArrayList<Item>();
 
-    JLabel responsLabel = null;
+    ResponseLabel responsLabel = null;
     JTextField commandField = null;
     JButton sendButton = null;
     JTextArea mapArea = null;
@@ -58,7 +57,8 @@ public class ClientWindow extends JFrame implements Observer
 
     private void initUI()
     {
-        responsLabel = initResponseLabel();
+        responsLabel = new ResponseLabel();
+
         commandField = new JTextField(100);
         commandField.addActionListener((event) -> sendCommand());
         sendButton = new JButton("Send");
@@ -101,14 +101,9 @@ public class ClientWindow extends JFrame implements Observer
             public void windowClosing(WindowEvent e)
             {
                 notifier.notify(new RequestEvent(new Request("quit")));
+                // TODO: handle exception. Quit without being logged in
             }
         });
-    }
-
-    // Initializes the label that shows responses from the game server
-    private JLabel initResponseLabel()
-    {
-        return new JLabel("My label!");
     }
 
     private void createLayout()
@@ -128,7 +123,7 @@ public class ClientWindow extends JFrame implements Observer
                     .addComponent(commandField) 
                     .addComponent(sendButton)
                 )
-                .addComponent(responsLabel)
+                .addComponent(responsLabel.getLabel())
         );
 
         layoutManager.setVerticalGroup(
@@ -140,7 +135,7 @@ public class ClientWindow extends JFrame implements Observer
                     .addComponent(commandField, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(sendButton)
                 )
-                .addComponent(responsLabel)
+                .addComponent(responsLabel.getLabel())
                 .addGap(150)
         );
         pack();
@@ -150,7 +145,7 @@ public class ClientWindow extends JFrame implements Observer
     public void processEvent(Event event)
     {
         if (event.getSubject() == Subject.SynchronousResponse)
-            responsLabel.setText(((SynchronousResponseEvent) event).getResponse().toString());
+            responsLabel.setText(((SynchronousResponseEvent) event).getResponse());
         else if (event.getSubject() == Subject.MapData)
         {
             map = ((MapDataEvent) event).getMap().getMapArray();
