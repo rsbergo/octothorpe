@@ -61,7 +61,7 @@ public class ClientGUI extends Observable implements Observer
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         if (event.getSubject() == Subject.Login)
             sendLoginRequest(event);

@@ -39,7 +39,7 @@ public class PlayerListPanel extends ContentPanel
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         if (event.getSubject() == Subject.PlayerListUpdated)
         {

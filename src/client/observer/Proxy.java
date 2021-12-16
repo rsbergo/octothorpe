@@ -38,7 +38,7 @@ public class Proxy extends Observable implements Observer
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         notify(event);
     }

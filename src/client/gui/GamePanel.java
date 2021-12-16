@@ -32,7 +32,7 @@ public class GamePanel extends ContentPanel
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         // TODO: Review, maybe game panel is a proxy
         if (event.getSubject() == Subject.PlayerListUpdated)

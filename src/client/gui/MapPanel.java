@@ -28,7 +28,7 @@ public class MapPanel extends ContentPanel
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         if (event.getSubject() == Subject.MapUpdated)
         {

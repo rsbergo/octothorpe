@@ -41,7 +41,7 @@ public abstract class ContentPanel extends Observable implements Observer
     public JPanel getContent() { return content; }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {}
 
     /**

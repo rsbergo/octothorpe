@@ -32,7 +32,7 @@ public class ResponseLabel implements Observer
     public JLabel getLabel() { return label; }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         if (event.getSubject() == Subject.Response)
         {

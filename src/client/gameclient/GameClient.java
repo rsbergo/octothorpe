@@ -113,7 +113,7 @@ public class GameClient extends Observable implements Observer, Runnable
     }
 
     @Override
-    public void processEvent(Event event)
+    public synchronized void processEvent(Event event)
     {
         if (event.getSubject() == Subject.Request)
             requestQueue.add((RequestEvent) event);
