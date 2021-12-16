@@ -19,6 +19,14 @@
             "mainClass": "client.Octothorpe",
             "projectName": "octothorpe-rsbergo_30cc0493",
             "args": ["172.31.180.212", "7777"]
+        },
+        {
+            "type": "java",
+            "name": "Launch Octothorpe Client - Houser",
+            "request": "launch",
+            "mainClass": "client.Octothorpe",
+            "projectName": "octothorpe-rsbergo_30cc0493",
+            "args": ["100.25.22.71", "3333"]
         }
     ]
 }
