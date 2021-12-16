@@ -14,10 +14,10 @@ public enum Command
     Unknown;
     
     /**
-     * Retrieves the Action based on a string.
+     * Retrieves the Command based on a string.
      * 
-     * @param action the string representing the action
-     * @return the Action represented by the specified string
+     * @param action the string representing the command
+     * @return the Command represented by the specified string
      */
     public static Command fromString(String action)
     {
@@ -34,5 +34,28 @@ public enum Command
         if (action.equalsIgnoreCase("quit"))
             return Quit;
         return Unknown;
+    }
+
+    /**
+     * Retrieves a string representation for the command
+     * 
+     * @param command the command
+     * @return the Action represented by the specified string
+     */
+    public static String toString(Command command)
+    {
+        if (command == Login)
+            return "login";
+        if (command == Map)
+            return "map";
+        if (command == Message)
+            return "message";
+        if (command == Move)
+            return "move";
+        if (command == Players)
+            return "players";
+        if (command == Quit)
+            return "quit";
+        return "unknown";
     }
 }

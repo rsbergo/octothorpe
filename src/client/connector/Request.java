@@ -71,7 +71,7 @@ public class Request
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(command);
+        sb.append(Command.toString(command));
         for (String arg : args)
             sb.append(" " + arg);
         return sb.toString();
