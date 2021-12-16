@@ -8,7 +8,6 @@ import client.connector.ResponseCode;
 import client.event.ItemDataEvent;
 import client.event.ItemTakenEvent;
 import client.event.MapDataEvent;
-import client.event.PlayerUpdatedEvent;
 import client.event.ResponseEvent;
 import client.event.SynchronousResponseEvent;
 import client.game.Map;
@@ -37,6 +36,7 @@ public class NotificationManager extends Observable implements Runnable
      */
     public NotificationManager(Connector conn)
     {
+        super("NotificationManager");
         this.conn = conn;
     }
     
@@ -60,8 +60,6 @@ public class NotificationManager extends Observable implements Runnable
     {
         if (response.getResponseCode().getCode() >= 200)
             generateSynchronousResponseEvent(response);
-        if (response.getResponseCode() == ResponseCode.PlayerUpdate)
-            generatePlayerUpdatedEvent(response);
         else if (response.getResponseCode() == ResponseCode.ItemNotification)
             generateItemDataEvent(response);
         else if (response.getResponseCode() == ResponseCode.ItemTaken)
@@ -75,12 +73,6 @@ public class NotificationManager extends Observable implements Runnable
     private void generateSynchronousResponseEvent(Response response)
     {
         notify(new SynchronousResponseEvent(response));
-    }
-
-    // Generates a new PlayerUpdatedEvent and notifies subscribers.
-    private void generatePlayerUpdatedEvent(Response response)
-    {
-        notify(new PlayerUpdatedEvent(response));
     }
 
     // Generates a new ItemDataEvent and notifies subscribers.

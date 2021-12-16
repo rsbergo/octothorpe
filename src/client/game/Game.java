@@ -16,12 +16,31 @@ public class Game
     private Player player = null;                                        // the player currently logged in
 
     /**
+     * Default constructor
+     */
+    public Game()
+    {}
+
+    /**
      * Constructor.
      * Initializes the game state with the player currently logged in the client.
      * 
      * @param name the name of the player logged in
      */
     public Game(String name)
+    {
+        setCurrentPlayer(name);
+    }
+
+    // Setters and Getters
+    public Player getCurrentPlayer() { return player; }
+    public void setMap(client.game.Map map) { this.map = map; }
+    public client.game.Map getMap() { return map; }
+
+    /**
+     * Sets the player currently logged in.
+     */
+    public void setCurrentPlayer(String name)
     {
         player = new Player(name);
         players.put(name, player);
@@ -36,9 +55,9 @@ public class Game
      */
     public void updatePlayer(Player player)
     {
-        players.put(player.getName(), player);
-        if (player.getName().equalsIgnoreCase(this.player.getName()))
+        if (this.player != null && this.player.equals(player))
             this.player = player;
+        players.put(player.getName(), player);
     }
 
     /**
@@ -86,31 +105,26 @@ public class Game
     }
 
     /**
-     * Updates the game map.
-     * 
-     * @param map the new game map
-     */
-    public void setMap(client.game.Map map)
-    {
-        this.map = map;
-    }
-
-    /**
      * Retrieves a string representation of the game map, with all its elements.
      * 
      * @return a string representation of the game map
      */
     public String getMapString()
     {
-        StringBuilder sb = new StringBuilder();
-        char[][] mapArray = getCompleteMap();
-        for (int i = 0; i < mapArray.length; i++)
+        String mapString = null;
+        if (map != null)
         {
-            String row = new String(mapArray[i]);
-            sb.append(row + "\r\n");
+            StringBuilder sb = new StringBuilder();
+            char[][] mapArray = getCompleteMap();
+            for (int i = 0; i < mapArray.length; i++)
+            {
+                String row = new String(mapArray[i]);
+                sb.append(row + "\r\n");
+            }
+            sb.delete(sb.length() - 2, sb.length()); // remove extra "\r\n" added after last row
+            mapString = sb.toString();
         }
-        sb.delete(sb.length() - 2, sb.length()); // remove extra "\r\n" added after last row
-        return sb.toString();
+        return mapString;
     }
 
     // Returns an array representation of the map, including the position of items and players.
@@ -133,7 +147,7 @@ public class Game
         {
             Item item = items.get(id);
             Position pos = item.getPosition();
-            mapArray[pos.getY()][pos.getX()] = '⋆';
+            mapArray[pos.getY()][pos.getX()] = '*'; //'⋆'; // TODO: find a better character
         }
     }
 

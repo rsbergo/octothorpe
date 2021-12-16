@@ -1,27 +1,26 @@
 package client.gui;
 
+import java.util.List;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import client.event.LoginEvent;
 import client.event.Subject;
-import client.observer.Observable;
 
 /**
  * Panel containing components for a login operation.
- * Generates LoginEvents
+ * Generates Login events.
  */
-public class LoginPanel extends Observable
+public class LoginPanel extends ContentPanel
 {
     private static final String LOGO_PATH = "res/logo.png"; // path for logo image
 
-    private JPanel loginPanel = new JPanel();             // container of components for login screen
     private JLabel logoLabel = new JLabel();              // game logo
     private JTextField loginNameField = new JTextField(); // login name field
     private JButton loginButton = new JButton();          // login button
@@ -32,18 +31,23 @@ public class LoginPanel extends Observable
      */
     public LoginPanel()
     {
-        registerSubject(Subject.Login);
+        super("LoginPanel");
+        registerSubject(Subject.Login); // generates login events
+        
         initComponents();
         createLayout();
     }
 
-    // Setters and Getters
-    public JPanel getPanel() { return loginPanel; }
+    @Override
+    public List<Subject> getEventsProduced()
+    {
+        return List.of(Subject.Login);
+    }
 
     // Defines the layout for the login panel
     private void createLayout()
     {
-        GroupLayout layoutManager = new GroupLayout(loginPanel);
+        GroupLayout layoutManager = new GroupLayout(content);
         layoutManager.setAutoCreateContainerGaps(true);
         layoutManager.setAutoCreateGaps(true);
         
@@ -64,7 +68,7 @@ public class LoginPanel extends Observable
         );
         
         layoutManager.linkSize(SwingConstants.VERTICAL, loginNameField, loginButton);
-        loginPanel.setLayout(layoutManager);
+        content.setLayout(layoutManager);
     }
 
     // Initialize components of the login panel
@@ -89,7 +93,7 @@ public class LoginPanel extends Observable
         loginNameField.setFont(DefaultFont.getPlain());
         loginNameField.setColumns(30);
         loginNameField.setHorizontalAlignment(JTextField.CENTER);
-        loginNameField.addActionListener((event) -> sendLoginRequest());
+        loginNameField.addActionListener((event) -> sendLoginAttempt());
     }
     
     // Initializes the login name field
@@ -97,11 +101,11 @@ public class LoginPanel extends Observable
     {
         loginButton.setFont(DefaultFont.getBold());
         loginButton.setText("Login");
-        loginButton.addActionListener((event) -> sendLoginRequest());
+        loginButton.addActionListener((event) -> sendLoginAttempt());
     }
 
     // Sends a login request to the game client
-    private void sendLoginRequest()
+    private void sendLoginAttempt()
     {
         LoginEvent event = new LoginEvent();
         event.setName(loginNameField.getText());

@@ -36,7 +36,7 @@ public class GameClient extends Observable implements Observer, Runnable
     private boolean running = false;  // indicates whether the game client is running
     
     // internal threads
-    private Thread listener = null;   // thread that listens to messages from game server
+    private Thread notifierThread = null;   // thread that listens to messages from game server
     
     // events
     private NotificationManager notifier = null; // event generator
@@ -54,6 +54,7 @@ public class GameClient extends Observable implements Observer, Runnable
      */
     public GameClient(String host, int port)
     {
+        super("GameClient");
         this.host = host;
         this.port = port;
         registerSubject(Subject.Response);
@@ -72,7 +73,7 @@ public class GameClient extends Observable implements Observer, Runnable
         try
         {
             initialize(host, port);
-            listener.start();
+            notifierThread.start();
             running = true;
             while (running)
             {
@@ -103,7 +104,7 @@ public class GameClient extends Observable implements Observer, Runnable
         {
             stop();
             conn.close();
-            listener.join();
+            notifierThread.join();
         }
         catch (InterruptedException e)
         {
@@ -119,9 +120,10 @@ public class GameClient extends Observable implements Observer, Runnable
         else if (event.getSubject() == Subject.Response)
         {
             ResponseEvent responseEvent = (ResponseEvent) event;
-            if (responseEvent.getResponse().getResponseCode().getCode() >= 200) // synchronous response
-                responseQueue.add(responseEvent);
-            notify(event); // forward responses
+            if (responseEvent.getResponse().getResponseCode().getCode() >= 200) 
+                responseQueue.add(responseEvent); // consume synchronous response
+            else
+                notify(event);                    // forward responses
         }
     }
 
@@ -131,13 +133,14 @@ public class GameClient extends Observable implements Observer, Runnable
         Logger.log(LogLevel.Info, "Initializing game client...");
         conn = new Connector();
         conn.connectTo(host, port);
-        initializerNotifier(conn);
-        listener = new Thread(notifier);
+        initializeNotifier(conn);
+        notifierThread = new Thread(notifier);
+        notifierThread.setName("GameClientNotifier");
         Logger.log(LogLevel.Info, "Game client initialized");
     }
 
     // Initializes the notifications manager for the game client.
-    private void initializerNotifier(Connector conn)
+    private void initializeNotifier(Connector conn)
     {
         notifier = new NotificationManager(conn);
 
@@ -149,8 +152,8 @@ public class GameClient extends Observable implements Observer, Runnable
         notifier.registerSubject(Subject.Request);
         notifier.registerSubject(Subject.Response);
 
-        notifier.subscribe(Subject.Request, this);
-        notifier.subscribe(Subject.Response, this);
+        notifier.subscribe(this, Subject.Request);  // TODO: why is game client subscribing to request events from notifier?
+        notifier.subscribe(this, Subject.Response);
     }
 
     // Retrieves the first element from request queue.

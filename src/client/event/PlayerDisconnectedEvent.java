@@ -3,30 +3,30 @@ package client.event;
 import client.game.Player;
 
 /**
- * Event raised when a player updated message is received.
- * Player updated message is assumed to be in the form of "101:<name>, <x>, <y>, <score>, <text>"
+ * Event raised when a player updated message is received indicated that a player has disconnected.
+ * Player updated message indicating that a player disconnected is assumed to carry player coordinates (-1, -1).
  */
-public class PlayerUpdatedEvent extends Event
+public class PlayerDisconnectedEvent extends Event
 {
     private Player player = null; // the player that was updated
 
     /**
      * Constructor.
-     * Creates a new event with the subject PlayerUpdated.
+     * Creates a new event with the subject PlayerDisconnected.
      */
-    public PlayerUpdatedEvent()
+    public PlayerDisconnectedEvent()
     {
         super();
-        setSubject(Subject.PlayerUpdated);
+        setSubject(Subject.PlayerDisconnected);
     }
 
     /**
      * Constructor.
      * Creates a new event containing the player information specified.
      * 
-     * @param player the player that was updated
+     * @param player the player that has disconnected
      */
-    public PlayerUpdatedEvent(Player player)
+    public PlayerDisconnectedEvent(Player player)
     {
         this();
         this.player = player;
@@ -40,5 +40,5 @@ public class PlayerUpdatedEvent extends Event
 
     // Setters and Getters
     public void setPlayer(Player player) { this.player = player; }
-    public Player getPlayer() { return player; }
+    public Player getPlayer() { return player; }    
 }

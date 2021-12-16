@@ -10,8 +10,15 @@ public enum Subject
     ItemTaken,
     Login,
     MapData,
+    MapUpdated,
+    Move,
+    PlayerDisconnected,
+    PlayerListUpdated,
     PlayerUpdated,
     Request,
+    Quit,
     Response,
-    SynchronousResponse;
+    SynchronousResponse,
+    UpdateMap,
+    UpdatePlayers;
 }

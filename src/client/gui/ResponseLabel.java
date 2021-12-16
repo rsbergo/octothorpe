@@ -5,11 +5,17 @@ import javax.swing.JLabel;
 
 import client.connector.Response;
 import client.connector.ResponseCode;
+import client.event.Event;
+import client.event.ResponseEvent;
+import client.event.Subject;
+import client.observer.Observer;
 
 /**
  * Label on the map panel that displays outcomes of user commands.
+ * Observers ResponseEvents and updates its text with the response message if it is a synchronous response (response 
+ * code >= 200).
  */
-public class ResponseLabel
+public class ResponseLabel implements Observer
 {
     private JLabel label = new JLabel();
 
@@ -19,19 +25,32 @@ public class ResponseLabel
      */
     public ResponseLabel()
     {
-        label.setFont(DefaultFont.getBold(14));
         label.setText(" ");
     }
 
     // Setters and Getters
     public JLabel getLabel() { return label; }
 
-    /**
-     * Sets the label text according to the response received.
-     * 
-     * @param response the response received from the game server
-     */
-    public void setText(Response response)
+    @Override
+    public void processEvent(Event event)
+    {
+        if (event.getSubject() == Subject.Response)
+        {
+            ResponseEvent responseEvent = (ResponseEvent) event;
+            Response response = responseEvent.getResponse();
+            if (response.getResponseCode().getCode() >= 200)
+                setText(response);
+        }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ResponseLabel";
+    }
+
+    // Sets the label text according to the response received.
+    private void setText(Response response)
     {
         if (response.getResponseCode() == ResponseCode.Success)
             formatSuccess();
@@ -43,12 +62,14 @@ public class ResponseLabel
     // Formats the label for a success message
     private void formatSuccess()
     {
+        label.setFont(DefaultFont.getPlain(14));
         label.setForeground(Color.BLACK);
     }
 
     // Formats the label for an error message
     private void formatError()
     {
+        label.setFont(DefaultFont.getBold(14));
         label.setForeground(Color.RED);
     }
 

@@ -1,20 +1,20 @@
 package client.gui;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.GroupLayout.Alignment;
 
 import client.connector.Request;
 import client.event.Event;
@@ -23,7 +23,6 @@ import client.event.MapDataEvent;
 import client.event.PlayerUpdatedEvent;
 import client.event.RequestEvent;
 import client.event.Subject;
-import client.event.SynchronousResponseEvent;
 import client.game.Item;
 import client.game.Player;
 import client.game.Position;
@@ -145,7 +144,7 @@ public class ClientWindow extends JFrame implements Observer
     public void processEvent(Event event)
     {
         if (event.getSubject() == Subject.SynchronousResponse)
-            responsLabel.setText(((SynchronousResponseEvent) event).getResponse());
+            ;//responsLabel.setText(((SynchronousResponseEvent) event).getResponse());
         else if (event.getSubject() == Subject.MapData)
         {
             map = ((MapDataEvent) event).getMap().getMapArray();
