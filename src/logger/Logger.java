@@ -64,7 +64,7 @@ public class Logger
             sb.append(level + ": " + message);
             sb.append("\r\n" + e.getMessage());
             out.println(sb.toString());
-            e.printStackTrace(System.out);
+            e.printStackTrace(out);
         }
     }
 }
