@@ -69,6 +69,16 @@ public class MainWindow extends Proxy
         mainWindow.setVisible(flag);
     }
 
+    /**
+     * Appends the text specified to the main window's title main title
+     * 
+     * @param text the text to be appended
+     */
+    public void setTitle(String text)
+    {
+        mainWindow.setTitle("Octothorpe # - The Game | " + text);
+    }
+
     // Initializes the components for the main window
     private void initComponents()
     {
@@ -96,7 +106,6 @@ public class MainWindow extends Proxy
     }
     
     // Initializes the main window for the application
-    // TODO: add host address and port to the title bar
     private void initMainWindow()
     {
         mainWindow.setTitle("Octothorpe # - The Game");

@@ -52,6 +52,7 @@ public class ClientGUI extends Observable implements Observer
         Logger.log(LogLevel.Info, "Initializing ClientGUI...");
         this.client = client;
         bindEvents();
+        mainWindow.setTitle("Game server: " + client.getHost() + ":" + client.getPort());
         displayLoginPanel();
         Logger.log(LogLevel.Info, "ClientGUI initialized");
     }
