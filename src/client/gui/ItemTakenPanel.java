@@ -1,6 +1,5 @@
 package client.gui;
 
-import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -102,7 +101,6 @@ public class ItemTakenPanel extends ContentPanel
         itemTakenAreaScroll.setViewportView(itemTakenArea);
         itemTakenAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         itemTakenAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        itemTakenAreaScroll.setPreferredSize(new Dimension(200, 100));
     }
 
     // Updates the map in the map area

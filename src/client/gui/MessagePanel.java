@@ -1,6 +1,5 @@
 package client.gui;
 
-import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -127,7 +126,6 @@ public class MessagePanel extends ContentPanel
         messageAreaScroll.setViewportView(messageArea);
         messageAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messageAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        messageAreaScroll.setPreferredSize(new Dimension(200, 100));
     }
 
     // Initializes the message field.
