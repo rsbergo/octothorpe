@@ -28,7 +28,7 @@ public class Octothorpe
         try (BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
              PrintStream logger = new PrintStream(createLogFile()))
         {
-            Logger.setLogLevel(LogLevel.Debug, logger);
+            Logger.setLogLevel(LogLevel.Info, logger);
             GameClient client = new GameClient(args[0], getPort(args[1]));
             ClientGUI gui = new ClientGUI(client);
             gui.start();
