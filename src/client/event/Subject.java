@@ -6,6 +6,7 @@ package client.event;
 public enum Subject
 {
     Unknown,
+    FogOfWar,
     ItemData,
     ItemTaken,
     Login,

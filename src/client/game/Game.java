@@ -10,10 +10,13 @@ import java.util.Map;
  */
 public class Game
 {
+    private final int FOG_OF_WAR_DISTANCE = 5; // how far can players see
+
     private Map<String, Player> players = new HashMap<String, Player>(); // players currently connected to the game
     private Map<Integer, Item> items = new HashMap<Integer, Item>();     // items on the map
     private client.game.Map map = null;                                  // the game map
     private Player player = null;                                        // the player currently logged in
+    private boolean fogOfWar = true;                                     // limits visibility for players
 
     /**
      * Default constructor
@@ -36,7 +39,7 @@ public class Game
     public Player getCurrentPlayer() { return player; }
     public void setMap(client.game.Map map) { this.map = map; }
     public client.game.Map getMap() { return map; }
-
+    
     /**
      * Sets the player currently logged in.
      */
@@ -132,6 +135,26 @@ public class Game
         return mapString;
     }
 
+    /**
+     * Enables or disables fog of war for the game.
+     * 
+     * @param enabled true if fog of war should be enabled; false otherwise
+     */
+    public void enableFogOfWar(boolean enabled)
+    { 
+        fogOfWar = enabled; 
+    }
+
+    /**
+     * Checks whether fog of war is enabled for the game.
+     * 
+     * @return true if fog of war is enabled; false otherwise
+     */
+    public boolean isFogOfWarEnabled()
+    {
+        return fogOfWar;
+    }
+
     // Returns an array representation of the map, including the position of items and players.
     private char[][] getCompleteMap()
     {
@@ -152,7 +175,8 @@ public class Game
         {
             Item item = items.get(id);
             Position pos = item.getPosition();
-            mapArray[pos.getY()][pos.getX()] = '*'; //'⋆'; // TODO: find a better character
+            if (isPositionVisible(pos))
+                mapArray[pos.getY()][pos.getX()] = '*'; //'⋆'; // TODO: find a better character
         }
     }
 
@@ -166,5 +190,18 @@ public class Game
             Position pos = player.getPosition();
             mapArray[pos.getY()][pos.getX()] = player.getName().charAt(0);
         }
+    }
+
+    // Checks if the current position is visible for the player
+    private boolean isPositionVisible(Position pos)
+    {
+        if (fogOfWar)
+        {
+            return ((player.getPosition().getX() - pos.getX()) <= FOG_OF_WAR_DISTANCE)
+                   && ((pos.getX() - player.getPosition().getX()) <= FOG_OF_WAR_DISTANCE)
+                   && ((player.getPosition().getY() - pos.getY()) <= FOG_OF_WAR_DISTANCE)
+                   && ((pos.getY() - player.getPosition().getY()) <= FOG_OF_WAR_DISTANCE);
+        }
+        return true;
     }
 }

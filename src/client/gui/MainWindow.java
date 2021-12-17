@@ -157,5 +157,6 @@ public class MainWindow extends Proxy
         registerSubject(Subject.SendMessage);
         registerSubject(Subject.ItemTaken);
         registerSubject(Subject.PlayerUpdated);
+        registerSubject(Subject.FogOfWar);
     }
 }

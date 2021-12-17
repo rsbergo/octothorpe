@@ -1,16 +1,20 @@
 package client.gui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.JCheckBox;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import client.event.Event;
+import client.event.FogOfWarEvent;
 import client.event.MapUpdatedEvent;
 import client.event.MoveDirection;
 import client.event.MoveEvent;
@@ -24,6 +28,7 @@ public class MapPanel extends ContentPanel
     private JLabel titleLabel = new JLabel();              // title label
     private JTextArea mapArea = new JTextArea();           // display the map
     private JScrollPane mapAreaScroll = new JScrollPane(); // scrolling pane for the map area
+    private JCheckBox fogOfWarCheckBox = new JCheckBox();  // enables or disables fog of war
 
     private Player currentPlayer = null; // the player currently logged in
     
@@ -36,6 +41,7 @@ public class MapPanel extends ContentPanel
         super("MapPanel");
         this.currentPlayer = currentPlayer;
         registerSubject(Subject.Move); // TODO: add overload that receives a list of events, call from geteventsproduced.
+        registerSubject(Subject.FogOfWar);
         initComponents();
         createLayout();
     }
@@ -58,7 +64,7 @@ public class MapPanel extends ContentPanel
     @Override
     public List<Subject> getEventsProduced()
     {
-        return List.of(Subject.Move);
+        return List.of(Subject.Move, Subject.FogOfWar);
     }
 
     @Override
@@ -73,6 +79,7 @@ public class MapPanel extends ContentPanel
         initTitleLabel();
         initMapArea();
         initMapAreaScroll();
+        initFogOfWarCheckBox();
     }
     
     // Creates the layout in the content planel.
@@ -82,13 +89,21 @@ public class MapPanel extends ContentPanel
         layoutManager.setAutoCreateContainerGaps(true);
         layoutManager.setAutoCreateGaps(true);
 
-        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.TRAILING)
-            .addComponent(titleLabel)
+        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
+            .addGroup(layoutManager.createSequentialGroup()
+                .addComponent(fogOfWarCheckBox)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(titleLabel)
+            )
             .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
-            .addComponent(titleLabel)
+            .addGroup(layoutManager.createParallelGroup(Alignment.BASELINE)
+                .addComponent(fogOfWarCheckBox)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(titleLabel)
+            )
             .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
@@ -131,6 +146,22 @@ public class MapPanel extends ContentPanel
         mapAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
+    // Initializes the fog of war checkbox.
+    private void initFogOfWarCheckBox()
+    {
+        fogOfWarCheckBox.setText("Fog of War");
+        fogOfWarCheckBox.setSelected(true);
+        fogOfWarCheckBox.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                int selection = e.getStateChange();
+                generateFogOfWarEvent(selection == ItemEvent.SELECTED);
+            }
+        });
+    }
+
     // Updates the map in the map area
     private void updateMap(String map)
     {
@@ -165,6 +196,14 @@ public class MapPanel extends ContentPanel
     {
         MoveEvent event = new MoveEvent();
         event.setDirection(direction);
+        notify(event);
+    }
+
+    // Generates a fog of war event.
+    private void generateFogOfWarEvent(boolean enabled)
+    {
+        FogOfWarEvent event = new FogOfWarEvent();
+        event.setEnabled(enabled);
         notify(event);
     }
 }

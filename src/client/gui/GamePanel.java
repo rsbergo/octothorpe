@@ -35,6 +35,7 @@ public class GamePanel extends ContentPanel
         registerSubject(Subject.SendMessage);
         registerSubject(Subject.ItemTaken);
         registerSubject(Subject.PlayerUpdated);
+        registerSubject(Subject.FogOfWar);
         
         mapPanel = new MapPanel(currentPlayer);
         bindEvents();
@@ -59,12 +60,14 @@ public class GamePanel extends ContentPanel
             notify(event);
         if (event.getSubject() == Subject.PlayerUpdated)
             notify(event);
+        if (event.getSubject() == Subject.FogOfWar)
+            notify(event);;
     }
 
     @Override
     public List<Subject> getEventsProduced()
     {
-        return List.of(Subject.Move, Subject.SendMessage);
+        return List.of(Subject.Move, Subject.SendMessage, Subject.FogOfWar);
     }
 
     @Override
