@@ -190,12 +190,16 @@ public class Game
             Position pos = player.getPosition();
             mapArray[pos.getY()][pos.getX()] = player.getName().charAt(0);
         }
+
+        // ensure that current player is always visible
+        if (player != null)
+            mapArray[player.getPosition().getY()][player.getPosition().getX()] = player.getName().charAt(0);
     }
 
     // Checks if the current position is visible for the player
     private boolean isPositionVisible(Position pos)
     {
-        if (fogOfWar)
+        if (fogOfWar && player != null)
         {
             return ((player.getPosition().getX() - pos.getX()) <= FOG_OF_WAR_DISTANCE)
                    && ((pos.getX() - player.getPosition().getX()) <= FOG_OF_WAR_DISTANCE)
