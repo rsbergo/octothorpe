@@ -70,7 +70,7 @@ public class MapPanel extends ContentPanel
     // Initializes the text area where the map is displayed
     private void initMapArea()
     {
-        mapArea.setFont(DefaultFont.getPlain());
+        mapArea.setFont(DefaultFont.getBold());
         mapArea.setEditable(false);
         mapArea.addKeyListener(new KeyAdapter()
         {

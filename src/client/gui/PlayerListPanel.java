@@ -1,12 +1,14 @@
 package client.gui;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
@@ -21,11 +23,11 @@ import client.game.Player;
  */
 public class PlayerListPanel extends ContentPanel
 {
-    // TODO: adjust model so player information can be customized instead of using toString()
-    private JList<Player> playerList = new JList<Player>();   // list of players connected
-    private JScrollPane playerListScroll = new JScrollPane(); // scrolling pane for the list of players
+    private JLabel titleLabel = new JLabel();                                     // list title
+    private JList<PlayerInformation> playerList = new JList<PlayerInformation>(); // list of players connected
+    private JScrollPane playerListScroll = new JScrollPane();                     // scrolling pane for the list of players
     
-    private DefaultListModel<Player> playerListModel = new DefaultListModel<Player>(); // the players data
+    private DefaultListModel<PlayerInformation> playerListModel = new DefaultListModel<PlayerInformation>(); // the players data
     
     /**
      * Constructor.
@@ -61,11 +63,13 @@ public class PlayerListPanel extends ContentPanel
         layoutManager.setAutoCreateContainerGaps(true);
         layoutManager.setAutoCreateGaps(true);
 
-        layoutManager.setHorizontalGroup(layoutManager.createSequentialGroup()
+        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
+            .addComponent(titleLabel)
             .addComponent(playerListScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
+            .addComponent(titleLabel)
             .addComponent(playerListScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
@@ -75,15 +79,21 @@ public class PlayerListPanel extends ContentPanel
     // Initializes the cmponents of the player list panel
     private void initComponents()
     {
+        initTitleLabel();
         initPlayerList();
         initPlayerListScroll();
+    }
+
+    private void initTitleLabel()
+    {
+        titleLabel.setFont(DefaultFont.getBold());
+        titleLabel.setText("Players connected");
     }
 
     // Initializes the list of players
     private void initPlayerList()
     {
         playerList.setFont(DefaultFont.getPlain(12));
-        playerList.setEnabled(false);
         playerList.setModel(playerListModel);
     }
 
@@ -99,21 +109,42 @@ public class PlayerListPanel extends ContentPanel
     // Updates a player information on the list of players
     private void updatePlayerList(List<Player> players)
     {
-        Collections.sort(players, new ScoreComparator());
+        List<PlayerInformation> list = new ArrayList<PlayerInformation>();
+        for (Player player : players)
+            list.add(new PlayerInformation(player));
+        Collections.sort(list, Collections.reverseOrder());
         playerListModel.clear();
-        playerListModel.addAll(players);
+        playerListModel.addAll(list);
     }
 
     /**
-     * Allows sorting based on the score.
+     * Model used for the list of players.
+     * Players are ordered based on their score.
      */
-    private static class ScoreComparator implements Comparator<Player>
+    private class PlayerInformation implements Comparable<PlayerInformation>
     {
-        @Override
-        public int compare(Player player1, Player player2)
+        private Player player = null;
+
+        // Constructor.
+        private PlayerInformation(Player player)
         {
-            return player1.getScore() - player2.getScore();
+            this.player = player;
         }
 
+        @Override
+        public int compareTo(PlayerInformation player)
+        {
+            return this.player.getScore() - player.player.getScore();
+        }
+
+        @Override
+        public String toString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.append(player.getName());
+            sb.append(" (" + player.getPosition().getX() + ", " + player.getPosition().getY() + ")");
+            sb.append(" - " + player.getScore() + " points");
+            return sb.toString();
+        }
     }
 }
