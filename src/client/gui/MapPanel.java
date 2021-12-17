@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.JCheckBox;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.text.DefaultCaret;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -136,6 +137,8 @@ public class MapPanel extends ContentPanel
                     generateMoveEvent(MoveDirection.East);;
             }
         });
+        DefaultCaret caret = (DefaultCaret) mapArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);  
     }
     
     // Initializes the scroll pane attached to the map area
