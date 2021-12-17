@@ -52,12 +52,13 @@ public class GameClient extends Observable implements Observer, Runnable
      * @param host the host where the game server is running
      * @param port the port where the game server is listening for connections
      */
-    public GameClient(String host, int port)
+    public GameClient(String host, int port) throws IOException
     {
         super("GameClient");
         this.host = host;
         this.port = port;
         registerSubject(Subject.Response);
+        initialize(host, port);
     }
 
     // Setters and Getters
@@ -72,7 +73,6 @@ public class GameClient extends Observable implements Observer, Runnable
     {
         try
         {
-            initialize(host, port);
             notifierThread.start();
             running = true;
             while (running)
