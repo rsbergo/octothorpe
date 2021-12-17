@@ -44,13 +44,13 @@ The game main window displays the game map, the list of players, a log of items 
 - `S` to move south
 - `D` to move east
 
-A key stroke is required for each movement; i.e. it's not possible to hold down the `A` key and continually move west.
-
-One thing I wasn't able to do was to make the map grab focus once it is displayed. So in order to start moving, you must make it grab focus first (e.g. by clicking on it).
+A key stroke is required for each movement; i.e. it's not possible to hold down the `A` key and continually move west. Also, I wasn't able to do was to make the map grab focus once it is displayed. So in order to start moving, you must make it grab focus first (e.g. by clicking on it).
 
 The game client also provides a `Fog of War` option. If enabled, only items nearby are displayed; if disabled, all items becomes visible.
 
 <img width="400" alt="Octothorp_FogOfWar_Enabled" src="https://user-images.githubusercontent.com/58370031/146612644-57f55b7d-d61e-4595-90e5-6aed10a82e4d.png">   <img width="400" alt="Octothorp_FogOfWar_Disabled" src="https://user-images.githubusercontent.com/58370031/146612657-1798b3d2-18c6-4fcb-863a-d7843316c6fc.png">
+
+Log files can be found in the `log\` directory within the repository.
 
 ## My experience with this project
 
@@ -61,5 +61,7 @@ To implement the text-based UI, I realized that I would have a different thread 
 The second challenge was more daunting though, since I haven't had much experience developing GUI applications. I decided to use *Swing* since I had a very brief experience with it during another course at USM. Having the text-based UI was really helpful, since the events for all responses from the server were already in place and I could focus on implementing a GUI and connecting it with the game client that was already working. The hardest challenge was organizing all the components in a meaningful way and make the events navigate among the components, reaching the correct destination.
 
 The `GameClient` class is responsible for the communication with the game server, sending requests and receiving responses. It contains an internal thread that is responsible for receiving the responses from the game server. The `GameGUI` class is responsible for orchestrating the GUI interactions. It receives an instance of `GameClient`, sends events with requests to it and receives events with responses from it. It is the `GameGUI` that translates GUI events into requests for the `GameClient` and translates responses from the `GameClient` into events that are meaningful to the GUI. The idea behind this design is to make it easier to switch the GUI if needed, as long as the new GUI sends `RequestEvents` to the `GameClient` and receives `ResponseEvents` from the `GameClient`. To organize the communication a little bit, `GameGUI` has a `MainWindow` that is responsible for hosting the GUI components. The `MainWindow` acts as a proxy for events between the `GameGUI` and the GUI components. The communication between components is also done through events and the Observer pattern. The `GameGUI` also contains a `Game` member that maintains some game state (list of players, map, etc.). This `Game` member is updated based on the events received from the `GameClient` and is used to provide information to the GUI components. From all responses received from the game server, handling the map information was the trickiest part since the map data is sent in multiple messages that are not guaranteed to come in a single block; I ended up deciding to store the state of the map building process.
+
+I decided to generate some logs during development. These logs became invaluable to find issues and especially to trace the flow of events generated. The volume of logs may be massive, so the current log level is set to `Info`. The logger is initialized in the `main` function, before starting the game client.
 
 The GUI is not implemented in the most efficient way possible. For example, when a `PlayerUpdated` event is raised (i.e. when a response with response code 101 is received), the entire list of players is sent to the GUI components and a representation of the map containing all the elements currently present is sent so the GUI can update its representation on the screen. Ideally, I think it would be better to do very small updates at a time, but this turned out to be much more complex than I expected. Nonetheless, I'm happy with the end result. It is very satisfying to see an interactive application coming alive from scratch, and I definitely learned a lot while working on these projects.
