@@ -5,7 +5,6 @@ import java.io.IOException;
 import client.connector.Connector;
 import client.connector.Response;
 import client.connector.ResponseCode;
-import client.event.ItemDataEvent;
 import client.event.ItemTakenEvent;
 import client.event.MapDataEvent;
 import client.event.ResponseEvent;
@@ -60,8 +59,7 @@ public class NotificationManager extends Observable implements Runnable
     {
         if (response.getResponseCode().getCode() >= 200)
             generateSynchronousResponseEvent(response);
-        else if (response.getResponseCode() == ResponseCode.ItemNotification)
-            generateItemDataEvent(response);
+
         else if (response.getResponseCode() == ResponseCode.ItemTaken)
             generateItemTakenEvent(response);
         else if (response.getResponseCode() == ResponseCode.MapData)
@@ -73,12 +71,6 @@ public class NotificationManager extends Observable implements Runnable
     private void generateSynchronousResponseEvent(Response response)
     {
         notify(new SynchronousResponseEvent(response));
-    }
-
-    // Generates a new ItemDataEvent and notifies subscribers.
-    private void generateItemDataEvent(Response response)
-    {
-        notify(new ItemDataEvent(response));
     }
 
     // Generates a new ItemTakenEvent and notifies subscribers.

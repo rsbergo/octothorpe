@@ -143,5 +143,7 @@ public class MainWindow extends Proxy
         registerSubject(Subject.PlayerListUpdated);
         registerSubject(Subject.MapUpdated);
         registerSubject(Subject.Move);
+        registerSubject(Subject.MessageReceived);
+        registerSubject(Subject.SendMessage);
     }
 }

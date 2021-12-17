@@ -19,6 +19,10 @@ public class MapPanel extends ContentPanel
     private JTextArea mapArea = new JTextArea();           // display the map
     private JScrollPane mapAreaScroll = new JScrollPane(); // scrolling pane for the map area
     
+    /**
+     * Constructor.
+     * Initializes components and defines the layout.
+     */
     public MapPanel()
     {
         super("MapPanel");

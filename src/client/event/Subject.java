@@ -11,6 +11,7 @@ public enum Subject
     Login,
     MapData,
     MapUpdated,
+    MessageReceived,
     Move,
     PlayerDisconnected,
     PlayerListUpdated,
@@ -18,6 +19,7 @@ public enum Subject
     Request,
     Quit,
     Response,
+    SendMessage,
     SynchronousResponse,
     UpdateMap,
     UpdatePlayers;

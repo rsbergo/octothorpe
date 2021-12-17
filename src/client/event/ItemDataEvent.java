@@ -1,7 +1,5 @@
 package client.event;
 
-import client.connector.Response;
-import client.connector.ResponseCode;
 import client.game.Item;
 
 /**
@@ -10,8 +8,6 @@ import client.game.Item;
  */
 public class ItemDataEvent extends Event
 {
-    private static final int FIELD_COUNT = 3; // expected number of fields in the message
-
     private Item item = null; // the item whose information was received
 
     /**
@@ -26,15 +22,14 @@ public class ItemDataEvent extends Event
 
     /**
      * Constructor.
-     * Creates a new event based on the item information contained in the message.
+     * Creates a new event based on the item information specified.
      * 
-     * @param response a response received from the game server
+     * @param item the item whose data is being advertised
      */
-    public ItemDataEvent(Response response)
+    public ItemDataEvent(Item item)
     {
         this();
-        if (response.getResponseCode() == ResponseCode.ItemNotification)
-            item = getItemInformation(response.getMessage());
+        this.item = item;
     }
 
     @Override
@@ -45,32 +40,4 @@ public class ItemDataEvent extends Event
 
     // Setters and Getters
     public Item getItem() { return item; }
-
-    // Retrieves player information from the response message
-    private Item getItemInformation(String message)
-    {
-        Item item = null;
-
-        String[] tokens = message.split(", ");
-        if (tokens.length < FIELD_COUNT)
-        {
-            System.err.println("Error getting item information from response");
-            return item;
-        }
-
-        try
-        {
-            // TODO: assumes that the item ID is a number. Could it be a string?
-            int id = Integer.parseInt(tokens[0]);
-            int x = Integer.parseInt(tokens[1]);
-            int y = Integer.parseInt(tokens[2]);
-            item = new Item(id, x, y);
-        }
-        catch (NumberFormatException e)
-        {
-            System.err.println("Error getting item information from response");
-            e.printStackTrace();
-        }
-        return item;
-    }
 }

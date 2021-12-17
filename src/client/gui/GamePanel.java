@@ -3,6 +3,8 @@ package client.gui;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.SwingConstants;
+import javax.swing.GroupLayout.Alignment;
 
 import client.event.Event;
 import client.event.Subject;
@@ -15,6 +17,7 @@ public class GamePanel extends ContentPanel
 {
     private MapPanel mapPanel = new MapPanel();                       // map
     private PlayerListPanel playersListPanel = new PlayerListPanel(); // list of players
+    private MessagePanel messagePanel = new MessagePanel();           // message area
 
     /**
      * Default constructor.
@@ -26,6 +29,8 @@ public class GamePanel extends ContentPanel
         registerSubject(Subject.PlayerListUpdated);
         registerSubject(Subject.MapUpdated);
         registerSubject(Subject.Move);
+        registerSubject(Subject.MessageReceived);
+        registerSubject(Subject.SendMessage);
         
         bindEvents();
         createLayout();
@@ -41,18 +46,22 @@ public class GamePanel extends ContentPanel
             notify(event);
         if (event.getSubject() == Subject.Move)
             notify(event);
+        if (event.getSubject() == Subject.SendMessage)
+            notify(event);
+        if (event.getSubject() == Subject.MessageReceived)
+            notify(event);
     }
 
     @Override
     public List<Subject> getEventsProduced()
     {
-        return List.of(Subject.Move);
+        return List.of(Subject.Move, Subject.SendMessage);
     }
 
     @Override
     public List<Subject> getSubjectsConsumed()
     {
-        return List.of(Subject.PlayerListUpdated, Subject.MapUpdated);
+        return List.of(Subject.PlayerListUpdated, Subject.MapUpdated, Subject.MessageReceived);
     }
 
     private void bindEvents()
@@ -62,6 +71,9 @@ public class GamePanel extends ContentPanel
 
         subscribe(mapPanel, mapPanel.getSubjectsConsumed());
         mapPanel.subscribe(this, mapPanel.getEventsProduced());
+
+        subscribe(messagePanel, messagePanel.getSubjectsConsumed());
+        messagePanel.subscribe(this, messagePanel.getEventsProduced());
     }
 
     // Defines the layout for the game panel
@@ -72,15 +84,22 @@ public class GamePanel extends ContentPanel
         layoutManager.setAutoCreateGaps(true);
 
         layoutManager.setHorizontalGroup(layoutManager.createSequentialGroup()
-            .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+            .addGroup(layoutManager.createParallelGroup(Alignment.CENTER, true)
+                .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(messagePanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+            )
             .addComponent(mapPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createParallelGroup()
-            .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addGroup(layoutManager.createSequentialGroup()
+                .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addComponent(messagePanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            )
             .addComponent(mapPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
+        layoutManager.linkSize(SwingConstants.HORIZONTAL, playersListPanel.getContent(), messagePanel.getContent());
         content.setLayout(layoutManager);
     }
 }

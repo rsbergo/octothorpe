@@ -1,12 +1,12 @@
 package client.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
@@ -57,8 +57,19 @@ public class PlayerListPanel extends ContentPanel
     // Creates the layout in the content planel.
     private void createLayout()
     {
-        content.setLayout(new BorderLayout());
-        content.add(playerListScroll);
+        GroupLayout layoutManager = new GroupLayout(content);
+        layoutManager.setAutoCreateContainerGaps(true);
+        layoutManager.setAutoCreateGaps(true);
+
+        layoutManager.setHorizontalGroup(layoutManager.createSequentialGroup()
+            .addComponent(playerListScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+        );
+
+        layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
+            .addComponent(playerListScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+        );
+
+        content.setLayout(layoutManager);
     }
 
     // Initializes the cmponents of the player list panel
