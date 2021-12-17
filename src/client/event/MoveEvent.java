@@ -1,5 +1,7 @@
 package client.event;
 
+import client.game.MoveDirection;
+
 /**
  * Event raised when the player moves on the map.
  */

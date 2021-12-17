@@ -18,10 +18,10 @@ import javax.swing.SwingConstants;
 import client.event.Event;
 import client.event.FogOfWarEvent;
 import client.event.MapUpdatedEvent;
-import client.event.MoveDirection;
 import client.event.MoveEvent;
 import client.event.PlayerUpdatedEvent;
 import client.event.Subject;
+import client.game.MoveDirection;
 import client.game.Player;
 import client.game.Position;
 
