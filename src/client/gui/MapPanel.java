@@ -42,7 +42,7 @@ public class MapPanel extends ContentPanel
     {
         super("MapPanel");
         this.currentPlayer = currentPlayer;
-        registerSubject(Subject.Move); // TODO: add overload that receives a list of events, call from geteventsproduced.
+        registerSubject(Subject.Move);
         registerSubject(Subject.FogOfWar);
         initComponents();
         createLayout();

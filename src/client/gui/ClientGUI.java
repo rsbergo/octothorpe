@@ -64,7 +64,7 @@ public class ClientGUI extends Observable implements Observer
     public void start()
     {
         java.awt.EventQueue.invokeLater(() -> mainWindow.setVisible(true));
-        client.run(); //TODO: potentially needs to run in a separate thread
+        client.run();
     }
 
     @Override
@@ -202,7 +202,6 @@ public class ClientGUI extends Observable implements Observer
     // Handles ResponseEvent.
     // If synchronous response, forward to notifiers.
     // If synchronous successful response for login request, initialize the game.
-    // TODO: maybe generate a new event instead of forwarding a response event
     private void handleResponseEvent(Event event)
     {
         if (event.getSubject() == Subject.Response)

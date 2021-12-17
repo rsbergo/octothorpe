@@ -18,7 +18,7 @@ import client.observer.Observer;
  */
 public abstract class ContentPanel extends Observable implements Observer
 {
-    protected JPanel content = new JPanel(); // the content panel's container // TODO: replace with Container to make it generic?
+    protected JPanel content = new JPanel(); // the content panel's container
 
     /**
      * Default constructor.
