@@ -143,16 +143,7 @@ public class GameClient extends Observable implements Observer, Runnable
     private void initializeNotifier(Connector conn)
     {
         notifier = new NotificationManager(conn);
-
-        notifier.registerSubject(Subject.SynchronousResponse);
-        notifier.registerSubject(Subject.PlayerUpdated);
-        notifier.registerSubject(Subject.ItemData);
-        notifier.registerSubject(Subject.ItemTaken);
-        notifier.registerSubject(Subject.MapData);
-        notifier.registerSubject(Subject.Request);
         notifier.registerSubject(Subject.Response);
-
-        notifier.subscribe(this, Subject.Request);  // TODO: why is game client subscribing to request events from notifier?
         notifier.subscribe(this, Subject.Response);
     }
 
