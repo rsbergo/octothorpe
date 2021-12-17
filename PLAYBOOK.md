@@ -1,5 +1,5 @@
 ## COS 460/540 - Computer Networks
-# Project 3: Octothorpe (#) The Game - Server
+# Project 4: Octothorpe (#) The Game - Client
 
 # Rafael de Souza Bergo
 
