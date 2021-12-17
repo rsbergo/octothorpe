@@ -8,6 +8,7 @@ import javax.swing.SwingConstants;
 
 import client.event.Event;
 import client.event.Subject;
+import client.game.Player;
 
 /**
  * The GUI panel that coordinates interactions with the player.
@@ -15,16 +16,16 @@ import client.event.Subject;
  */
 public class GamePanel extends ContentPanel
 {
-    private MapPanel mapPanel = new MapPanel();                       // map
+    private MapPanel mapPanel = null;                                 // map
     private PlayerListPanel playersListPanel = new PlayerListPanel(); // list of players
     private MessagePanel messagePanel = new MessagePanel();           // message area
-    private ItemTakenPanel itemTakenPanel = new ItemTakenPanel();               // log of items taken
+    private ItemTakenPanel itemTakenPanel = new ItemTakenPanel();     // log of items taken
 
     /**
      * Default constructor.
      * Initializes the components of the game panel and defines its layout.
      */
-    public GamePanel()
+    public GamePanel(Player currentPlayer)
     {
         super("GamePanel");
         registerSubject(Subject.PlayerListUpdated);
@@ -33,7 +34,9 @@ public class GamePanel extends ContentPanel
         registerSubject(Subject.MessageReceived);
         registerSubject(Subject.SendMessage);
         registerSubject(Subject.ItemTaken);
+        registerSubject(Subject.PlayerUpdated);
         
+        mapPanel = new MapPanel(currentPlayer);
         bindEvents();
         createLayout();
     }
@@ -54,6 +57,8 @@ public class GamePanel extends ContentPanel
             notify(event);
         if (event.getSubject() == Subject.ItemTaken)
             notify(event);
+        if (event.getSubject() == Subject.PlayerUpdated)
+            notify(event);
     }
 
     @Override
@@ -65,7 +70,7 @@ public class GamePanel extends ContentPanel
     @Override
     public List<Subject> getSubjectsConsumed()
     {
-        return List.of(Subject.PlayerListUpdated, Subject.MapUpdated, Subject.MessageReceived, Subject.ItemTaken);
+        return List.of(Subject.PlayerListUpdated, Subject.MapUpdated, Subject.MessageReceived, Subject.ItemTaken, Subject.PlayerUpdated);
     }
 
     private void bindEvents()

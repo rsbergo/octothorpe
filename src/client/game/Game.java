@@ -42,8 +42,13 @@ public class Game
      */
     public void setCurrentPlayer(String name)
     {
-        player = new Player(name);
-        players.put(name, player);
+        if (players.containsKey(name))
+            player = players.get(name);
+        else
+        {
+            player = new Player(name);
+            players.put(name, player);
+        }
     }
 
     /**
