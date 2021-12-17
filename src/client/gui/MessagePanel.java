@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -23,6 +24,7 @@ import client.event.Subject;
  */
 public class MessagePanel extends ContentPanel
 {
+    private JLabel titleLabel = new JLabel();                  // list title
     private JTextArea messageArea = new JTextArea();           // display the messages
     private JScrollPane messageAreaScroll = new JScrollPane(); // scrolling pane for the message area
     private JTextField messageField = new JTextField();        // message input field
@@ -65,6 +67,7 @@ public class MessagePanel extends ContentPanel
     // Creates the layout in the content planel.
     private void initComponents()
     {
+        initTitleLabel();
         initMessageArea();
         initMessageAreaScroll();
         initMessageField();
@@ -78,7 +81,8 @@ public class MessagePanel extends ContentPanel
         layoutManager.setAutoCreateContainerGaps(true);
         layoutManager.setAutoCreateGaps(true);
 
-        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.CENTER)
+        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
+            .addComponent(titleLabel)
             .addComponent(messageAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             .addGroup(layoutManager.createSequentialGroup()
                 .addComponent(messageField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
@@ -87,6 +91,7 @@ public class MessagePanel extends ContentPanel
         );
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
+            .addComponent(titleLabel)
             .addComponent(messageAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             .addGroup(layoutManager.createParallelGroup(Alignment.BASELINE)
                 .addComponent(messageField)
@@ -98,6 +103,12 @@ public class MessagePanel extends ContentPanel
         content.setLayout(layoutManager);
     }
 
+    private void initTitleLabel()
+    {
+        titleLabel.setFont(DefaultFont.getBold());
+        titleLabel.setText("Messages");
+    }
+    
     // Initializes the message area.
     private void initMessageArea()
     {
