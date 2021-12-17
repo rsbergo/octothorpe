@@ -346,8 +346,7 @@ public class ClientGUI extends Observable implements Observer
 
         try
         {
-            // TODO: assumes that the item ID is a number. Could it be a string?
-            int id = Integer.parseInt(tokens[0]);
+            String id = tokens[0];
             int x = Integer.parseInt(tokens[1]);
             int y = Integer.parseInt(tokens[2]);
             item = new Item(id, x, y);
