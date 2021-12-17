@@ -1,5 +1,6 @@
 package client.gui;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -66,12 +67,12 @@ public class ItemTakenPanel extends ContentPanel
 
         layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
             .addComponent(titleLabel)
-            .addComponent(itemTakenAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(itemTakenAreaScroll)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
             .addComponent(titleLabel)
-            .addComponent(itemTakenAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(itemTakenAreaScroll)
         );
 
         content.setLayout(layoutManager);
@@ -87,8 +88,8 @@ public class ItemTakenPanel extends ContentPanel
     // Initializes the text area where the map is displayed
     private void initItemTakenArea()
     {
-        itemTakenArea.setFont(DefaultFont.getPlain());
         itemTakenArea.setEditable(false);
+        itemTakenArea.setFont(DefaultFont.getPlain(10));
 
         // auto scrolling
         DefaultCaret caret = (DefaultCaret) itemTakenArea.getCaret();
@@ -98,9 +99,10 @@ public class ItemTakenPanel extends ContentPanel
     // Initializes the scroll pane attached to the map area
     private void initItemTakenAreaScroll()
     {
-        itemTakenAreaScroll.setViewportView(itemTakenArea);
+        itemTakenAreaScroll.getViewport().add(itemTakenArea);
         itemTakenAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         itemTakenAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        itemTakenAreaScroll.setPreferredSize(new Dimension(200, 100));
     }
 
     // Updates the map in the map area

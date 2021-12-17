@@ -1,5 +1,6 @@
 package client.gui;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -100,9 +101,10 @@ public class PlayerListPanel extends ContentPanel
     // Initializes the scroll pane for the list of players
     private void initPlayerListScroll()
     {
-        playerListScroll.setViewportView(playerList);
+        playerListScroll.getViewport().add(playerList);
         playerListScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         playerListScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        playerListScroll.setPreferredSize(new Dimension(200, 100));
     }
 
     // Updates a player information on the list of players
