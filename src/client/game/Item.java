@@ -5,7 +5,7 @@ package client.game;
  */
 public class Item
 {
-    private int id = 0;                    // the item ID
+    private String id = "";              // the item ID
     private Position pos = new Position(); // the item position
 
     /**
@@ -13,7 +13,7 @@ public class Item
      */
     public Item()
     {
-        this(0, new Position());
+        this("", new Position());
     }
 
     /**
@@ -23,7 +23,7 @@ public class Item
      * @param id  the item's ID
      * @param pos the item's position
      */
-    public Item(int id, Position pos)
+    public Item(String id, Position pos)
     {
         this.id = id;
         this.pos = pos;
@@ -37,14 +37,14 @@ public class Item
      * @param x  the item's x coordinate
      * @param y  the item's y coordinate
      */
-    public Item(int id, int x, int y)
+    public Item(String id, int x, int y)
     {
         this(id, new Position(x, y));
     }
 
     // Setters and Getters
-    public void setId(int id) { this.id = id; }
-    public int getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getId() { return id; }
     public void setPosition(Position pos) { this.pos = pos; }
     public void setPosition(int x, int y) { pos.updatePosition(x, y); }
     public Position getPosition() { return pos; }

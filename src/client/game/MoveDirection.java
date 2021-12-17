@@ -1,4 +1,4 @@
-package client.event;
+package client.game;
 
 /**
  * Possible movement directions in the game.

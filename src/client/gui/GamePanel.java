@@ -45,23 +45,8 @@ public class GamePanel extends ContentPanel
     @Override
     public synchronized void processEvent(Event event)
     {
-        // TODO: Review, maybe game panel is a proxy
-        if (event.getSubject() == Subject.PlayerListUpdated)
-            notify(event);
-        if (event.getSubject() == Subject.MapUpdated)
-            notify(event);
-        if (event.getSubject() == Subject.Move)
-            notify(event);
-        if (event.getSubject() == Subject.SendMessage)
-            notify(event);
-        if (event.getSubject() == Subject.MessageReceived)
-            notify(event);
-        if (event.getSubject() == Subject.ItemTaken)
-            notify(event);
-        if (event.getSubject() == Subject.PlayerUpdated)
-            notify(event);
-        if (event.getSubject() == Subject.FogOfWar)
-            notify(event);;
+        // GamePanel is functioning as a Proxy, but it must also be a ContentPanel, and we can only inherit from one class...
+        notify(event);
     }
 
     @Override

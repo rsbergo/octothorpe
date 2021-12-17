@@ -39,7 +39,6 @@ public class MapBuilder
     // Checks if mapData contains map dimensions.
     // Map dimensions is expected to be in the form "<rows>, <cols>".
     // ',' is not expected to appear anywhere in the map data.
-    // TODO: needs to invert to <cols>, <rows> in the server.
     private static boolean isMapDimensions(String mapData)
     {
         String[] tokens = mapData.split(", ");

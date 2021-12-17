@@ -52,6 +52,7 @@ public class ClientGUI extends Observable implements Observer
         Logger.log(LogLevel.Info, "Initializing ClientGUI...");
         this.client = client;
         bindEvents();
+        mainWindow.setTitle("Game server: " + client.getHost() + ":" + client.getPort());
         displayLoginPanel();
         Logger.log(LogLevel.Info, "ClientGUI initialized");
     }
@@ -64,7 +65,7 @@ public class ClientGUI extends Observable implements Observer
     public void start()
     {
         java.awt.EventQueue.invokeLater(() -> mainWindow.setVisible(true));
-        client.run(); //TODO: potentially needs to run in a separate thread
+        client.run();
     }
 
     @Override
@@ -150,9 +151,12 @@ public class ClientGUI extends Observable implements Observer
     // Sends a quit request to the game client.
     private void sendQuitRequest()
     {
-        Request request = new Request();
-        request.setCommand(Command.Quit);
-        sendRequestEvent(request);
+        if (game.getCurrentPlayer() != null)
+        {
+            Request request = new Request();
+            request.setCommand(Command.Quit);
+            sendRequestEvent(request);
+        }
     }
 
     // Sends a move request to the game client.
@@ -202,7 +206,6 @@ public class ClientGUI extends Observable implements Observer
     // Handles ResponseEvent.
     // If synchronous response, forward to notifiers.
     // If synchronous successful response for login request, initialize the game.
-    // TODO: maybe generate a new event instead of forwarding a response event
     private void handleResponseEvent(Event event)
     {
         if (event.getSubject() == Subject.Response)
@@ -346,8 +349,7 @@ public class ClientGUI extends Observable implements Observer
 
         try
         {
-            // TODO: assumes that the item ID is a number. Could it be a string?
-            int id = Integer.parseInt(tokens[0]);
+            String id = tokens[0];
             int x = Integer.parseInt(tokens[1]);
             int y = Integer.parseInt(tokens[2]);
             item = new Item(id, x, y);
@@ -387,7 +389,7 @@ public class ClientGUI extends Observable implements Observer
         {
             event = new ItemTakenEvent();
             event.setPlayerName(tokens[0]);
-            event.setItemId(Integer.parseInt(tokens[1])); // TODO: assumes that the item ID is a number. Could it be a string?
+            event.setItemId(tokens[1]);
             event.setItemValue(Integer.parseInt(tokens[2]));
         }
         catch (NumberFormatException e)

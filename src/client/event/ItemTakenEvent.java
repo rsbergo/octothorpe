@@ -7,7 +7,7 @@ package client.event;
 public class ItemTakenEvent extends Event
 { 
     private String playerName = null; // player name
-    private int itemId = 0;           // item ID // TODO: assumes that item ID is number. Could it be string?
+    private String itemId = null;     // item ID
     private int itemValue = 0;        // value of item
 
     /**
@@ -28,7 +28,7 @@ public class ItemTakenEvent extends Event
      * @param itemId     the item that was taken
      * @param itemValue  the value of the item that was taken
      */
-    public ItemTakenEvent(String playerName, int itemId, int itemValue)
+    public ItemTakenEvent(String playerName, String itemId, int itemValue)
     {
         this();
         this.playerName = playerName;
@@ -45,8 +45,8 @@ public class ItemTakenEvent extends Event
     // Setters and Getters
     public void setPlayerName(String playerName) { this.playerName = playerName; }
     public String getPlayerName() { return playerName; }
-    public void setItemId(int itemId) { this.itemId = itemId; }
-    public int getItemId() { return itemId; };
+    public void setItemId(String itemId) { this.itemId = itemId; }
+    public String getItemId() { return itemId; };
     public void setItemValue(int itemValue) { this.itemValue = itemValue; }
     public int getItemValue() { return itemValue; } 
 }

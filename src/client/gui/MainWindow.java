@@ -69,6 +69,16 @@ public class MainWindow extends Proxy
         mainWindow.setVisible(flag);
     }
 
+    /**
+     * Appends the text specified to the main window's title main title
+     * 
+     * @param text the text to be appended
+     */
+    public void setTitle(String text)
+    {
+        mainWindow.setTitle("Octothorpe # - The Game | " + text);
+    }
+
     // Initializes the components for the main window
     private void initComponents()
     {
@@ -96,18 +106,17 @@ public class MainWindow extends Proxy
     }
     
     // Initializes the main window for the application
-    // TODO: add host address and port to the title bar
     private void initMainWindow()
     {
         mainWindow.setTitle("Octothorpe # - The Game");
         mainWindow.setSize(800, 600);
         mainWindow.setLocationRelativeTo(null);
-        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // TODO: try to make it work with DISPOSE_ON_CLOSE, but tear down is blocking on receiveRequest (GameClient) and receive (Connector)
+        mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.addWindowListener(new WindowAdapter()
         {
             public void windowClosing(WindowEvent e)
             {
-                generateQuitEvent();
+                generateQuitEvent(); // send a quit request to game server to not let the player "stuck"
             }
         });
     }
@@ -137,7 +146,7 @@ public class MainWindow extends Proxy
     }
 
     // Generates a quit event and notifies subscribers.
-    // TODO: review, this is going beyond the scope of a proxy
+    // This is a little beyond the function of a proxy...
     private void generateQuitEvent()
     {
         QuitEvent event = new QuitEvent();

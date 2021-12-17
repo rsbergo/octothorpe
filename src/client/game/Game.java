@@ -13,7 +13,7 @@ public class Game
     private final int FOG_OF_WAR_DISTANCE = 5; // how far can players see
 
     private Map<String, Player> players = new HashMap<String, Player>(); // players currently connected to the game
-    private Map<Integer, Item> items = new HashMap<Integer, Item>();     // items on the map
+    private Map<String, Item> items = new HashMap<String, Item>();       // items on the map
     private client.game.Map map = null;                                  // the game map
     private Player player = null;                                        // the player currently logged in
     private boolean fogOfWar = true;                                     // limits visibility for players
@@ -107,7 +107,7 @@ public class Game
      * @param id ID of the item to be retrieved
      * @return the map item identified by the ID specified
      */
-    public Item getItem(int id)
+    public Item getItem(String id)
     {
         return items.get(id);
     }
@@ -171,12 +171,12 @@ public class Game
     // Populate the map array with items at their position.
     private void populateItems(char[][] mapArray)
     {
-        for (int id : items.keySet())
+        for (String id : items.keySet())
         {
             Item item = items.get(id);
             Position pos = item.getPosition();
             if (isPositionVisible(pos))
-                mapArray[pos.getY()][pos.getX()] = '*'; //'⋆'; // TODO: find a better character
+                mapArray[pos.getY()][pos.getX()] = '*';
         }
     }
 
