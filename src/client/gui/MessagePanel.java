@@ -1,7 +1,5 @@
 package client.gui;
 
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.Dimension;
 import java.util.List;
 
@@ -13,6 +11,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.text.DefaultCaret;
 
 import client.event.Event;
 import client.event.MessageReceivedEvent;
@@ -103,6 +102,7 @@ public class MessagePanel extends ContentPanel
         content.setLayout(layoutManager);
     }
 
+    // Initialize the title label.
     private void initTitleLabel()
     {
         titleLabel.setFont(DefaultFont.getBold());
@@ -115,6 +115,10 @@ public class MessagePanel extends ContentPanel
         messageArea.setLineWrap(true);
         messageArea.setEditable(false);
         messageArea.setFont(DefaultFont.getPlain(10));
+
+        // auto scrolling
+        DefaultCaret caret = (DefaultCaret) messageArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     // Initializes the message area scroll pane.
@@ -124,14 +128,6 @@ public class MessagePanel extends ContentPanel
         messageAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messageAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         messageAreaScroll.setPreferredSize(new Dimension(200, 100));
-        messageAreaScroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener()
-        {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e)
-            {
-                e.getAdjustable().setValue(e.getAdjustable().getMaximum());                
-            }
-        });;
     }
 
     // Initializes the message field.

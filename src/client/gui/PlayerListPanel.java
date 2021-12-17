@@ -84,6 +84,7 @@ public class PlayerListPanel extends ContentPanel
         initPlayerListScroll();
     }
 
+    // Initialize the title label.
     private void initTitleLabel()
     {
         titleLabel.setFont(DefaultFont.getBold());

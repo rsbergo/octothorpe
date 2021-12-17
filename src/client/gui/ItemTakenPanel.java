@@ -1,13 +1,14 @@
 package client.gui;
 
-import java.awt.event.AdjustmentListener;
-import java.awt.event.AdjustmentEvent;
 import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import client.event.Event;
 import client.event.ItemTakenEvent;
@@ -18,6 +19,7 @@ import client.event.Subject;
  */
 public class ItemTakenPanel extends ContentPanel
 {
+    private JLabel titleLabel = new JLabel();                    // list title
     private JTextArea itemTakenArea = new JTextArea();           // display the items taken
     private JScrollPane itemTakenAreaScroll = new JScrollPane(); // scrolling pane for the item taken area
     
@@ -51,6 +53,7 @@ public class ItemTakenPanel extends ContentPanel
     // Initialize components of the item taken panel
     private void initComponents()
     {
+        initTitleLabel();
         initItemTakenArea();
         initItemTakenAreaScroll();
     }
@@ -62,22 +65,35 @@ public class ItemTakenPanel extends ContentPanel
         layoutManager.setAutoCreateContainerGaps(true);
         layoutManager.setAutoCreateGaps(true);
 
-        layoutManager.setHorizontalGroup(layoutManager.createSequentialGroup()
+        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
+            .addComponent(titleLabel)
             .addComponent(itemTakenAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
+            .addComponent(titleLabel)
             .addComponent(itemTakenAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         content.setLayout(layoutManager);
     }
     
+    // Initialize the title label.
+    private void initTitleLabel()
+    {
+        titleLabel.setFont(DefaultFont.getBold());
+        titleLabel.setText("Items Taken");
+    }
+    
     // Initializes the text area where the map is displayed
     private void initItemTakenArea()
     {
-        itemTakenArea.setFont(DefaultFont.getPlain(10));
+        itemTakenArea.setFont(DefaultFont.getPlain());
         itemTakenArea.setEditable(false);
+
+        // auto scrolling
+        DefaultCaret caret = (DefaultCaret) itemTakenArea.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
     
     // Initializes the scroll pane attached to the map area
@@ -87,14 +103,6 @@ public class ItemTakenPanel extends ContentPanel
         itemTakenAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         itemTakenAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         itemTakenAreaScroll.setPreferredSize(new Dimension(200, 100));
-        itemTakenAreaScroll.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener()
-        {
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e)
-            {
-                e.getAdjustable().setValue(e.getAdjustable().getMaximum());                
-            }
-        });;
     }
 
     // Updates the map in the map area
