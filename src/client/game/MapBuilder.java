@@ -1,6 +1,5 @@
-package client.gui;
+package client.game;
 
-import client.game.Map;
 import logger.Logger;
 import logger.LogLevel;
 

@@ -18,6 +18,7 @@ import client.event.Subject;
 import client.game.Game;
 import client.game.Item;
 import client.game.Map;
+import client.game.MapBuilder;
 import client.game.Player;
 import client.game.Position;
 import client.gameclient.GameClient;

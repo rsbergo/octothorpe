@@ -3,8 +3,8 @@ package client.gui;
 import java.util.List;
 
 import javax.swing.GroupLayout;
-import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.SwingConstants;
 
 import client.event.Event;
 import client.event.Subject;
@@ -92,20 +92,20 @@ public class GamePanel extends ContentPanel
 
         layoutManager.setHorizontalGroup(layoutManager.createSequentialGroup()
             .addGroup(layoutManager.createParallelGroup(Alignment.CENTER, true)
-                .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(itemTakenPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(messagePanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(playersListPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(itemTakenPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(messagePanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
             )
-            .addComponent(mapPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(mapPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.setVerticalGroup(layoutManager.createParallelGroup()
             .addGroup(layoutManager.createSequentialGroup()
-                .addComponent(playersListPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-                .addComponent(itemTakenPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addComponent(messagePanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addComponent(playersListPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addComponent(itemTakenPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+                .addComponent(messagePanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
             )
-            .addComponent(mapPanel.getContent(), GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(mapPanel.getContent(), GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
         layoutManager.linkSize(SwingConstants.HORIZONTAL, playersListPanel.getContent(), itemTakenPanel.getContent(), messagePanel.getContent());

@@ -1,10 +1,12 @@
 package client.gui;
 
-import java.awt.BorderLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -16,6 +18,7 @@ import client.event.Subject;
 
 public class MapPanel extends ContentPanel
 {
+    private JLabel titleLabel = new JLabel();              // title label
     private JTextArea mapArea = new JTextArea();           // display the map
     private JScrollPane mapAreaScroll = new JScrollPane(); // scrolling pane for the map area
     
@@ -56,6 +59,7 @@ public class MapPanel extends ContentPanel
     // Initialize components of the map panel
     private void initComponents()
     {
+        initTitleLabel();
         initMapArea();
         initMapAreaScroll();
     }
@@ -63,8 +67,28 @@ public class MapPanel extends ContentPanel
     // Creates the layout in the content planel.
     private void createLayout()
     {
-        content.setLayout(new BorderLayout());
-        content.add(mapAreaScroll);
+        GroupLayout layoutManager = new GroupLayout(content);
+        layoutManager.setAutoCreateContainerGaps(true);
+        layoutManager.setAutoCreateGaps(true);
+
+        layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.TRAILING)
+            .addComponent(titleLabel)
+            .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+        );
+
+        layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
+            .addComponent(titleLabel)
+            .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+        );
+
+        content.setLayout(layoutManager);
+    }
+    
+    // Initialize the title label.
+    private void initTitleLabel()
+    {
+        titleLabel.setFont(DefaultFont.getBold());
+        titleLabel.setText("Current Player (x, y) - 0 points");
     }
     
     // Initializes the text area where the map is displayed
