@@ -102,7 +102,7 @@ public class MapPanel extends ContentPanel
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
             .addGroup(layoutManager.createParallelGroup(Alignment.BASELINE)
                 .addComponent(fogOfWarCheckBox)
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
                 .addComponent(titleLabel)
             )
             .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
