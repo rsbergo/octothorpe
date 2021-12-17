@@ -50,6 +50,8 @@ One thing I wasn't able to do was to make the map grab focus once it is displaye
 
 The game client also provides a `Fog of War` option. If enabled, only items nearby are displayed; if disabled, all items becomes visible.
 
+<img width="400" alt="Octothorp_FogOfWar_Enabled" src="https://user-images.githubusercontent.com/58370031/146612644-57f55b7d-d61e-4595-90e5-6aed10a82e4d.png">   <img width="400" alt="Octothorp_FogOfWar_Disabled" src="https://user-images.githubusercontent.com/58370031/146612657-1798b3d2-18c6-4fcb-863a-d7843316c6fc.png">
+
 ## My experience with this project
 
 This project was very challenging in two aspects: interact with the server properly and create a GUI for the game. I first tried to solve the first challenge by creating a text-based UI application, similar to `telnet`, that would allow the player to interact with the game server. This text-based client receives a command from the player in the form of a string and sends this command to the game server. However, unlike `telnet`, it consumes all the responses received from the game server and only displays the synchronous responses (response code ≥ 200) to the player.
