@@ -13,6 +13,7 @@ import javax.swing.text.DefaultCaret;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import client.event.Event;
 import client.event.FogOfWarEvent;
@@ -26,7 +27,7 @@ import client.game.Position;
 
 public class MapPanel extends ContentPanel
 {
-    private JLabel titleLabel = new JLabel();              // title label
+    private JLabel playerInformationLabel = new JLabel();  // title label
     private JTextArea mapArea = new JTextArea();           // display the map
     private JScrollPane mapAreaScroll = new JScrollPane(); // scrolling pane for the map area
     private JCheckBox fogOfWarCheckBox = new JCheckBox();  // enables or disables fog of war
@@ -94,7 +95,7 @@ public class MapPanel extends ContentPanel
             .addGroup(layoutManager.createSequentialGroup()
                 .addComponent(fogOfWarCheckBox)
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(titleLabel)
+                .addComponent(playerInformationLabel)
             )
             .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
@@ -102,19 +103,20 @@ public class MapPanel extends ContentPanel
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
             .addGroup(layoutManager.createParallelGroup(Alignment.BASELINE)
                 .addComponent(fogOfWarCheckBox)
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(titleLabel)
+                .addGap(0, 0, 0)
+                .addComponent(playerInformationLabel)
             )
             .addComponent(mapAreaScroll, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         );
 
+        layoutManager.linkSize(SwingConstants.VERTICAL, fogOfWarCheckBox, playerInformationLabel);
         content.setLayout(layoutManager);
     }
     
     // Initialize the title label.
     private void initTitleLabel()
     {
-        titleLabel.setFont(DefaultFont.getBold());
+        playerInformationLabel.setFont(DefaultFont.getBold());
         updateTitleLabelText();
     }
     
@@ -182,7 +184,7 @@ public class MapPanel extends ContentPanel
             String position = "(" + pos.getX() + ", " + pos.getY() + ")";
             String score = currentPlayer.getScore() + " points";
             String text = name + " " + position + " - " + score;
-            titleLabel.setText(text);
+            playerInformationLabel.setText(text);
         }
     }
 

@@ -1,5 +1,6 @@
 package client.gui;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -81,7 +82,7 @@ public class MessagePanel extends ContentPanel
 
         layoutManager.setHorizontalGroup(layoutManager.createParallelGroup(Alignment.LEADING)
             .addComponent(titleLabel)
-            .addComponent(messageAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(messageAreaScroll)
             .addGroup(layoutManager.createSequentialGroup()
                 .addComponent(messageField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                 .addComponent(sendButton)
@@ -90,7 +91,7 @@ public class MessagePanel extends ContentPanel
 
         layoutManager.setVerticalGroup(layoutManager.createSequentialGroup()
             .addComponent(titleLabel)
-            .addComponent(messageAreaScroll, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+            .addComponent(messageAreaScroll)
             .addGroup(layoutManager.createParallelGroup(Alignment.BASELINE)
                 .addComponent(messageField)
                 .addComponent(sendButton)
@@ -123,9 +124,10 @@ public class MessagePanel extends ContentPanel
     // Initializes the message area scroll pane.
     private void initMessageAreaScroll()
     {
-        messageAreaScroll.setViewportView(messageArea);
+        messageAreaScroll.getViewport().add(messageArea);
         messageAreaScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         messageAreaScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        messageAreaScroll.setPreferredSize(new Dimension(200, 100));
     }
 
     // Initializes the message field.
