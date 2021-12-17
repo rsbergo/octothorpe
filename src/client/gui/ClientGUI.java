@@ -151,9 +151,12 @@ public class ClientGUI extends Observable implements Observer
     // Sends a quit request to the game client.
     private void sendQuitRequest()
     {
-        Request request = new Request();
-        request.setCommand(Command.Quit);
-        sendRequestEvent(request);
+        if (game.getCurrentPlayer() != null)
+        {
+            Request request = new Request();
+            request.setCommand(Command.Quit);
+            sendRequestEvent(request);
+        }
     }
 
     // Sends a move request to the game client.
