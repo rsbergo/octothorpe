@@ -386,7 +386,7 @@ public class ClientGUI extends Observable implements Observer
         {
             event = new ItemTakenEvent();
             event.setPlayerName(tokens[0]);
-            event.setItemId(Integer.parseInt(tokens[1])); // TODO: assumes that the item ID is a number. Could it be a string?
+            event.setItemId(tokens[1]);
             event.setItemValue(Integer.parseInt(tokens[2]));
         }
         catch (NumberFormatException e)

@@ -30,7 +30,6 @@ public class Connector implements Closeable
      */
     public void connectTo(String host, int port) throws IOException
     {
-        // TODO: throw exception if already connected
         try
         {
             Logger.log(LogLevel.Info, "Connecting to \"" + host + ":" + port + "\"...");
