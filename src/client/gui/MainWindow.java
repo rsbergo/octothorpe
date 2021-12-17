@@ -145,5 +145,6 @@ public class MainWindow extends Proxy
         registerSubject(Subject.Move);
         registerSubject(Subject.MessageReceived);
         registerSubject(Subject.SendMessage);
+        registerSubject(Subject.ItemTaken);
     }
 }

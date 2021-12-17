@@ -53,7 +53,7 @@ public class MapPanel extends ContentPanel
         return List.of(Subject.MapUpdated);
     }
     
-    // Initialize components of the game panel
+    // Initialize components of the map panel
     private void initComponents()
     {
         initMapArea();

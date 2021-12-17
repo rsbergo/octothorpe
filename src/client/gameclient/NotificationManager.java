@@ -5,14 +5,13 @@ import java.io.IOException;
 import client.connector.Connector;
 import client.connector.Response;
 import client.connector.ResponseCode;
-import client.event.ItemTakenEvent;
 import client.event.MapDataEvent;
 import client.event.ResponseEvent;
 import client.event.SynchronousResponseEvent;
 import client.game.Map;
 import client.observer.Observable;
-import logger.Logger;
 import logger.LogLevel;
+import logger.Logger;
 
 /**
  * The notification manager is responsible for listening to messages sent by the game server and distribute them
@@ -59,9 +58,6 @@ public class NotificationManager extends Observable implements Runnable
     {
         if (response.getResponseCode().getCode() >= 200)
             generateSynchronousResponseEvent(response);
-
-        else if (response.getResponseCode() == ResponseCode.ItemTaken)
-            generateItemTakenEvent(response);
         else if (response.getResponseCode() == ResponseCode.MapData)
             generateMapDataEvent(response);
         generateResponseEvent(response); // TODO: review. Generate only response events. Game client generates the other events.
@@ -71,12 +67,6 @@ public class NotificationManager extends Observable implements Runnable
     private void generateSynchronousResponseEvent(Response response)
     {
         notify(new SynchronousResponseEvent(response));
-    }
-
-    // Generates a new ItemTakenEvent and notifies subscribers.
-    private void generateItemTakenEvent(Response response)
-    {
-        notify(new ItemTakenEvent(response));
     }
 
     // Generates a new MapDataEvent and notifies subscribers.
